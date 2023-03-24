@@ -4,23 +4,23 @@ from torch.nn import MaxPool2d, Conv2d
 
 class ConvolutionalArchitecture:
     def __init__(self, architecture):
-        self.arch = [ConvolutionalBlock(block) for block in architecture]
+        self.architecture = [ConvolutionalBlock(block) for block in architecture]
 
     def pytorch(self):
         result = []
-        for block in self.arch: result.extend(block.pytorch())
+        for block in self.architecture: result.extend(block.pytorch())
         return result
 
 
 class ConvolutionalBlock:
-    def __init__(self, architecture):
-        self.convolutional_layer = Conv(architecture["kernel_conv"],
-                                        architecture["in_channels"],
-                                        architecture["out_channels"])
-        self.activation_function = Activation(architecture["activation"])
-        self.pool_layer = Pool(architecture["kernel_pool"],
-                               architecture["stride"],
-                               architecture["padding"])
+    def __init__(self, block):
+        self.convolutional_layer = Conv(block["kernel_conv"],
+                                        block["in_channels"],
+                                        block["out_channels"])
+        self.activation_function = Activation(block["activation"])
+        self.pool_layer = Pool(block["kernel_pool"],
+                               block["stride"],
+                               block["padding"])
 
     def pytorch(self):
         return self.convolutional_layer.pytorch(), self.activation_function.pytorch(), self.pool_layer.pytorch()
