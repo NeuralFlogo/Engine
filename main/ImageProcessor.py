@@ -1,53 +1,13 @@
 from torchvision import transforms
-from random import randint
 
 
-def preprocess_images(size):
+def preprocess_images(size, mean, std, horizontal=0, vertical=0, degrees=0, crop=(0, 0), gray=0):
     return transforms.Compose([
-        transforms.Resize((size, size)),
-        transforms.ToTensor()])
-
-
-def preprocess_images(size, probability):
-    return transforms.Compose([
-        transforms.Resize((size, size)),
-        transforms.ToTensor(),
-        transforms.RandomHorizontalFlip(probability),
-        transforms.RandomVerticalFlip(probability)])
-
-
-def preprocess_images(size, mean, std):
-    return transforms.Compose([
-        transforms.Resize((size, size)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean, std)])
-
-
-def preprocess_images(size, mean, std, probability):
-    return transforms.Compose([
-        transforms.Resize((size, size)),
+        transforms.Resize(size),
         transforms.ToTensor(),
         transforms.Normalize(mean, std),
-        transforms.RandomHorizontalFlip(probability),
-        transforms.RandomVerticalFlip(probability)])
-
-
-def preprocess_images(size, mean, std, probability, degrees):
-    return transforms.Compose([
-        transforms.Resize((size, size)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean, std),
-        transforms.RandomHorizontalFlip(probability),
-        transforms.RandomVerticalFlip(probability),
-        transforms.RandomRotation(degrees)])
-
-
-def preprocess_images(size, mean, std, probability, degrees):
-    return transforms.Compose([
-        transforms.Resize((size, size)),
-        transforms.ToTensor(),
-        transforms.Normalize(mean, std),
-        transforms.RandomHorizontalFlip(probability),
-        transforms.RandomVerticalFlip(probability),
+        transforms.RandomHorizontalFlip(horizontal),
+        transforms.RandomVerticalFlip(vertical),
         transforms.RandomRotation(degrees),
-        transforms.RandomCrop(size=(size / randint(0, size), size / randint(0, size)))])
+        transforms.RandomCrop(crop),
+        transforms.RandomGrayscale(gray)])
