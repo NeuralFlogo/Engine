@@ -1,9 +1,8 @@
 from torch import nn
+from model.RNN.recurrentPytorchCells import LSTMCell, RNNCell, GRUCell
 
-from model.RNN.RecurrentPytorchCells import LSTMCell, RNNCell, GRUCell
 
-
-class Recurrent:
+class RNN:
     def __init__(self, architecture):
         self.architecture = []
         for i in range(architecture["num_layers"]):
