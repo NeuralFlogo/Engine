@@ -19,19 +19,11 @@ class InputBlock:
 
 
 class BodyBlock:
-    def __init__(self, residual_blocks):
-        self.stages = [Stage([ResidualBlock(block) for _ in range(block["number"])]) for block in residual_blocks]
+    def __init__(self, block):
+        self.stages = [ResidualBlock(block) for _ in range(block["number"])]
 
     def pytorch(self):
-        return [stage.pytorch() for stage in self.stages]
-
-
-class Stage:
-    def __init__(self, residual_blocks):
-        self.blocks = residual_blocks
-
-    def pytorch(self):
-        return [block.pytorch() for block in self.blocks]
+        return [res_block.pytorch() for res_block in self.stages]
 
 
 class ResidualBlock:
