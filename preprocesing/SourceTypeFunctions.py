@@ -1,8 +1,6 @@
 from torch.utils.data import DataLoader
 
-from torch.utils.data import DataLoader
-
-from preprocesing.Dataset import ImageDataset
+from Datasets.ImageDataset import ImageDataset
 from preprocesing.ImageProcessor import *
 
 
