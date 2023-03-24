@@ -1,6 +1,6 @@
-import model.classification
-from model.convolutional import ConvolutionalArchitecture
-from model.feed_forward import FeedForward
+import model.architecture.classification
+from model.architecture.convolutional import ConvolutionalArchitecture
+from model.architecture.feed_forward import FeedForward
 from model.models import SimpleModel
 from model.RNN.RNN import RNN
 
@@ -27,4 +27,4 @@ architecture_recurrent = {"num_layers": 10, "hidden_size": 4, "input_size": 10, 
 pytorch_architecture = RNN(architecture_recurrent).pytorch()
 
 architecture_classification = {"name": "Softmax", "dimension": 10}
-print(model.classification.Classification(architecture_classification).pytorch())
+print(model.architecture.classification.Classification(architecture_classification).pytorch())

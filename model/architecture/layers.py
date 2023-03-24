@@ -12,17 +12,9 @@ class Linear:
         return nn.Linear(in_features=self.input_dimension, out_features=self.output_dimension)
 
 
-class Activation:
-    def __init__(self, name):
-        self.name = name
-
-    def pytorch(self):
-        return getattr(nn, self.name)()
-
-
 class Pool:
-    def __init__(self, pool, stride, padding, pooling_type):
-        self.kernel = pool
+    def __init__(self, kernel, stride, padding, pooling_type):
+        self.kernel = kernel
         self.stride = stride
         self.padding = padding
         self.pooling_type = pooling_type

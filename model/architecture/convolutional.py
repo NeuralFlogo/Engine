@@ -1,4 +1,4 @@
-from model.layers import ActivationFunction, Pool, Conv2d
+from model.architecture.layers import ActivationFunction, Pool, Conv2d
 
 
 class ConvolutionalArchitecture:

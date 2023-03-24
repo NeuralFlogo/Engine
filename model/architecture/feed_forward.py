@@ -1,4 +1,4 @@
-from model.layers import Linear, ActivationFunction
+from model.architecture.layers import Linear, ActivationFunction
 
 
 class FeedForward:

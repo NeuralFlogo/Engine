@@ -1,4 +1,4 @@
-from model.layers import ClassificationFunction
+from model.architecture.layers import ClassificationFunction
 
 
 class ClassificationBlock:
@@ -11,7 +11,7 @@ class ClassificationBlock:
 
 class Classification:
     def __init__(self, architecture):
-        self.block = ClassificationBlock(architecture)
+        self.classification_function = ClassificationBlock(architecture)
 
     def pytorch(self):
-        return self.block.pytorch()
+        return self.classification_function.pytorch()
