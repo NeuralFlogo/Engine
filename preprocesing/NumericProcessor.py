@@ -1,6 +1,6 @@
 
 
-def standardization():
+def standardize():
     return
 
 
