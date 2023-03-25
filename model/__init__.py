@@ -1,6 +1,7 @@
 import model.architecture.classification
 from model.architecture.convolutional import ConvolutionalArchitecture
 from model.architecture.feed_forward import FeedForward
+from model.architecture.residual_network import ResNet
 from model.models import SimpleModel
 from model.RNN.RNN import RNN
 
@@ -27,4 +28,13 @@ architecture_recurrent = {"num_layers": 10, "hidden_size": 4, "input_size": 10, 
 pytorch_architecture = RNN(architecture_recurrent).pytorch()
 
 architecture_classification = {"name": "Softmax", "dimension": 10}
-print(model.architecture.classification.Classification(architecture_classification).pytorch())
+model.architecture.classification.Classification(architecture_classification).pytorch()
+
+architecture_residual = [{"kernel_conv": (4, 5), "in_channels": 10, "out_channels": 10, "activation": "ReLU",
+                          "kernel_pool": (2, 2), "stride_pool": (2, 2), "padding_pool": (1, 1), "pooling_type": "Max",
+                          "stride_conv": (2, 2), "padding_conv": (1, 1)},
+                         {"kernel_conv": (5, 5), "in_channels": 10, "out_channels": 10, "activation": "ReLU",
+                          "block_number": 6, "stride": (2, 2), "padding": (1, 1)},
+                         {"stride_pool": (2, 2), "padding_pool": (1, 1), "pooling_type": "Avg",
+                          "stride_conv": (2, 2), "kernel_pool": (2, 2)}]
+print(len(ResNet(architecture_residual).pytorch()[1]))
