@@ -2,39 +2,40 @@ import model.architecture.classification
 from model.architecture.convolutional import ConvolutionalArchitecture
 from model.architecture.feed_forward import FeedForward
 from model.architecture.residual_network import ResNet
+from model.vocabulary import Kernel, Stride, Channel, Padding, Activation, Pooling, Block
 from model.models import SimpleModel
 from model.RNN.RNN import RNN
 
-architecture_conv = [{"kernel_conv": (5, 5), "in_channels": 10, "out_channels": 10, "activation": "ReLU",
-                      "kernel_pool": (2, 2), "stride_pool": (2, 2), "padding_pool": (1, 1), "pooling_type": "Avg",
-                      "stride_conv": (2, 2), "padding_conv": (1, 1)},
-                     {"kernel_conv": (5, 1), "in_channels": 10, "out_channels": 10, "activation": "ReLU",
-                      "kernel_pool": (2, 2), "stride_pool": (2, 2), "padding_pool": (1, 1), "pooling_type": "Avg",
-                      "stride_conv": (2, 2), "padding_conv": (1, 1)},
-                     {"kernel_conv": (5, 6), "in_channels": 10, "out_channels": 10, "activation": "ReLU",
-                      "kernel_pool": (2, 2), "stride_pool": (2, 2), "padding_pool": (1, 1), "pooling_type": "Avg",
-                      "stride_conv": (2, 2), "padding_conv": (1, 1)}]
+architecture_conv = [{Kernel.Convolutional: (5, 5), Channel.In: 10, Channel.Out: 10, Activation.name: "ReLU",
+                      Kernel.Pool: (2, 2), Stride.Pool: (2, 2), Padding.Pool: (1, 1), Pooling.type: "Avg",
+                      Stride.Convolutional: (2, 2), Padding.Convolutional: (1, 1)},
+                     {Kernel.Convolutional: (5, 1), Channel.In: 10, Channel.Out: 10, Activation.name: "ReLU",
+                      Kernel.Pool: (2, 2), Stride.Pool: (2, 2), Padding.Pool: (1, 1), Pooling.type: "Avg",
+                      Stride.Convolutional: (2, 2), Padding.Convolutional: (1, 1)},
+                     {Kernel.Convolutional: (5, 6), Channel.In: 10, Channel.Out: 10, Activation.name: "ReLU",
+                      Kernel.Pool: (2, 2), Stride.Pool: (2, 2), Padding.Pool: (1, 1), Pooling.type: "Avg",
+                      Stride.Convolutional: (2, 2), Padding.Convolutional: (1, 1)}]
 
 pytorch_architecture = ConvolutionalArchitecture(architecture_conv).pytorch()
 SimpleModel(pytorch_architecture)
 
-architecture_feedforward = [{"input_dimension": 10, "output_dimension": 10, "activation": "ReLU"},
-                            {"input_dimension": 10, "output_dimension": 10, "activation": "ReLU"}]
+architecture_feedforward = [{Channel.In: 10, Channel.Out: 10, Activation.name: "ReLU"},
+                            {Channel.In: 10, Channel.Out: 10, Activation.name: "ReLU"}]
 pytorch_architecture = FeedForward(architecture_feedforward).pytorch()
 SimpleModel(pytorch_architecture)
 
-architecture_recurrent = {"num_layers": 10, "hidden_size": 4, "input_size": 10, "block_type": "GRUCell",
-                          "activation": "ReLU", "bias": True, "output_size": 2}
-pytorch_architecture = RNN(architecture_recurrent).pytorch()
-
-architecture_classification = {"name": "Softmax", "dimension": 10}
+architecture_classification = {Activation.name: "Softmax", Activation.dimension: 10}
 model.architecture.classification.Classification(architecture_classification).pytorch()
 
-architecture_residual = [{"kernel_conv": (4, 5), "in_channels": 10, "out_channels": 10, "activation": "ReLU",
-                          "kernel_pool": (2, 2), "stride_pool": (2, 2), "padding_pool": (1, 1), "pooling_type": "Max",
-                          "stride_conv": (2, 2), "padding_conv": (1, 1)},
-                         {"kernel_conv": (5, 5), "in_channels": 10, "out_channels": 10, "activation": "ReLU",
-                          "block_number": 6, "stride": (2, 2), "padding": (1, 1)},
-                         {"stride_pool": (2, 2), "padding_pool": (1, 1), "pooling_type": "Avg",
-                          "stride_conv": (2, 2), "kernel_pool": (2, 2)}]
+architecture_residual = [{Kernel.Convolutional: (4, 5), Channel.In: 10, Channel.Out: 10, Activation.name: "ReLU",
+                          Kernel.Pool: (2, 2), Stride.Pool: (2, 2), Padding.Pool: (1, 1), Pooling.type: "Max",
+                          Stride.Convolutional: (2, 2), Padding.Convolutional: (1, 1)},
+                         {Kernel.Convolutional: (5, 5), Channel.In: 10, Channel.Out: 10, Activation.name: "ReLU",
+                          Block.Size: 6, Stride.Convolutional: (2, 2), Padding.Convolutional: (1, 1)},
+                         {Stride.Pool: (2, 2), Padding.Pool: (1, 1), Pooling.type: "Avg",
+                          Stride.Convolutional: (2, 2), Kernel.Pool: (2, 2)}]
 print(len(ResNet(architecture_residual).pytorch()[1]))
+
+# architecture_recurrent = {"num_layers": 10, "hidden_size": 4, Channel.In: 10, "block_type": "GRUCell",
+#                          Activation.name: "ReLU", "bias": True, Channel.Out: 2}
+# pytorch_architecture = RNN(architecture_recurrent).pytorch()

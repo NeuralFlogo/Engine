@@ -1,3 +1,4 @@
+from model.vocabulary import Kernel, Channel, Stride, Padding, Pooling, Activation, Block
 from model.architecture.layers import Conv2d, Pool, ActivationFunction
 
 
@@ -12,10 +13,10 @@ class ResNet:
 
 class InputBlock:
     def __init__(self, block):
-        self.conv = Conv2d(block["kernel_conv"], block["in_channels"], block["out_channels"],
-                           block["stride_conv"], block["padding_conv"])
-        self.pool = Pool(block["kernel_pool"], block["stride_pool"],
-                         block["padding_pool"], block["pooling_type"])
+        self.conv = Conv2d(block[Kernel.Convolutional], block[Channel.In], block[Channel.Out],
+                           block[Stride.Convolutional], block[Padding.Convolutional])
+        self.pool = Pool(block[Kernel.Pool], block[Stride.Pool],
+                         block[Padding.Pool], block[Pooling.type])
 
     def pytorch(self):
         return self.conv.pytorch(), self.pool.pytorch()
@@ -23,7 +24,7 @@ class InputBlock:
 
 class BodyBlock:
     def __init__(self, block):
-        self.stages = [ResidualBlock(block) for _ in range(block["block_number"])]
+        self.stages = [ResidualBlock(block) for _ in range(block[Block.Size])]
 
     def pytorch(self):
         return [res_block.pytorch() for res_block in self.stages]
@@ -31,11 +32,11 @@ class BodyBlock:
 
 class ResidualBlock:
     def __init__(self, block):
-        self.conv1 = Conv2d(block["kernel_conv"], block["in_channels"],
-                            block["out_channels"], block["stride"], block["padding"])
-        self.activation = ActivationFunction(block["activation"])
-        self.conv2 = Conv2d(block["kernel_conv"], block["in_channels"],
-                            block["out_channels"], block["stride"], block["padding"])
+        self.conv1 = Conv2d(block[Kernel.Convolutional], block[Channel.In],
+                            block[Channel.Out], block[Stride.Convolutional], block[Padding.Convolutional])
+        self.activation = ActivationFunction(block[Activation.name])
+        self.conv2 = Conv2d(block[Kernel.Convolutional], block[Channel.In],
+                            block[Channel.Out], block[Stride.Convolutional], block[Padding.Convolutional])
 
     def pytorch(self):
         return self.conv1.pytorch(), self.activation.pytorch(), self.conv2.pytorch()
@@ -43,8 +44,8 @@ class ResidualBlock:
 
 class OutputBlock:
     def __init__(self, block):
-        self.activation = Pool(block["kernel_pool"], block["stride_pool"],
-                               block["padding_pool"], block["pooling_type"])
+        self.pool = Pool(block[Kernel.Pool], block[Stride.Pool],
+                         block[Padding.Pool], block[Pooling.type])
 
     def pytorch(self):
-        return self.activation.pytorch()
+        return self.pool.pytorch()
