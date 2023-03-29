@@ -3,8 +3,8 @@ from model.architecture.convolutional import ConvolutionalArchitecture
 from model.architecture.feed_forward import FeedForward
 from model.architecture.residual_network import ResNet
 from model.vocabulary import Kernel, Stride, Channel, Padding, Activation, Pooling, Block, Layers
-from model.models import SimpleModel
 from model.architecture.RNN.rnn import RNN
+
 
 # architecture_conv = [{Kernel.Convolutional: (5, 5), Channel.In: 10, Channel.Out: 10, Activation.name: "ReLU",
 #                       Kernel.Pool: (2, 2), Stride.Pool: (2, 2), Padding.Pool: (1, 1), Pooling.type: "Avg",

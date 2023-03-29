@@ -1,7 +1,5 @@
-from torch import nn
-
-from model import Channel, Block, Activation, Layers
 from model.architecture.RNN.recurrent_pytorch_units import LSTMCell, RNNCell, GRUCell
+from model.vocabulary import Channel, Block, Activation, Layers
 
 
 class RNN:
