@@ -9,7 +9,7 @@ def get_label(file_name):
     return file_name.split(".")[0]
 
 
-class ImageDataset(Dataset):
+class ImagesDataset(Dataset):
     def __init__(self, transformer, data_dir):
         self.transformer = transformer
         self.data_dir = data_dir

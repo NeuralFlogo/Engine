@@ -9,6 +9,7 @@ transformer_functions = {
     "one-hot": one_hot_encode,
     "standardize": standardize,
     "normalize": normalize
+
 }
 
 
@@ -19,7 +20,7 @@ def transform(data, parameters):
     return np.concatenate(transform_data, axis=1)
 
 
-class NumberDataset(Dataset):
+class NumericDataset(Dataset):
     def __init__(self, x, y, parameters):
         self.x = transform(x, parameters)
         self.y = transformer_functions.get(parameters[-1])(y)

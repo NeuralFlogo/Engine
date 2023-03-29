@@ -11,7 +11,7 @@ def tokens(paths):
     return tokenize(text)
 
 
-class StringDataset(Dataset):
+class WordsDataset(Dataset):
     def __init__(self, paths):
         self.tokens = tokens(paths)
 
