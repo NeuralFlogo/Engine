@@ -1,6 +1,11 @@
 class Block:
     Type = "block_type"
-    Size = "hidden_size"
+    HiddenSize = "hidden_size"
+
+
+class Layers:
+    Size = "layers_number"
+    Bias = "layers_bias"
 
 
 class Kernel:
