@@ -18,11 +18,9 @@ class RNNCell(nn.Module):
         for w in self.parameters():
             w.data.uniform_(-std, std)
 
-    def forward(self, input, previous_cell_output=None):
-        if previous_cell_output is None:
-            previous_cell_output = torch.zeros(self.hidden_size)
-        return self.activation(self.input_layer(input.to(torch.float)) +
-                               self.previous_layer(previous_cell_output))
+    def forward(self, input, state=None):
+        if state is None: state = torch.zeros(self.hidden_size)
+        return self.activation(self.input_layer(input.to(torch.float)) + self.previous_layer(state))
 
 
 class LSTMCell(nn.Module):
@@ -74,7 +72,6 @@ class GRUCell(nn.Module):
         super(GRUCell, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
-        self.bias = bias
         self.tanh = nn.Tanh()
         self.sigmoid = nn.Sigmoid()
         self.input_reset_layer = nn.Linear(input_size, hidden_size, bias=bias)

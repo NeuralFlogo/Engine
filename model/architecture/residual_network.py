@@ -24,7 +24,7 @@ class InputBlock:
 
 class BodyBlock:
     def __init__(self, block):
-        self.stages = [ResidualBlock(block) for _ in range(block[Block.Size])]
+        self.stages = [ResidualBlock(block) for _ in range(block[Block.HiddenSize])]
 
     def pytorch(self):
         return [res_block.pytorch() for res_block in self.stages]
