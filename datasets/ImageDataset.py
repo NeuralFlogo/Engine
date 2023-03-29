@@ -10,10 +10,10 @@ def get_label(file_name):
 
 
 class ImageDataset(Dataset):
-    def __init__(self, data_dir, transformer):
+    def __init__(self, transformer, data_dir):
+        self.transformer = transformer
         self.data_dir = data_dir
         self.files = [f for f in os.listdir(data_dir)]
-        self.transformer = transformer
 
     def __len__(self):
         return len(self.files)

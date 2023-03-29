@@ -1,18 +1,18 @@
-import torch
-import torch.nn.functional as f
+import numpy as np
 
 
-def encode(col):
-    return f.one_hot(col[:, :-1], torch.unique(col[:, :-1]).len())
+def one_hot_encode(col):
+    unique, inverse = np.unique(col, return_inverse=True)
+    return np.eye(unique.shape[0])[inverse]
 
 
 def standardize(col):
-    return (col - torch.mean(col)) / torch.std(col)
+    col = col.astype(float)
+    return (col - np.mean(col)) / np.std(col).reshape(-1, 1)
 
 
-def normalize(col, new_min, new_max):
-    return (col - col.min()) / (col.max() - col.min()) * (new_max - new_min) + new_min
+def normalize(col, new_min=0, new_max=1):
+    col = col.astype(float)
+    return ((col - col.min()) / (col.max() - col.min()) * (new_max - new_min) + new_min).reshape(-1, 1)
 
 
-def l_normalize(col, p, dim=1):
-    return f.normalize(col, p, dim)
