@@ -1,5 +1,5 @@
 from torch import nn
-from model.RNN.recurrentPytorchCells import LSTMCell, RNNCell, GRUCell
+from model.RNN.recurrent_pytorch_units import LSTMCell, RNNCell, GRUCell
 
 
 class RNN:
