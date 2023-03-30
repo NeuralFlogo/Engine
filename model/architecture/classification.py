@@ -1,4 +1,4 @@
-from model.vocabulary import Activation
+from vocabulary import Activation
 from model.architecture.layers import ClassificationFunction
 
 
