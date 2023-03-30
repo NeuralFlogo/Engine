@@ -36,11 +36,8 @@ architecture_residual = [{Kernel.Convolutional: (4, 5), Channel.In: 10, Channel.
                          {Stride.Pool: (2, 2), Padding.Pool: (1, 1), Pooling.type: "Avg",
                           Stride.Convolutional: (1, 1), Kernel.Pool: (2, 2)}]
 pytorch_architecture = ResNet(architecture_residual).pytorch()
-# print(pytorch_architecture[0])
 
 ResidualModule(pytorch_architecture).forward(torch.zeros((10, 100, 100)))
-
-
 
 # architecture_recurrent = {Layers.Size: 3, Block.HiddenSize: 10, Channel.In: 4, Block.Type: "LSTMCell",
 #                           Activation.name: "ReLU", Layers.Bias: True, Channel.Out: 2}
