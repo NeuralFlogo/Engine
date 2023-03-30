@@ -8,7 +8,7 @@ class RNNCell(nn.Module):
         super(RNNCell, self).__init__()
         self.input_size = input_size
         self.hidden_size = hidden_size
-        self.activation = getattr(nn, nonlinearity)(dim=hidden_size)
+        self.activation = getattr(nn, nonlinearity)()
         self.input_layer = nn.Linear(input_size, hidden_size, bias=bias)
         self.previous_layer = nn.Linear(hidden_size, hidden_size, bias=bias)
         self.reset_parameters()
@@ -97,7 +97,7 @@ class GRUCell(nn.Module):
         return self.sigmoid(self.input_reset_layer(input) + self.state_reset_layer(state))
 
     def update_gate(self, input, state):
-        return self.sigmoid(self.input_update_layer(input), self.state_update_layer(state))
+        return self.sigmoid(self.input_update_layer(input) + self.state_update_layer(state))
 
     def candidate_gate(self, input, reset_gate_output, state):
         return self.tanh(self.input_candidate_layer(input) + self.state_candidate_layer(reset_gate_output * state))

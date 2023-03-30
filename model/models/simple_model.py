@@ -7,6 +7,6 @@ class SimpleModel(torch.nn.Module):
         self.layers = torch.nn.ModuleList(architecture)
 
     def forward(self, x):
-        for layer in self.architecture:
+        for layer in self.layers:
             x = layer(x)
         return x

@@ -1,4 +1,4 @@
-from model.vocabulary import Kernel, Channel, Stride, Padding, Activation, Pooling
+from vocabulary import Kernel, Channel, Stride, Padding, Activation, Pooling
 from model.architecture.layers import ActivationFunction, Pool, Conv2d
 
 

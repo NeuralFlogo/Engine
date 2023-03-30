@@ -1,4 +1,4 @@
-from model.vocabulary import Channel, Activation
+from vocabulary import Channel, Activation
 from model.architecture.layers import Linear, ActivationFunction
 
 

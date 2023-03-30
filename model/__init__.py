@@ -1,10 +1,8 @@
-import model.architecture.classification
-from model.architecture.convolutional import ConvolutionalArchitecture
-from model.architecture.feed_forward import FeedForward
-from model.architecture.residual_network import ResNet
-from model.vocabulary import Kernel, Stride, Channel, Padding, Activation, Pooling, Block, Layers
-from model.architecture.RNN.rnn import RNN
+import torch
 
+from model.models.rnn_model import RnnModel
+from vocabulary import Channel, Activation, Block, Layers
+from model.architecture.RNN.rnn import RNN
 
 # architecture_conv = [{Kernel.Convolutional: (5, 5), Channel.In: 10, Channel.Out: 10, Activation.name: "ReLU",
 #                       Kernel.Pool: (2, 2), Stride.Pool: (2, 2), Padding.Pool: (1, 1), Pooling.type: "Avg",
@@ -36,7 +34,9 @@ from model.architecture.RNN.rnn import RNN
 #                           Stride.Convolutional: (2, 2), Kernel.Pool: (2, 2)}]
 # print(len(ResNet(architecture_residual).pytorch()[1]))
 
-architecture_recurrent = {Layers.Size: 2, Block.HiddenSize: 10, Channel.In: 4, Block.Type: "GRUCell",
+architecture_recurrent = {Layers.Size: 3, Block.HiddenSize: 10, Channel.In: 4, Block.Type: "LSTMCell",
                           Activation.name: "ReLU", Layers.Bias: True, Channel.Out: 2}
 pytorch_architecture = RNN(architecture_recurrent).pytorch()
-print(pytorch_architecture)
+model = RnnModel(pytorch_architecture)
+asdf = model.forward(torch.zeros(4))
+print(asdf[0])
