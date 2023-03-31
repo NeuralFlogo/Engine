@@ -1,5 +1,5 @@
 from vocabulary import Kernel, Channel, Stride, Padding, Activation, Pooling
-from model.architecture.layers import ActivationFunction, Pool, Conv2d
+from model.layers import ActivationFunction, Pool, Conv2d
 
 
 class ConvolutionalArchitecture:

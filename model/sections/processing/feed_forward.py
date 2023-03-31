@@ -1,5 +1,5 @@
 from vocabulary import Channel, Activation
-from model.architecture.layers import Linear, ActivationFunction
+from model.layers import Linear, ActivationFunction
 
 
 class FeedForward:
@@ -14,7 +14,7 @@ class FeedForward:
 
 class LinearBlock:
     def __init__(self, block):
-        self.linear = Linear(block[Channel.In], block[Channel.Out])
+        self.linear = Linear(input_dimension=block[Channel.In], output_dimension=block[Channel.Out])
         self.activation = ActivationFunction(block[Activation.name])
 
     def pytorch(self):

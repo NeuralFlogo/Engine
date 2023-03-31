@@ -21,10 +21,10 @@ def numbers_source_type_csv(path, parameters):
     return get_loader(dataset)
 
 
-def images_source_type(size, mean, std, path):
+def images_source_type(size, mean, std, path, batch_size):
     transformer = preprocess_images(size, mean, std)
     dataset = ImagesDataset(transformer, path)
-    return get_loader(dataset)
+    return get_loader(dataset, batch_size)
 
 
 def text_source_type(paths):

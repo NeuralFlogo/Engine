@@ -1,5 +1,5 @@
 from vocabulary import Kernel, Channel, Stride, Padding, Pooling, Activation, Block
-from model.architecture.layers import Conv2d, Pool, ActivationFunction
+from model.layers import Conv2d, Pool, ActivationFunction
 
 
 class ResNet:

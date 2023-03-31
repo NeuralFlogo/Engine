@@ -1,6 +1,8 @@
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
+from preprocesing.NumericProcessor import one_hot_encode
+
 
 class Training:
     def __init__(self, model, training_loader, validation_loader, loss_function, optimizer, epochs):
@@ -39,16 +41,17 @@ class Training:
             inputs, labels = data
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
+            labels = torch.tensor(one_hot_encode(labels))
             loss = self.loss_function(outputs, labels)
             loss.backward()
             self.optimizer.step()
             running_loss += loss.item()
-            if i % 1000 == 999:
-                last_loss = running_loss / 1000
-                print('batch {} loss: {}'.format(i + 1, last_loss))
-                tb_x = epoch * len(self.training_loader) + i + 1
-                self.writer.add_scalar('Loss/train', last_loss, tb_x)
-                running_loss = 0.
+            print(running_loss)
+            last_loss = running_loss / 1000
+            print('batch {} loss: {}'.format(i + 1, last_loss))
+            tb_x = epoch * len(self.training_loader) + i + 1
+            self.writer.add_scalar('Loss/train', last_loss, tb_x)
+            running_loss = 0.
         return last_loss
 
     def __validate_epoch(self, running_loss):

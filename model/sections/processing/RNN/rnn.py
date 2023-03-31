@@ -1,11 +1,11 @@
-from model.architecture.RNN.recurrent_pytorch_units import LSTMCell, RNNCell, GRUCell
+from model.sections.processing.RNN.recurrent_pytorch_units import LSTMCell, RNNCell, GRUCell
 from vocabulary import Channel, Block, Activation, Layers
 
 
 class RNN:
     def __init__(self, architecture):
         self.architecture = []
-        for i in range(architecture[Layers.Size]):
+        for block in range(architecture[Layers.Size]):
             self.architecture.append(RecurrentBlock(architecture[Channel.In], architecture[Block.HiddenSize],
                                                     architecture[Block.Type], architecture[Activation.name],
                                                     architecture[Layers.Bias]))
