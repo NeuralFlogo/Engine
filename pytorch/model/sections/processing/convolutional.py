@@ -1,14 +1,16 @@
-from vocabulary import Kernel, Channel, Stride, Padding, Activation, Pooling
-from model.layers import ActivationFunction, Pool, Conv2d
+from pytorch.model.layers.activation import ActivationFunction
+from pytorch.model.layers.convolution import Conv2d
+from pytorch.model.layers.pool import Pool
+from pytorch.vocabulary import Kernel, Channel, Stride, Padding, Activation, Pooling
 
 
 class Convolutional:
     def __init__(self, architecture):
         self.architecture = [ConvolutionalBlock(block) for block in architecture]
 
-    def pytorch(self):
+    def build(self):
         result = []
-        for block in self.architecture: result.extend(block.pytorch())
+        for block in self.architecture: result.extend(block.build())
         return result
 
 
@@ -25,5 +27,5 @@ class ConvolutionalBlock:
                                block[Padding.Pool],
                                block[Pooling.type])
 
-    def pytorch(self):
-        return self.convolutional_layer.pytorch(), self.activation_function.pytorch(), self.pool_layer.pytorch()
+    def build(self):
+        return self.convolutional_layer.build(), self.activation_function.build(), self.pool_layer.build()

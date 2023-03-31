@@ -1,7 +1,7 @@
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-from preprocesing.NumericProcessor import one_hot_encode
+from pytorch.preprocesing.NumericProcessor import one_hot_encode
 
 
 class Training:

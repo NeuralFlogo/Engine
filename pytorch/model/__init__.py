@@ -1,17 +1,13 @@
 import torch
 
-import model.sections.link.classification
-from model.sections.link.flatten import Flatten
-from model.sections.processing.convolutional import Convolutional
-from model.sections.processing.feed_forward import FeedForward
-from model.initialize import initialize
-from model.models.res_model import ResidualModule
-from model.models.rnn_model import RnnModel
-from model.models.simple_model import SimpleModel
-from preprocesing.NumericProcessor import one_hot_encode
-from preprocesing.SourceTypeFunctions import images_source_type
-from training.train import Training
-from vocabulary import *
+from pytorch.model.sections.link.classification import Classification
+from pytorch.model.sections.link.flatten import Flatten
+from pytorch.model.sections.processing.convolutional import Convolutional
+from pytorch.model.sections.processing.feed_forward import FeedForward
+from pytorch.model.models.simple_model import SimpleModel
+from pytorch.preprocesing.NumericProcessor import one_hot_encode
+from pytorch.preprocesing.SourceTypeFunctions import images_source_type
+from pytorch.vocabulary import *
 
 #
 # pytorch_architecture = ConvolutionalArchitecture(architecture_conv).pytorch()
@@ -38,7 +34,7 @@ from vocabulary import *
 
 # architecture_recurrent = {Layers.Size: 3, Block.HiddenSize: 10, Channel.In: 4, Block.Type: "LSTMCell",
 #                           Activation.name: "ReLU", Layers.Bias: True, Channel.Out: 2}
-# pytorch_architecture = RNN(architecture_recurrent).pytorch()
+# pytorch_architecture = recurrent(architecture_recurrent).pytorch()
 # model = RnnModel(pytorch_architecture)
 # asdf = model.forward(torch.zeros(4))
 # print(asdf[0])
@@ -75,10 +71,11 @@ architecture_classification = {Activation.name: "Softmax", Activation.dimension:
 
 architecture_link = {Dimension.Start: 1, Dimension.End: 3}
 
-pytorch_architecture = Convolutional(architecture_conv).pytorch()
-pytorch_architecture += [Flatten(architecture_link).pytorch()]
-pytorch_architecture += FeedForward(architecture_feedforward).pytorch()
-pytorch_architecture += [model.sections.link.classification.Classification(architecture_classification).pytorch()]
+pytorch_architecture = Convolutional(architecture_conv).build()
+pytorch_architecture += [Flatten(architecture_link).build()]
+pytorch_architecture += FeedForward(architecture_feedforward).build()
+pytorch_architecture += [
+    Classification(architecture_classification).build()]
 model = SimpleModel(pytorch_architecture)
 print(model)
 

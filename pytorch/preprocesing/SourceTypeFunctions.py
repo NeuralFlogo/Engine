@@ -2,10 +2,10 @@ from pandas import read_csv
 
 from torch.utils.data import DataLoader
 
-from datasets.ImagesDataset import ImagesDataset
-from datasets.NumericDataset import NumericDataset
-from datasets.WordsDataset import WordsDataset
-from preprocesing.ImageProcessor import *
+from pytorch.datasets.ImagesDataset import ImagesDataset
+from pytorch.datasets.NumericDataset import NumericDataset
+from pytorch.datasets.WordsDataset import WordsDataset
+from pytorch.preprocesing.ImageProcessor import *
 
 
 def get_loader(dataset, batch_size=4):

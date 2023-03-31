@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 
-from preprocesing.NumericProcessor import *
+from pytorch.preprocesing.NumericProcessor import *
 
 transformer_functions = {
     "one-hot": one_hot_encode,

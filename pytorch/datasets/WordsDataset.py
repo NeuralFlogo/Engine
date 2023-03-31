@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 
-from preprocesing.TextTokenizer import tokenize
+from pytorch.preprocesing.TextTokenizer import tokenize
 
 
 def tokens(paths):

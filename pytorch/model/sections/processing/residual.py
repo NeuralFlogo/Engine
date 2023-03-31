@@ -1,14 +1,16 @@
-from vocabulary import Kernel, Channel, Stride, Padding, Pooling, Activation, Block
-from model.layers import Conv2d, Pool, ActivationFunction
+from pytorch.model.layers.activation import ActivationFunction
+from pytorch.model.layers.convolution import Conv2d
+from pytorch.model.layers.pool import Pool
+from pytorch.vocabulary import Kernel, Channel, Stride, Padding, Pooling, Activation, Block
 
 
-class ResNet:
+class ResidualSection:
     def __init__(self, architecture):
         body = [BodyBlock(block) for block in architecture[1:-1]]
         self.architecture = [InputBlock(architecture[0])] + body + [OutputBlock(architecture[-1])]
 
-    def pytorch(self):
-        return [block.pytorch() for block in self.architecture]
+    def build(self):
+        return [block.build() for block in self.architecture]
 
 
 class InputBlock:
@@ -18,16 +20,16 @@ class InputBlock:
         self.pool = Pool(block[Kernel.Pool], block[Stride.Pool],
                          block[Padding.Pool], block[Pooling.type])
 
-    def pytorch(self):
-        return self.conv.pytorch(), self.pool.pytorch()
+    def build(self):
+        return self.conv.build(), self.pool.build()
 
 
 class BodyBlock:
     def __init__(self, block):
         self.stages = [ResidualBlock(block) for _ in range(block[Block.HiddenSize])]
 
-    def pytorch(self):
-        return [res_block.pytorch() for res_block in self.stages]
+    def build(self):
+        return [res_block.build() for res_block in self.stages]
 
 
 class ResidualBlock:
@@ -38,8 +40,8 @@ class ResidualBlock:
         self.conv2 = Conv2d(block[Kernel.Convolutional], block[Channel.In],
                             block[Channel.Out], block[Stride.Convolutional], block[Padding.Convolutional])
 
-    def pytorch(self):
-        return self.conv1.pytorch(), self.activation.pytorch(), self.conv2.pytorch()
+    def build(self):
+        return self.conv1.build(), self.activation.build(), self.conv2.build()
 
 
 class OutputBlock:
@@ -47,5 +49,5 @@ class OutputBlock:
         self.pool = Pool(block[Kernel.Pool], block[Stride.Pool],
                          block[Padding.Pool], block[Pooling.type])
 
-    def pytorch(self):
-        return self.pool.pytorch()
+    def build(self):
+        return self.pool.build()
