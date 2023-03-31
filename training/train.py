@@ -15,7 +15,6 @@ class Training:
         self.writer = SummaryWriter('runs/model')
 
     def train(self):
-        self.__model_to_device()
         best_vloss = 1_000_000.
         for epoch in range(self.epochs):
             self.model.train(True)
@@ -30,9 +29,7 @@ class Training:
             if avg_vloss < best_vloss:
                 best_vloss = avg_vloss
                 torch.save(self.model.state_dict(), 'model_{}'.format(epoch))
-
-    def __model_to_device(self):
-        self.model.to(torch.device("cuda:0" if torch.cuda.is_available() else "cpu"))
+        self.writer.close()
 
     def __train_epoch(self, epoch):
         running_loss = 0.
@@ -41,17 +38,15 @@ class Training:
             inputs, labels = data
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
-            labels = torch.tensor(one_hot_encode(labels))
             loss = self.loss_function(outputs, labels)
             loss.backward()
             self.optimizer.step()
             running_loss += loss.item()
-            print(running_loss)
-            last_loss = running_loss / 1000
-            print('batch {} loss: {}'.format(i + 1, last_loss))
-            tb_x = epoch * len(self.training_loader) + i + 1
-            self.writer.add_scalar('Loss/train', last_loss, tb_x)
-            running_loss = 0.
+            if i % 1000 == 999:
+                last_loss = running_loss / 1000
+                tb_x = epoch * len(self.training_loader) + i + 1
+                self.writer.add_scalar('Loss/train', last_loss, tb_x)
+                running_loss = 0.
         return last_loss
 
     def __validate_epoch(self, running_loss):
@@ -62,7 +57,3 @@ class Training:
             running_loss += loss
         avg_loss = running_loss / (i + 1)
         return avg_loss
-
-    def test(self, testing_loader):
-        for inputs, label in testing_loader:
-            outputs = self.model.eval(inputs)
