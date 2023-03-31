@@ -1,5 +1,7 @@
 import torch
 
+from vocabulary import Dimension
+
 
 class Flatten:
     def __init__(self, architecture):
@@ -11,8 +13,8 @@ class Flatten:
 
 class FlattenBlock:
     def __init__(self, block):
-        self.start_dim = block["start_dim"]
-        self.end_dim = block["end_dim"]
+        self.start_dim = block[Dimension.Start]
+        self.end_dim = block[Dimension.End]
 
     def pytorch(self):
         return torch.nn.Flatten(start_dim=self.start_dim, end_dim=self.end_dim)

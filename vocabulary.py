@@ -35,3 +35,8 @@ class Channel:
 class Activation:
     name = "activation_name"
     dimension = "activation_dimension"
+
+
+class Dimension:
+    Start = "start_dim"
+    End = "end_dim"

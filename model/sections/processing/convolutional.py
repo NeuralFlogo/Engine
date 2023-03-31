@@ -2,7 +2,7 @@ from vocabulary import Kernel, Channel, Stride, Padding, Activation, Pooling
 from model.layers import ActivationFunction, Pool, Conv2d
 
 
-class ConvolutionalArchitecture:
+class Convolutional:
     def __init__(self, architecture):
         self.architecture = [ConvolutionalBlock(block) for block in architecture]
 
