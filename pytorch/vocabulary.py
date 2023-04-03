@@ -6,6 +6,7 @@ class Block:
 class Layers:
     Size = "layers_number"
     Bias = "layers_bias"
+    Type = "Layer_type"
 
 
 class Kernel:
@@ -24,7 +25,7 @@ class Padding:
 
 
 class Pooling:
-    type = "pooling_type"
+    Type = "pooling_type"
 
 
 class Channel:

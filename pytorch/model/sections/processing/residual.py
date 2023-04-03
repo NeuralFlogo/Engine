@@ -18,7 +18,7 @@ class InputBlock:
         self.conv = Conv2d(block[Kernel.Convolutional], block[Channel.In], block[Channel.Out],
                            block[Stride.Convolutional], block[Padding.Convolutional])
         self.pool = Pool(block[Kernel.Pool], block[Stride.Pool],
-                         block[Padding.Pool], block[Pooling.type])
+                         block[Padding.Pool], block[Pooling.Type])
 
     def build(self):
         return self.conv.build(), self.pool.build()
@@ -47,7 +47,7 @@ class ResidualBlock:
 class OutputBlock:
     def __init__(self, block):
         self.pool = Pool(block[Kernel.Pool], block[Stride.Pool],
-                         block[Padding.Pool], block[Pooling.type])
+                         block[Padding.Pool], block[Pooling.Type])
 
     def build(self):
         return self.pool.build()
