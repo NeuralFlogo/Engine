@@ -11,7 +11,7 @@ class Convolutional:
     def build(self):
         result = []
         for block in self.architecture: result.extend(block.build())
-        return [result]
+        return result
 
 
 class ConvolutionalBlock:

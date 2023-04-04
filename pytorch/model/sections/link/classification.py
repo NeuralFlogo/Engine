@@ -1,5 +1,5 @@
+from compiled.model.blocks.classification import CompiledClassificationBlock
 from pytorch.model.layers.classification import ClassificationFunction
-from pytorch.vocabulary import Activation
 
 
 class Classification:
@@ -11,8 +11,8 @@ class Classification:
 
 
 class ClassificationBlock:
-    def __init__(self, architecture):
-        self.function = ClassificationFunction(architecture[Activation.name], architecture[Activation.dimension])
+    def __init__(self, block: CompiledClassificationBlock):
+        self.function = ClassificationFunction(block.classification.name, block.classification.dimension)
 
     def build(self):
         return self.function.build()

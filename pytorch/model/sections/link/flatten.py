@@ -1,5 +1,5 @@
+from compiled.model.blocks.flatten import CompiledFlattenBlock
 from pytorch.model.layers.flatten import FlattenFunction
-from pytorch.vocabulary import Dimension
 
 
 class Flatten:
@@ -11,9 +11,9 @@ class Flatten:
 
 
 class FlattenBlock:
-    def __init__(self, block):
-        self.start_dim = block[Dimension.Start]
-        self.end_dim = block[Dimension.End]
+    def __init__(self, block: CompiledFlattenBlock):
+        self.start_dim = block.flatten.start_dim
+        self.end_dim = block.flatten.end_dim
 
     def build(self):
         return FlattenFunction(start_dim=self.start_dim, end_dim=self.end_dim).build()
