@@ -3,19 +3,19 @@ from pytorch.model.layers.activation import ActivationFunction
 from pytorch.model.layers.linear import Linear
 
 
-class FeedForward:
-    def __init__(self, architecture):
-        self.architecture = [LinearBlock(block) for block in architecture]
+class FeedForwardSection:
+    def __init__(self, section):
+        self.section = [LinearBlock(block) for block in section]
 
     def build(self):
         result = []
-        for block in self.architecture: result.extend(block.build())
+        for block in self.section: result.extend(block.build())
         return result
 
 
 class LinearBlock:
     def __init__(self, block: CompiledLinearBlock):
-        self.linear = Linear(input_dimension=block.linear.input_dimension, output_dimension=block.linear.output_dimension)
+        self.linear = Linear(block.linear.input_dimension, block.linear.output_dimension)
         self.activation = ActivationFunction(block.activation.name)
 
     def build(self):

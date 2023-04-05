@@ -9,13 +9,12 @@ class CompiledInputBlock:
         self.pool = pool
 
 
-class BodyBlock:
-    def __init__(self, conv1: Conv, activation: Activation, conv2: Conv):
-        self.conv1 = conv1
-        self.activation = activation
-        self.conv2 = conv2
+class CompiledBodyBlock:
+    def __init__(self, content, hidden_size):
+        self.content = content
+        self.hidden_size = hidden_size
 
 
-class OutputBlock:
+class CompiledOutputBlock:
     def __init__(self, pool: Pool):
         self.pool = pool

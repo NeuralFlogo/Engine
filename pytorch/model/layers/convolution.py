@@ -2,10 +2,10 @@ import torch
 
 
 class Conv2d:
-    def __init__(self, kernel_size, in_channels, out_channels, stride, padding):
+    def __init__(self, kernel_size, channel_in, channel_out, stride, padding):
         self.kernel_size = kernel_size
-        self.in_channels = in_channels
-        self.out_channels = out_channels
+        self.in_channels = channel_in
+        self.out_channels = channel_out
         self.stride = stride
         self.padding = padding
 
