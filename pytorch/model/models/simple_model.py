@@ -1,4 +1,5 @@
 import torch.nn
+from torch import nn
 
 
 class SimpleModel(torch.nn.Module):
@@ -8,5 +9,4 @@ class SimpleModel(torch.nn.Module):
         [self.module_list.append(i) for i in architecture]
 
     def forward(self, x):
-        x = self.module_list.forward(x)
-        return x
+        return self.module_list(x)
