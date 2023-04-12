@@ -47,12 +47,11 @@ class Training:
             loss.backward()
             self.optimizer.step()
             running_loss += loss.item()
-            if i % 2 == 0:
-                last_loss = running_loss / 2
-                print('batch {} loss: {}'.format(i + 1, last_loss))
-                tb_x = epoch * len(self.training_loader) + i + 1
-                self.writer.add_scalar('Loss/train', last_loss, tb_x)
-                running_loss = 0.
+            print('batch {} loss: {}'.format(i + 1, running_loss))
+            tb_x = epoch * len(self.training_loader) + i + 1
+            self.writer.add_scalar('Loss/train', running_loss, tb_x)
+            last_loss = running_loss
+            running_loss = 0.
         return last_loss
 
     def __validate_epoch(self):
