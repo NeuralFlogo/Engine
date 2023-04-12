@@ -12,7 +12,7 @@ class Training:
         self.loss_function = loss_function
         self.optimizer = optimizer
         self.epochs = epochs
-        self.writer = SummaryWriter("runs/model")
+        self.writer = SummaryWriter("runs")
 
     def train(self):
         best_vloss = 1_000_000.
@@ -20,8 +20,7 @@ class Training:
             self.model.train(True)
             avg_loss = self.__train_epoch(epoch)
             self.model.train(False)
-            running_vloss = 0.0
-            avg_vloss = self.__validate_epoch(running_vloss)
+            avg_vloss = self.__validate_epoch()
             self.writer.add_scalars('Training vs Validation Loss',
                                     {'Training': avg_loss, 'Validation': avg_vloss},
                                     epoch + 1)
@@ -39,13 +38,14 @@ class Training:
         last_loss = 0.
         for i, data in enumerate(self.training_loader):
             inputs, labels = data
-            labels = torch.tensor(one_hot_encode(labels))
+            labels = torch.tensor(one_hot_encode(labels), dtype=torch.float32)
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
             loss = self.loss_function(outputs, labels)
             loss.backward()
             self.optimizer.step()
-            running_loss += loss.item()
+            loss += loss.item()
+            running_loss += loss
             # if i % 2 == 0:
             #    last_loss = running_loss / 2
             #    tb_x = epoch * len(self.training_loader) + i + 1
@@ -54,13 +54,12 @@ class Training:
         last_loss = running_loss / (i + 1)
         return last_loss
 
-    def __validate_epoch(self, running_loss):
-        avg_loss = 0.
+    def __validate_epoch(self):
+        running_loss = 0.
         for i, data in enumerate(self.validation_loader):
             inputs, labels = data
             labels = torch.tensor(one_hot_encode(labels))
             outputs = self.model(inputs)
             loss = self.loss_function(outputs, labels)
             running_loss += loss.item()
-        avg_loss = running_loss / (i + 1)
-        return avg_loss
+        return running_loss / (i + 1)

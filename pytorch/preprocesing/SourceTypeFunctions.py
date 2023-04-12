@@ -1,3 +1,4 @@
+import torch
 from pandas import read_csv
 
 from torch.utils.data import DataLoader
@@ -8,8 +9,18 @@ from pytorch.datasets.WordsDataset import WordsDataset
 from pytorch.preprocesing.ImageProcessor import *
 
 
-def get_loader(dataset, batch_size=4):
-    return DataLoader(dataset, batch_size=batch_size)
+def get_loader(dataset, batch_size=4, proportion=0.8):
+    train_size = get_train_size(dataset, proportion)
+    train, test = torch.utils.data.random_split(dataset, [train_size, get_test_size(dataset, train_size)])
+    return DataLoader(train, batch_size=batch_size), DataLoader(test, batch_size=batch_size)
+
+
+def get_test_size(dataset, train_size):
+    return len(dataset) - train_size
+
+
+def get_train_size(dataset, proportion):
+    return int(proportion * len(dataset))
 
 
 def numbers_source_type_csv(path, parameters):

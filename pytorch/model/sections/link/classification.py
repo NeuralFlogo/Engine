@@ -1,8 +1,8 @@
-from model.model.blocks.classification import FlogoClassificationBlock
+from model.flogo.blocks.classification import FlogoClassificationBlock
 from pytorch.model.layers.classification import ClassificationFunction
 
 
-class Classification:
+class ClassificationSection:
     def __init__(self, architecture):
         self.classification_block = ClassificationBlock(architecture)
 

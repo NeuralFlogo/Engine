@@ -1,4 +1,4 @@
-from model.model.blocks.recurrent import FlogoRecurrentBlock
+from model.flogo.blocks.recurrent import FlogoRecurrentBlock
 from pytorch.model.sections.processing.recurrent.recurrent_pytorch_units import LSTMCell, RNNCell, GRUCell
 
 

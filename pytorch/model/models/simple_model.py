@@ -8,5 +8,5 @@ class SimpleModel(torch.nn.Module):
         [self.module_list.append(i) for i in architecture]
 
     def forward(self, x):
-        x = self.module_list(x)
+        x = self.module_list.forward(x)
         return x

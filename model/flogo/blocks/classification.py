@@ -1,4 +1,4 @@
-from model.model.layers.classification import Classification
+from model.flogo.layers.classification import Classification
 
 
 class FlogoClassificationBlock:

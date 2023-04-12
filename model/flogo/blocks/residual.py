@@ -1,5 +1,5 @@
-from model.model.layers.convolutional import Conv
-from model.model.layers.pool import Pool
+from model.flogo.layers.convolutional import Conv
+from model.flogo.layers.pool import Pool
 
 
 class FlogoInputBlock:
@@ -8,12 +8,12 @@ class FlogoInputBlock:
         self.pool = pool
 
 
-class CompiledBodyBlock:
+class FlogoBodyBlock:
     def __init__(self, content, hidden_size):
         self.content = content
         self.hidden_size = hidden_size
 
 
-class CompiledOutputBlock:
+class FlogoOutputBlock:
     def __init__(self, pool: Pool):
         self.pool = pool

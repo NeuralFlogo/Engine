@@ -1,11 +1,11 @@
-from model.model.blocks.residual import FlogoInputBlock, CompiledBodyBlock, CompiledOutputBlock
-from model.model.layers.activation import Activation
-from model.model.layers.convolutional import Conv
-from model.model.layers.linear import Linear
+from model.flogo.blocks.residual import FlogoInputBlock, CompiledBodyBlock, CompiledOutputBlock
+from model.flogo.layers.activation import Activation
+from model.flogo.layers.convolutional import Conv
+from model.flogo.layers.linear import Linear
 from pytorch.model.layers.activation import ActivationFunction
 from pytorch.model.layers.convolution import Conv2d
 from pytorch.model.layers.pool import Pool
-from model.model.layers.pool import Pool as PoolComp
+from model.flogo.layers.pool import Pool as PoolComp
 
 
 class ResidualSection:

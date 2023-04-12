@@ -1,5 +1,5 @@
 class Pool:
-    def __init__(self, kernel, stride, padding, pool_type: str):
+    def __init__(self, pool_type: str, kernel=2, stride=2, padding=0):
         self.kernel = kernel
         self.stride = stride
         self.padding = padding

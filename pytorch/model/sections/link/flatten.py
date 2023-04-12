@@ -1,8 +1,8 @@
-from model.model.blocks.flatten import FlogoFlattenBlock
+from model.flogo.blocks.flatten import FlogoFlattenBlock
 from pytorch.model.layers.flatten import FlattenFunction
 
 
-class Flatten:
+class FlattenSection:
     def __init__(self, architecture):
         self.flatten_block = FlattenBlock(architecture)
 

@@ -1,7 +1,8 @@
-from model.model.blocks.linear import FlogoLinearBlock
-from model.model.layers.activation import Activation
+from model.flogo.blocks.linear import FlogoLinearBlock
+from model.flogo.layers.activation import Activation
+from model.flogo.layers.linear import Linear
+from pytorch.model.layers import linear
 from pytorch.model.layers.activation import ActivationFunction
-from pytorch.model.layers.linear import Linear
 
 
 class FeedForwardSection:
@@ -19,7 +20,7 @@ class LinearBlock:
         self.content = []
         for layer in block.content:
             if type(layer) == Activation: self.content.append(ActivationFunction(layer.name))
-            if type(layer) == FlogoLinearBlock: self.content.append(Linear(layer.input_dimension,
+            if type(layer) == Linear: self.content.append(linear.Linear(layer.input_dimension,
                                                                            layer.output_dimension))
 
     def build(self):

@@ -1,4 +1,4 @@
-from model.model.layers.flatten import Flatten
+from model.flogo.layers.flatten import Flatten
 
 
 class FlogoFlattenBlock:

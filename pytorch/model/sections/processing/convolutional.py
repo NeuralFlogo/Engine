@@ -1,7 +1,7 @@
-from model.model.blocks.convolutional import FlogoConvolutionalBlock
-from model.model.layers.activation import Activation
-from model.model.layers.convolutional import Conv
-from model.model.layers.pool import Pool as PoolComp
+from model.flogo.blocks.convolutional import FlogoConvolutionalBlock
+from model.flogo.layers.activation import Activation
+from model.flogo.layers.convolutional import Conv
+from model.flogo.layers.pool import Pool as PoolComp
 from pytorch.model.layers.activation import ActivationFunction
 from pytorch.model.layers.convolution import Conv2d
 from pytorch.model.layers.pool import Pool
