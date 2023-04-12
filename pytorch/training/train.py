@@ -5,28 +5,30 @@ from pytorch.preprocesing.NumericProcessor import one_hot_encode
 
 
 class Training:
-    def __init__(self, model, training_loader, validation_loader, loss_function, optimizer, epochs):
+    def __init__(self, epochs, model, training_loader, validation_loader, loss_function, optimizer):
+        self.epochs = epochs
         self.model = model
         self.training_loader = training_loader
         self.validation_loader = validation_loader
         self.loss_function = loss_function
         self.optimizer = optimizer
-        self.epochs = epochs
         self.writer = SummaryWriter("runs")
 
     def train(self):
         best_vloss = 1_000_000.
         for epoch in range(self.epochs):
+            print('EPOCH {}:'.format(epoch + 1))
             self.model.train(True)
             avg_loss = self.__train_epoch(epoch)
             self.model.train(False)
             avg_vloss = self.__validate_epoch()
+            print('LOSS train {} valid {}'.format(avg_loss, avg_vloss))
             self.writer.add_scalars('Training vs Validation Loss',
                                     {'Training': avg_loss, 'Validation': avg_vloss},
                                     epoch + 1)
             print('Training vs Validation Loss',
-                                    {'Training': avg_loss, 'Validation': avg_vloss},
-                                    epoch + 1)
+                  {'Training': avg_loss, 'Validation': avg_vloss},
+                  epoch + 1)
             self.writer.flush()
             if avg_vloss < best_vloss:
                 best_vloss = avg_vloss
@@ -44,22 +46,21 @@ class Training:
             loss = self.loss_function(outputs, labels)
             loss.backward()
             self.optimizer.step()
-            loss += loss.item()
-            running_loss += loss
-            # if i % 2 == 0:
-            #    last_loss = running_loss / 2
-            #    tb_x = epoch * len(self.training_loader) + i + 1
-            #    self.writer.add_scalar('Loss/train', last_loss, tb_x)
-            #    running_loss = 0.
-        last_loss = running_loss / (i + 1)
+            running_loss += loss.item()
+            if i % 2 == 0:
+                last_loss = running_loss / 2
+                print('batch {} loss: {}'.format(i + 1, last_loss))
+                tb_x = epoch * len(self.training_loader) + i + 1
+                self.writer.add_scalar('Loss/train', last_loss, tb_x)
+                running_loss = 0.
         return last_loss
 
     def __validate_epoch(self):
-        running_loss = 0.
+        running_vloss = 0.
         for i, data in enumerate(self.validation_loader):
             inputs, labels = data
             labels = torch.tensor(one_hot_encode(labels))
             outputs = self.model(inputs)
             loss = self.loss_function(outputs, labels)
-            running_loss += loss.item()
-        return running_loss / (i + 1)
+            running_vloss += loss.item()
+        return running_vloss / (i + 1)
