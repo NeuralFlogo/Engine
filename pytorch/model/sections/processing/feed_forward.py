@@ -1,4 +1,5 @@
-from compiled.model.blocks.linear import CompiledLinearBlock
+from model.model.blocks.linear import FlogoLinearBlock
+from model.model.layers.activation import Activation
 from pytorch.model.layers.activation import ActivationFunction
 from pytorch.model.layers.linear import Linear
 
@@ -14,9 +15,12 @@ class FeedForwardSection:
 
 
 class LinearBlock:
-    def __init__(self, block: CompiledLinearBlock):
-        self.linear = Linear(block.linear.input_dimension, block.linear.output_dimension)
-        self.activation = ActivationFunction(block.activation.name)
+    def __init__(self, block: FlogoLinearBlock):
+        self.content = []
+        for layer in block.content:
+            if type(layer) == Activation: self.content.append(ActivationFunction(layer.name))
+            if type(layer) == FlogoLinearBlock: self.content.append(Linear(layer.input_dimension,
+                                                                           layer.output_dimension))
 
     def build(self):
-        return self.linear.build(), self.activation.build()
+        return [block.build() for block in self.content]

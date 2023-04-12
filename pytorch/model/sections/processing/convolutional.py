@@ -1,7 +1,7 @@
-from compiled.model.blocks.convolutional import CompiledConvolutionalBlock
-from compiled.model.layers.activation import Activation
-from compiled.model.layers.convolutional import Conv
-from compiled.model.layers.pool import Pool as PoolComp
+from model.model.blocks.convolutional import FlogoConvolutionalBlock
+from model.model.layers.activation import Activation
+from model.model.layers.convolutional import Conv
+from model.model.layers.pool import Pool as PoolComp
 from pytorch.model.layers.activation import ActivationFunction
 from pytorch.model.layers.convolution import Conv2d
 from pytorch.model.layers.pool import Pool
@@ -18,7 +18,7 @@ class ConvolutionalSection:
 
 
 class ConvolutionalBlock:
-    def __init__(self, block: CompiledConvolutionalBlock):
+    def __init__(self, block: FlogoConvolutionalBlock):
         self.content = []
         for layer in block.content:
             if type(layer) == Conv: self.content.append(Conv2d(layer.kernel,

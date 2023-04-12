@@ -1,4 +1,4 @@
-from compiled.model.blocks.classification import CompiledClassificationBlock
+from model.model.blocks.classification import FlogoClassificationBlock
 from pytorch.model.layers.classification import ClassificationFunction
 
 
@@ -11,7 +11,7 @@ class Classification:
 
 
 class ClassificationBlock:
-    def __init__(self, block: CompiledClassificationBlock):
+    def __init__(self, block: FlogoClassificationBlock):
         self.function = ClassificationFunction(block.classification.name, block.classification.dimension)
 
     def build(self):

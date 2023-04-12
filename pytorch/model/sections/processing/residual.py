@@ -1,11 +1,11 @@
-from compiled.model.blocks.residual import CompiledInputBlock, CompiledBodyBlock, CompiledOutputBlock
-from compiled.model.layers.activation import Activation
-from compiled.model.layers.convolutional import Conv
-from compiled.model.layers.linear import Linear
+from model.model.blocks.residual import FlogoInputBlock, CompiledBodyBlock, CompiledOutputBlock
+from model.model.layers.activation import Activation
+from model.model.layers.convolutional import Conv
+from model.model.layers.linear import Linear
 from pytorch.model.layers.activation import ActivationFunction
 from pytorch.model.layers.convolution import Conv2d
 from pytorch.model.layers.pool import Pool
-from compiled.model.layers.pool import Pool as PoolComp
+from model.model.layers.pool import Pool as PoolComp
 
 
 class ResidualSection:
@@ -18,7 +18,7 @@ class ResidualSection:
 
 
 class InputBlock:
-    def __init__(self, block: CompiledInputBlock):
+    def __init__(self, block: FlogoInputBlock):
         self.conv = Conv2d(block.conv.kernel, block.conv.channel_in,
                            block.conv.channel_out, block.conv.stride, block.conv.padding)
         self.pool = Pool(block.pool.kernel, block.pool.stride, block.pool.padding, block.pool.pool_type)

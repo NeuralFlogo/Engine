@@ -1,9 +1,8 @@
-from compiled.model.layers.convolutional import Conv
-from compiled.model.layers.activation import Activation
-from compiled.model.layers.pool import Pool
+from model.model.layers.convolutional import Conv
+from model.model.layers.pool import Pool
 
 
-class CompiledInputBlock:
+class FlogoInputBlock:
     def __init__(self, conv: Conv, pool: Pool):
         self.conv = conv
         self.pool = pool

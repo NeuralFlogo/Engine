@@ -1,4 +1,4 @@
-from compiled.model.blocks.recurrent import CompiledRecurrentBlock
+from model.model.blocks.recurrent import FlogoRecurrentBlock
 from pytorch.model.sections.processing.recurrent.recurrent_pytorch_units import LSTMCell, RNNCell, GRUCell
 
 
@@ -13,7 +13,7 @@ class RecurrentSection:
 
 
 class RecurrentBlock:
-    def __init__(self, block: CompiledRecurrentBlock):
+    def __init__(self, block: FlogoRecurrentBlock):
         self.channel_in = block.channel_in
         self.channel_out = block.channel_out
         self.block_type = block.type_

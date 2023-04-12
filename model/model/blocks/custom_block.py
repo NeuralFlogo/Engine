@@ -1,3 +1,3 @@
-class CompiledConvolutionalBlock:
+class FlogoCustomBlock:
     def __init__(self, content):
         self.content = content

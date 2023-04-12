@@ -1,6 +1,6 @@
-from compiled.model.layers.classification import Classification
+from model.model.layers.classification import Classification
 
 
-class CompiledClassificationBlock:
+class FlogoClassificationBlock:
     def __init__(self, classification: Classification):
         self.classification = classification
