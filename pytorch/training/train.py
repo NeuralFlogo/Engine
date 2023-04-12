@@ -37,7 +37,6 @@ class Training:
 
     def __train_epoch(self, epoch):
         running_loss = 0.
-        last_loss = 0.
         for i, data in enumerate(self.training_loader):
             inputs, labels = data
             labels = torch.tensor(one_hot_encode(labels), dtype=torch.float32)
@@ -50,9 +49,7 @@ class Training:
             print('batch {} loss: {}'.format(i + 1, running_loss))
             tb_x = epoch * len(self.training_loader) + i + 1
             self.writer.add_scalar('Loss/train', running_loss, tb_x)
-            last_loss = running_loss
-            running_loss = 0.
-        return last_loss
+        return running_loss / (i + 1)
 
     def __validate_epoch(self):
         running_vloss = 0.
