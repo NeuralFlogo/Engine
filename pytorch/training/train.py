@@ -35,21 +35,21 @@ class Training:
         self.writer.close()
 
     def __train_epoch(self, epoch):
-        loss = 0.
+        running_loss = 0.
         for i, data in enumerate(self.training_loader, start=1):
             inputs, labels = data
             self.optimizer.zero_grad()
             preds = self.__evaluate(inputs)
             loss = self.__compute_loss(preds, labels)
             loss.backward()
-            loss += loss.item()
+            running_loss += loss.item()
             self.optimizer.step()
             self.__log_to_tensorboard(self.__training_count(epoch, i),
                                       'Loss/train', loss)
             self.__log_to_tensorboard(self.__training_count(epoch, i),
                                       'Accuracy/train',
                                       self.__to_percentage(self.__compute_accuracy(preds, labels), inputs))
-        return self.__epoch_average_loss(loss)
+        return self.__epoch_average_loss(running_loss)
 
     def __validate_epoch(self, epoch):
         vloss = 0.
