@@ -1,17 +1,22 @@
+from pathlib import Path
 from datetime import datetime
 
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
+from model.flogo.training.flogotraining import FlogoTraining
+from pytorch.training.loss import LossFunction
+from pytorch.training.optimizer import Optimizer
+
 
 class Training:
-    def __init__(self, model, epochs, training_loader, validation_loader, optimizer, loss_function):
-        self.model = model
-        self.epochs = epochs
-        self.training_loader = training_loader
-        self.validation_loader = validation_loader
-        self.optimizer = optimizer
-        self.loss_function = loss_function
+    def __init__(self, train: FlogoTraining):
+        self.model = train.model
+        self.epochs = train.epochs
+        self.training_loader = train.training_loader
+        self.validation_loader = train.validation_loader
+        self.optimizer = Optimizer(train.optimizer).build()
+        self.loss_function = LossFunction(train.loss_function).build()
         self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         self.writer = SummaryWriter("runs/model_{}".format(self.timestamp))
 
@@ -57,7 +62,8 @@ class Training:
                                 epoch + 1)
 
     def __save_model(self, epoch):
-        torch.save(self.model.state_dict(), 'model_{}_{}'.format(self.timestamp, epoch))
+        Path('/models').mkdir(parents=True, exist_ok=True)
+        torch.save(self.model.state_dict(), 'models/model_{}_{}'.format(self.timestamp, epoch))
 
     def __compute_loss(self, inputs, labels):
         return self.loss_function(self.__evaluate(inputs), labels)

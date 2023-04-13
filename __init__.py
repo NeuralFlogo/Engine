@@ -6,6 +6,9 @@ from model.flogo.blocks.convolutional import FlogoConvolutionalBlock
 from model.flogo.blocks.flatten import FlogoFlattenBlock
 from model.flogo.blocks.linear import FlogoLinearBlock
 from model.flogo.layers.linear import Linear
+from model.flogo.training.loss import FlogoLossFunction
+from model.flogo.training.flogooptimizer import FlogoOptimizer
+from model.flogo.training.flogotraining import FlogoTraining
 from pytorch.model.models.simple_model import SimpleModel
 from pytorch.model.sections.link.classification import ClassificationSection
 from pytorch.model.sections.link.flatten import FlattenSection
@@ -72,6 +75,10 @@ train_data_loader, test_data_loader = images_source_type(226, 0, 1, "/Users/jose
 sequential = torch.nn.Sequential(torch.load("/Users/jose_juan/PycharmProjects/Flogo/models/model_18"))
 print([sequential(i) for i in train_data_loader])
 
+
+Training(FlogoTraining(5, model, training_loader=train_data_loader, validation_loader=test_data_loader,
+              loss_function=FlogoLossFunction("MSELoss"),
+              optimizer=FlogoOptimizer("", model_params=model.parameters(), lr=0.1))).train()
 
 # residual = [CompiledInputBlock(compiled_layers.convolutional.Conv((), 10, 10, (), ()),
 #                                compiled_layers.pool.Pool((), (), (), "Max")),
