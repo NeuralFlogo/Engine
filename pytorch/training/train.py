@@ -26,7 +26,7 @@ class Training:
             self.model.train(True)
             avg_loss = self.__train_epoch(epoch)
             self.model.train(False)
-            avg_vloss = self.__validate_epoch()
+            avg_vloss = self.__validate_epoch(epoch)
             self.__log_epoch_losses(epoch, avg_loss, avg_vloss)
             self.writer.flush()
             if avg_vloss < best_vloss:
@@ -39,22 +39,31 @@ class Training:
         for i, data in enumerate(self.training_loader, start=1):
             inputs, labels = data
             self.optimizer.zero_grad()
-            loss = self.__compute_loss(inputs, labels)
+            preds = self.__evaluate(inputs)
+            loss = self.__compute_loss(preds, labels)
             loss.backward()
             loss += loss.item()
             self.optimizer.step()
-            self.__log_train_loss(self.__training_count(epoch, i), loss)
+            self.__log_to_tensorboard(self.__training_count(epoch, i),
+                                      'Loss', loss)
+            self.__log_to_tensorboard(self.__training_count(epoch, i),
+                                      'Accuracy', self.__compute_accuracy(preds, labels))
         return self.__epoch_average_loss(loss)
 
-    def __log_train_loss(self, training_count, loss):
-        self.writer.add_scalar('Train Loss', loss, training_count)
-
-    def __validate_epoch(self):
+    def __validate_epoch(self, epoch):
         vloss = 0.
-        for data in enumerate(self.validation_loader, start=1):
+        for i, data in enumerate(self.validation_loader, start=1):
             inputs, labels = data
+            preds = self.__evaluate(inputs)
             vloss += self.__compute_loss(inputs, labels).item()
+            self.__log_to_tensorboard(self.__training_count(epoch, i),
+                                      'Loss', vloss)
+            self.__log_to_tensorboard(self.__training_count(epoch, i),
+                                      'Accuracy', self.__compute_accuracy(preds, labels))
         return self.__epoch_average_loss(vloss)
+
+    def __evaluate(self, inputs):
+        return self.model(inputs)
 
     def __log_epoch_losses(self, epoch, avg_loss, avg_vloss):
         self.writer.add_scalars('Training - Validation Loss',
@@ -62,14 +71,17 @@ class Training:
                                 epoch + 1)
 
     def __save_model(self, epoch):
-        Path('/models').mkdir(parents=True, exist_ok=True)
+        Path('models').mkdir(parents=True, exist_ok=True)
         torch.save(self.model.state_dict(), 'models/model_{}_{}'.format(self.timestamp, epoch))
 
-    def __compute_loss(self, inputs, labels):
-        return self.loss_function(self.__evaluate(inputs), labels)
+    def __compute_loss(self, preds, labels):
+        return self.loss_function(preds, labels)
 
-    def __evaluate(self, inputs):
-        return self.model(inputs)
+    def __compute_accuracy(self, preds, labels):
+        return torch.sum(torch.eq(preds, labels)).item()
+
+    def __log_to_tensorboard(self, training_count, field, value):
+        self.writer.add_scalar(field, value, training_count)
 
     def __training_count(self, epoch, i):
         return epoch * len(self.training_loader) + i
