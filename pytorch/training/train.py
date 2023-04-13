@@ -34,7 +34,7 @@ class Training:
             avg_loss = self.__train_epoch(epoch)
             self.model.train(False)
             avg_vloss = self.__validate_epoch(epoch)
-            #self.__log_epoch_losses(epoch, avg_loss, avg_vloss)
+            # self.__log_epoch_losses(epoch, avg_loss, avg_vloss)
             self.writer.flush()
             if avg_vloss < best_vloss:
                 best_vloss = avg_vloss
@@ -54,7 +54,8 @@ class Training:
             self.__log_to_tensorboard(self.__training_count(epoch, i),
                                       'Loss/train', loss)
             self.__log_to_tensorboard(self.__training_count(epoch, i),
-                                      'Accuracy/train', self.__compute_accuracy(preds, labels))
+                                      'Accuracy/train',
+                                      self.__to_percentage(self.__compute_accuracy(preds, labels), self.training_loader))
         return self.__epoch_average_loss(loss)
 
     def __validate_epoch(self, epoch):
@@ -62,11 +63,12 @@ class Training:
         for i, data in enumerate(self.validation_loader, start=1):
             inputs, labels = data
             preds = self.__evaluate(inputs)
-            vloss += self.__compute_loss(inputs, labels).item()
+            vloss += self.__compute_loss(preds, labels).item()
             self.__log_to_tensorboard(self.__training_count(epoch, i),
-                                      'Loss/test', vloss)
+                                      'Loss/validation', vloss)
             self.__log_to_tensorboard(self.__training_count(epoch, i),
-                                      'Accuracy/test', self.__compute_accuracy(preds, labels))
+                                      'Accuracy/validation',
+                                      self.__to_percentage(self.__compute_accuracy(preds, labels), self.validation_loader))
         return self.__epoch_average_loss(vloss)
 
     def __evaluate(self, inputs):
@@ -95,3 +97,6 @@ class Training:
 
     def __epoch_average_loss(self, loss):
         return loss / self.epochs
+
+    def __to_percentage(self, value, dataset):
+        return 100 * value / len(dataset)
