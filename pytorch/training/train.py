@@ -36,18 +36,19 @@ class Training:
         self.writer.close()
 
     def __train_epoch(self, epoch):
+
         running_loss = 0.
         last_loss = 0.
         for i, data in enumerate(self.training_loader):
             inputs, labels = data
-            labels = torch.tensor(one_hot_encode(labels), dtype=torch.float32)
             self.optimizer.zero_grad()
             outputs = self.model(inputs)
+            labels = labels.squeeze(1)
             loss = self.loss_function(outputs, labels)
             loss.backward()
             self.optimizer.step()
             running_loss += loss.item()
-            print('batch {} loss: {}'.format(i + 1, running_loss))
+            # print('batch {} loss: {}'.format(i + 1, running_loss))
             tb_x = epoch * len(self.training_loader) + i + 1
             self.writer.add_scalar('Loss/train', running_loss, tb_x)
             last_loss = running_loss
@@ -58,7 +59,6 @@ class Training:
         running_vloss = 0.
         for i, data in enumerate(self.validation_loader):
             inputs, labels = data
-            labels = torch.tensor(one_hot_encode(labels))
             outputs = self.model(inputs)
             loss = self.loss_function(outputs, labels)
             running_vloss += loss.item()

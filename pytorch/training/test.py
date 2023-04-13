@@ -12,9 +12,12 @@ class Testing:
         with torch.no_grad():
             for i, data in enumerate(self.testing_loader):
                 inputs, labels = data
+                print(inputs.shape)
                 outputs = self.model(inputs)
-                predictions = outputs.argmax(1, keepdim=True)
-                correct += predictions.eq(labels.view_as(predictions)).sum().item()
+                # print(outputs)
+                predictions = torch.argmax(outputs, dim=1)
+                expected = torch.argmax(labels, dim=1)
+                correct += torch.sum(torch.eq(predictions, expected)).item()
         print('\nTest: Accuracy: {}/{} ({:.0f}%)\n'.format(
             correct, len(self.testing_loader.dataset),
             100. * correct / len(self.testing_loader.dataset)))
