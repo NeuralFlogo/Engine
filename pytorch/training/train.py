@@ -45,9 +45,9 @@ class Training:
             loss += loss.item()
             self.optimizer.step()
             self.__log_to_tensorboard(self.__training_count(epoch, i),
-                                      'Loss', loss)
+                                      'Loss/train', loss)
             self.__log_to_tensorboard(self.__training_count(epoch, i),
-                                      'Accuracy', self.__compute_accuracy(preds, labels))
+                                      'Accuracy/train', self.__compute_accuracy(preds, labels))
         return self.__epoch_average_loss(loss)
 
     def __validate_epoch(self, epoch):
@@ -57,9 +57,9 @@ class Training:
             preds = self.__evaluate(inputs)
             vloss += self.__compute_loss(inputs, labels).item()
             self.__log_to_tensorboard(self.__training_count(epoch, i),
-                                      'Loss', vloss)
+                                      'Loss/test', vloss)
             self.__log_to_tensorboard(self.__training_count(epoch, i),
-                                      'Accuracy', self.__compute_accuracy(preds, labels))
+                                      'Accuracy/test', self.__compute_accuracy(preds, labels))
         return self.__epoch_average_loss(vloss)
 
     def __evaluate(self, inputs):
