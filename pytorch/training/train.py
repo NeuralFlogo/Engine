@@ -22,19 +22,12 @@ class Training:
 
     def train(self):
         best_vloss = 1_000_000.
-        layout = {
-            "ABCDE": {
-                "loss": ["Multiline", ["Loss/train", "Loss/validation"]],
-                "accuracy": ["Multiline", ["Accuracy/train", "Accuracy/validation"]],
-            },
-        }
-        self.writer.add_custom_scalars(layout)
         for epoch in range(self.epochs):
             self.model.train(True)
             avg_loss = self.__train_epoch(epoch)
             self.model.train(False)
             avg_vloss = self.__validate_epoch(epoch)
-            # self.__log_epoch_losses(epoch, avg_loss, avg_vloss)
+            self.__log_epoch_losses(epoch, avg_loss, avg_vloss)
             self.writer.flush()
             if avg_vloss < best_vloss:
                 best_vloss = avg_vloss
@@ -55,7 +48,7 @@ class Training:
                                       'Loss/train', loss)
             self.__log_to_tensorboard(self.__training_count(epoch, i),
                                       'Accuracy/train',
-                                      self.__to_percentage(self.__compute_accuracy(preds, labels), self.training_loader))
+                                      self.__to_percentage(self.__compute_accuracy(preds, labels), inputs))
         return self.__epoch_average_loss(loss)
 
     def __validate_epoch(self, epoch):
@@ -68,7 +61,7 @@ class Training:
                                       'Loss/validation', vloss)
             self.__log_to_tensorboard(self.__training_count(epoch, i),
                                       'Accuracy/validation',
-                                      self.__to_percentage(self.__compute_accuracy(preds, labels), self.validation_loader))
+                                      self.__to_percentage(self.__compute_accuracy(preds, labels), inputs))
         return self.__epoch_average_loss(vloss)
 
     def __evaluate(self, inputs):
@@ -98,5 +91,5 @@ class Training:
     def __epoch_average_loss(self, loss):
         return loss / self.epochs
 
-    def __to_percentage(self, value, dataset):
-        return 100 * value / len(dataset)
+    def __to_percentage(self, value, batch):
+        return 100 * value / len(batch)
