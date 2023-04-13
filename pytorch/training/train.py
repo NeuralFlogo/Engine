@@ -22,12 +22,19 @@ class Training:
 
     def train(self):
         best_vloss = 1_000_000.
+        layout = {
+            "ABCDE": {
+                "loss": ["Multiline", ["Loss/train", "Loss/validation"]],
+                "accuracy": ["Multiline", ["Accuracy/train", "Accuracy/validation"]],
+            },
+        }
+        self.writer.add_custom_scalars(layout)
         for epoch in range(self.epochs):
             self.model.train(True)
             avg_loss = self.__train_epoch(epoch)
             self.model.train(False)
             avg_vloss = self.__validate_epoch(epoch)
-            self.__log_epoch_losses(epoch, avg_loss, avg_vloss)
+            #self.__log_epoch_losses(epoch, avg_loss, avg_vloss)
             self.writer.flush()
             if avg_vloss < best_vloss:
                 best_vloss = avg_vloss
@@ -78,7 +85,7 @@ class Training:
         return self.loss_function(preds, labels)
 
     def __compute_accuracy(self, preds, labels):
-        return torch.sum(torch.eq(preds, labels)).item()
+        return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1))).item()
 
     def __log_to_tensorboard(self, training_count, field, value):
         self.writer.add_scalar(field, value, training_count)
