@@ -1,5 +1,4 @@
 import torch
-from jinja2.nodes import Test
 
 import model.flogo.layers as layers
 from model.flogo.blocks.classification import FlogoClassificationBlock
@@ -14,7 +13,6 @@ from pytorch.model.sections.link.flatten import FlattenSection
 from pytorch.model.sections.processing.convolutional import ConvolutionalSection
 from pytorch.model.sections.processing.feed_forward import FeedForwardSection
 from pytorch.preprocesing.SourceTypeFunctions import images_source_type
-from pytorch.training.test import Testing
 from pytorch.training.train import Training
 
 #
@@ -29,20 +27,30 @@ from pytorch.training.train import Training
 # classification = CompiledClassificationBlock(compiled_layers.classification.Classification("Softmax", 10))
 # Classification(classification).build()
 
-convolutional = [FlogoConvolutionalBlock([layers.convolutional.Conv(3, 20, stride=1, padding=0, kernel=5),
+convolutional = [FlogoConvolutionalBlock([layers.convolutional.Conv(3, 64, stride=1, padding=1, kernel=3),
                                           layers.activation.Activation("ReLU"),
                                           layers.pool.Pool("Max"),
-                                          layers.convolutional.Conv(20, 40, stride=1, padding=0, kernel=5),
+                                          layers.convolutional.Conv(64, 128, stride=1, padding=1, kernel=3),
+                                          layers.activation.Activation("ReLU"),
+                                          layers.pool.Pool("Max"),
+                                          layers.convolutional.Conv(128, 256, stride=1, padding=1, kernel=3),
+                                          layers.activation.Activation("ReLU"),
+                                          layers.pool.Pool("Max"),
+                                          layers.pool.Pool("Max"),
+                                          layers.convolutional.Conv(256, 512, stride=1, padding=1, kernel=3),
+                                          layers.activation.Activation("ReLU"),
+                                          layers.pool.Pool("Max"),
+                                          layers.convolutional.Conv(512, 512, stride=1, padding=1, kernel=3),
                                           layers.activation.Activation("ReLU"),
                                           layers.pool.Pool("Max")])]
 
 flatten = FlogoFlattenBlock(layers.flatten.Flatten(1, 3))
 
-linear = [FlogoLinearBlock([Linear(3240, 1000),
+linear = [FlogoLinearBlock([Linear(4608, 4096),
                             layers.activation.Activation("ReLU"),
-                            layers.linear.Linear(1000, 1000),
+                            layers.linear.Linear(4096, 4096),
                             layers.activation.Activation("ReLU"),
-                            layers.linear.Linear(1000, 2)]
+                            layers.linear.Linear(4096, 2)]
                            )]
 
 classification = FlogoClassificationBlock(layers.classification.Classification("Softmax", 1))
@@ -54,13 +62,16 @@ classification_section = ClassificationSection(classification).build()
 
 model = SimpleModel(convolutional_section + [flatten_section] + linear_section)
 
+print(model)
 
-train_data_loader, test_data_loader = images_source_type(50, 0, 1, "C:/Users/Joel/Desktop/prueba_images/training_set", 47)
-Training(2, model, train_data_loader, test_data_loader,
-         torch.nn.MSELoss(),
-         torch.optim.Adam(model.parameters(), lr=0.1)).train()
+train_data_loader, test_data_loader = images_source_type(226, 0, 1, "/Users/jose_juan/Desktop/training", 2)
+# Training(20, model, train_data_loader, test_data_loader,
+#          torch.nn.MSELoss(),
+#          torch.optim.Adam(model.parameters(), lr=0.001)).train()
 
-Testing(model, test_data_loader).test()
+sequential = torch.nn.Sequential(torch.load("/Users/jose_juan/PycharmProjects/Flogo/models/model_18"))
+print([sequential(i) for i in train_data_loader])
+
 
 # residual = [CompiledInputBlock(compiled_layers.convolutional.Conv((), 10, 10, (), ()),
 #                                compiled_layers.pool.Pool((), (), (), "Max")),
