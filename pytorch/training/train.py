@@ -1,6 +1,6 @@
 from pathlib import Path
 from datetime import datetime
-import os
+import subprocess
 
 import torch
 from torch.utils.tensorboard import SummaryWriter
@@ -20,7 +20,6 @@ class Training:
         self.loss_function = LossFunction(train.loss_function).build()
         self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         self.writer = SummaryWriter("runs/model_{}".format(self.timestamp))
-        self.__init_tensorboard()
 
     def train(self):
         best_vloss = 1_000_000.
@@ -35,6 +34,7 @@ class Training:
                 best_vloss = avg_vloss
                 self.__save_model(epoch)
         self.writer.close()
+        self.__init_tensorboard()
 
     def __train_epoch(self, epoch):
         running_loss = 0.
@@ -97,4 +97,4 @@ class Training:
         return 100 * value / len(batch)
 
     def __init_tensorboard(self):
-        os.system("tensorboard --logdir=runs")
+        subprocess.Popen(["tensorboard --logdir=runs"])
