@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import datetime
+import subprocess
 
 import torch
 from torch.utils.tensorboard import SummaryWriter
@@ -33,6 +34,7 @@ class Training:
                 best_vloss = avg_vloss
                 self.__save_model(epoch)
         self.writer.close()
+        self.__init_tensorboard()
 
     def __train_epoch(self, epoch):
         running_loss = 0.
@@ -93,3 +95,6 @@ class Training:
 
     def __to_percentage(self, value, batch):
         return 100 * value / len(batch)
+
+    def __init_tensorboard(self):
+        subprocess.Popen(["tensorboard --logdir=runs"])
