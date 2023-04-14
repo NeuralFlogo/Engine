@@ -1,4 +1,4 @@
-from torch import nn
+import torch
 
 
 class ClassificationFunction:
@@ -7,4 +7,4 @@ class ClassificationFunction:
         self.dimension = dimension
 
     def build(self):
-        return getattr(nn, self.name)(dim=self.dimension)
+        return getattr(torch.nn, self.name)(dim=self.dimension)

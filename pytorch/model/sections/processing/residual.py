@@ -1,4 +1,4 @@
-from model.flogo.blocks.residual import FlogoInputBlock, CompiledBodyBlock, CompiledOutputBlock
+from model.flogo.blocks.residual import FlogoInputBlock, FlogoBodyBlock, FlogoOutputBlock
 from model.flogo.layers.activation import Activation
 from model.flogo.layers.convolutional import Conv
 from model.flogo.layers.linear import Linear
@@ -28,7 +28,7 @@ class InputBlock:
 
 
 class BodyBlock:
-    def __init__(self, block: CompiledBodyBlock):
+    def __init__(self, block: FlogoBodyBlock):
         self.stages = [ResidualBlock(block.content) for _ in range(block.hidden_size)]
 
     def build(self):
@@ -57,7 +57,7 @@ class ResidualBlock:
 
 
 class OutputBlock:
-    def __init__(self, block: CompiledOutputBlock):
+    def __init__(self, block: FlogoOutputBlock):
         self.pool = Pool(block.pool.kernel, block.pool.stride, block.pool.padding, block.pool.pool_type)
 
     def build(self):

@@ -1,5 +1,5 @@
 from model.flogo.training.loss import FlogoLossFunction
-from model.flogo.training.flogooptimizer import FlogoOptimizer
+from model.flogo.training.optimizer import FlogoOptimizer
 
 
 class FlogoTraining:
