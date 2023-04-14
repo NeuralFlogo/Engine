@@ -5,12 +5,12 @@ import subprocess
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-from model.flogo.training.flogotraining import FlogoTraining
+from model.flogo.training.training import FlogoTraining
 from pytorch.training.loss import LossFunction
 from pytorch.training.optimizer import Optimizer
 
 
-class Training:
+class ForwardTraining:
     def __init__(self, train: FlogoTraining):
         self.model = train.model
         self.epochs = train.epochs
@@ -20,6 +20,7 @@ class Training:
         self.loss_function = LossFunction(train.loss_function).build()
         self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         self.writer = SummaryWriter("runs/model_{}".format(self.timestamp))
+        self.__init_tensorboard()
 
     def train(self):
         best_vloss = 1_000_000.
@@ -34,7 +35,6 @@ class Training:
                 best_vloss = avg_vloss
                 self.__save_model(epoch)
         self.writer.close()
-        self.__init_tensorboard()
 
     def __train_epoch(self, epoch):
         running_loss = 0.
@@ -69,23 +69,23 @@ class Training:
     def __evaluate(self, inputs):
         return self.model(inputs)
 
-    def __log_epoch_losses(self, epoch, avg_loss, avg_vloss):
-        self.writer.add_scalars('Training - Validation Loss',
-                                {'Training': avg_loss, 'Validation': avg_vloss},
-                                epoch + 1)
-
-    def __save_model(self, epoch):
-        Path('models').mkdir(parents=True, exist_ok=True)
-        torch.save(self.model.state_dict(), 'models/model_{}_{}'.format(self.timestamp, epoch))
-
     def __compute_loss(self, preds, labels):
         return self.loss_function(preds, labels)
 
     def __compute_accuracy(self, preds, labels):
         return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1))).item()
 
+    def __log_epoch_losses(self, epoch, avg_loss, avg_vloss):
+        self.writer.add_scalars('Training - Validation Loss',
+                                {'Training': avg_loss, 'Validation': avg_vloss},
+                                epoch + 1)
+
     def __log_to_tensorboard(self, training_count, field, value):
         self.writer.add_scalar(field, value, training_count)
+
+    def __save_model(self, epoch):
+        Path('models').mkdir(parents=True, exist_ok=True)
+        torch.save(self.model.state_dict(), 'models/model_{}_{}'.format(self.timestamp, epoch))
 
     def __training_count(self, epoch, i):
         return epoch * len(self.training_loader) + i
@@ -97,4 +97,4 @@ class Training:
         return 100 * value / len(batch)
 
     def __init_tensorboard(self):
-        subprocess.Popen(["tensorboard --logdir=runs"])
+        subprocess.Popen(["tensorboard", "--logdir=runs"])
