@@ -18,9 +18,9 @@ class RNNCell(nn.Module):
         for w in self.parameters():
             w.data.uniform_(-std, std)
 
-    def forward(self, input, state=None):
+    def forward(self, x, state=None):
         if state is None: state = torch.zeros(self.hidden_size)
-        return self.activation(self.input_layer(input.to(torch.float)) + self.previous_layer(state))
+        return self.activation(self.input_layer(x.to(torch.float)) + self.previous_layer(state))
 
 
 class LSTMCell(nn.Module):
@@ -43,22 +43,22 @@ class LSTMCell(nn.Module):
         for weight in self.parameters():
             weight.data.uniform_(-std, std)
 
-    def forward(self, input, states=None):
+    def forward(self, x, states=None):
         if states is None: states = self.initialize()
-        current_long_term_state = (self.forget_gate(input, states) * states[0]) + self.input_gate(input, states)
-        output_gate_output = self.output_gate(current_long_term_state, input, states)
+        current_long_term_state = (self.forget_gate(x, states) * states[0]) + self.input_gate(x, states)
+        output_gate_output = self.output_gate(current_long_term_state, x, states)
         return output_gate_output, [current_long_term_state, output_gate_output]
 
-    def forget_gate(self, input, states):
-        return self.sigmoid(self.input_forget_layer(input) + self.state_forget_layer(states[1]))
+    def forget_gate(self, x, states):
+        return self.sigmoid(self.input_forget_layer(x) + self.state_forget_layer(states[1]))
 
-    def input_gate(self, input, states):
-        sigmoid_input_gate_output = self.sigmoid(self.input_input_layer(input) + self.state_input_layer(states[1]))
+    def input_gate(self, x, states):
+        sigmoid_input_gate_output = self.sigmoid(self.input_input_layer(x) + self.state_input_layer(states[1]))
         input_gate_output = sigmoid_input_gate_output * self.tanh(states[1])
         return input_gate_output
 
-    def output_gate(self, current_long_term_state, input, states):
-        sigmoid_output_gate = self.sigmoid(self.input_output_gate(input) + self.state_output_gate(states[1]))
+    def output_gate(self, current_long_term_state, x, states):
+        sigmoid_output_gate = self.sigmoid(self.input_output_gate(x) + self.state_output_gate(states[1]))
         output_gate_output = sigmoid_output_gate * self.tanh(current_long_term_state)
         return output_gate_output
 
@@ -87,20 +87,20 @@ class GRUCell(nn.Module):
         for w in self.parameters():
             w.data.uniform_(-std, std)
 
-    def forward(self, input, state=None):
+    def forward(self, x, state=None):
         if state is None: state = self.initialize()
-        update_gate_output = self.update_gate(input, state)
-        candidate_gate_output = self.candidate_gate(input, self.reset_gate(input, state), state)
+        update_gate_output = self.update_gate(x, state)
+        candidate_gate_output = self.candidate_gate(x, self.reset_gate(x, state), state)
         return update_gate_output * state + (1 - update_gate_output) * candidate_gate_output
 
-    def reset_gate(self, input, state):
-        return self.sigmoid(self.input_reset_layer(input) + self.state_reset_layer(state))
+    def reset_gate(self, x, state):
+        return self.sigmoid(self.input_reset_layer(x) + self.state_reset_layer(state))
 
-    def update_gate(self, input, state):
-        return self.sigmoid(self.input_update_layer(input) + self.state_update_layer(state))
+    def update_gate(self, x, state):
+        return self.sigmoid(self.input_update_layer(x) + self.state_update_layer(state))
 
-    def candidate_gate(self, input, reset_gate_output, state):
-        return self.tanh(self.input_candidate_layer(input) + self.state_candidate_layer(reset_gate_output * state))
+    def candidate_gate(self, x, reset_gate_output, state):
+        return self.tanh(self.input_candidate_layer(x) + self.state_candidate_layer(reset_gate_output * state))
 
     def initialize(self):
         return torch.zeros(self.hidden_size, dtype=torch.float)

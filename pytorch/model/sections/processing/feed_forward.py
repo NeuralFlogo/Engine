@@ -21,7 +21,7 @@ class LinearBlock:
         for layer in block.content:
             if type(layer) == Activation: self.content.append(ActivationFunction(layer.name))
             if type(layer) == Linear: self.content.append(linear.Linear(layer.input_dimension,
-                                                                           layer.output_dimension))
+                                                                        layer.output_dimension))
 
     def build(self):
         return [block.build() for block in self.content]
