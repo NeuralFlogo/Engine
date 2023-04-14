@@ -16,3 +16,5 @@ def normalize(col, new_min=0, new_max=1):
     return ((col - col.min()) / (col.max() - col.min()) * (new_max - new_min) + new_min).reshape(-1, 1)
 
 
+def to_number(col):
+    return col.astype(int)
