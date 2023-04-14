@@ -7,7 +7,7 @@ class FlattenSection:
         self.flatten_block = FlattenBlock(architecture)
 
     def build(self):
-        return self.flatten_block.build()
+        return [self.flatten_block.build()]
 
 
 class FlattenBlock:

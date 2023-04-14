@@ -1,10 +1,10 @@
-import torch.nn
+from torch.nn import Module, ModuleList
 
 
-class RnnModel(torch.nn.Module):
+class RecurrentModule(Module):
     def __init__(self, architecture):
         super().__init__()
-        self.architecture = torch.nn.ModuleList(architecture)
+        self.architecture = ModuleList(architecture)
 
     def forward(self, x):
         result = []
@@ -16,10 +16,10 @@ class RnnModel(torch.nn.Module):
         return result
 
 
-class LstmModel(torch.nn.Module):
+class LstmModel(Module):
     def __init__(self, architecture):
         super().__init__()
-        self.architecture = torch.nn.ModuleList(architecture)
+        self.architecture = ModuleList(architecture)
 
     def forward(self, x):
         result = []

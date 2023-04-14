@@ -1,92 +1,72 @@
 import torch
 
-import model.flogo.layers as layers
+import model.flogo.blocks.convolutional
 from model.flogo.blocks.classification import FlogoClassificationBlock
-from model.flogo.blocks.convolutional import FlogoConvolutionalBlock
 from model.flogo.blocks.flatten import FlogoFlattenBlock
 from model.flogo.blocks.linear import FlogoLinearBlock
-from model.flogo.layers.linear import Linear
-from model.flogo.training.loss import FlogoLossFunction
-from model.flogo.training.flogooptimizer import FlogoOptimizer
-from model.flogo.training.flogotraining import FlogoTraining
-from pytorch.model.models.simple_model import SimpleModel
+from model.flogo.blocks.residual import FlogoOutputBlock, FlogoBodyBlock, FlogoInputBlock
+from model.flogo.layers import pool
+from model.flogo.layers.flatten import Flatten
+from pytorch.model.models.combination import CombinationModule
+from pytorch.model.models.forward import ForwardModule
+from pytorch.model.models.residual import ResidualModule
 from pytorch.model.sections.link.classification import ClassificationSection
 from pytorch.model.sections.link.flatten import FlattenSection
-
-from pytorch.model.sections.processing.convolutional import ConvolutionalSection
 from pytorch.model.sections.processing.feed_forward import FeedForwardSection
+from pytorch.model.sections.processing.residual import ResidualSection
 from pytorch.preprocesing.SourceTypeFunctions import images_source_type
-from pytorch.training.train import Training
 
 #
 # feed_forward = [
-#     CompiledLinearBlock(compiled_layers.linear.Linear(100, 10), compiled_layers.activation.Activation("ReLU")),
-#     CompiledLinearBlock(compiled_layers.linear.Linear(10, 2), compiled_layers.activation.Activation("ReLU"))]
+#     FlogoLinearBlock(Flogo_layers.linear.Linear(100, 10), Flogo_layers.activation.Activation("ReLU")),
+#     FlogoLinearBlock(Flogo_layers.linear.Linear(10, 2), Flogo_layers.activation.Activation("ReLU"))]
 # FeedForwardSection(feed_forward).build()
 #
-# flatten = CompiledFlattenBlock(compiled_layers.flatten.Flatten(10, 8))
+# flatten = FlogoFlattenBlock(Flogo_layers.flatten.Flatten(10, 8))
 # Flatten(flatten).build()
 #
-# classification = CompiledClassificationBlock(compiled_layers.classification.Classification("Softmax", 10))
+# classification = FlogoClassificationBlock(Flogo_layers.classification.Classification("Softmax", 10))
 # Classification(classification).build()
 
-convolutional = [FlogoConvolutionalBlock([layers.convolutional.Conv(3, 64, stride=1, padding=1, kernel=3),
-                                          layers.activation.Activation("ReLU"),
-                                          layers.pool.Pool("Max"),
-                                          layers.convolutional.Conv(64, 128, stride=1, padding=1, kernel=3),
-                                          layers.activation.Activation("ReLU"),
-                                          layers.pool.Pool("Max"),
-                                          layers.convolutional.Conv(128, 256, stride=1, padding=1, kernel=3),
-                                          layers.activation.Activation("ReLU"),
-                                          layers.pool.Pool("Max"),
-                                          layers.pool.Pool("Max"),
-                                          layers.convolutional.Conv(256, 512, stride=1, padding=1, kernel=3),
-                                          layers.activation.Activation("ReLU"),
-                                          layers.pool.Pool("Max"),
-                                          layers.convolutional.Conv(512, 512, stride=1, padding=1, kernel=3),
-                                          layers.activation.Activation("ReLU"),
-                                          layers.pool.Pool("Max")])]
+residual = [FlogoInputBlock(model.flogo.layers.convolutional.Conv(channel_in=3, channel_out=64, kernel=7),
+                            model.flogo.layers.pool.Pool(pool_type="Max", kernel=7)),
+            FlogoBodyBlock(content=[model.flogo.layers.convolutional.Conv(channel_in=64, channel_out=128, kernel=3),
+                                    model.flogo.layers.convolutional.Conv(channel_in=128, channel_out=128, kernel=3),
+                                    model.flogo.layers.convolutional.Conv(channel_in=128, channel_out=64, kernel=3)],
+                           hidden_size=3),
+            FlogoBodyBlock(content=[model.flogo.layers.convolutional.Conv(channel_in=128, channel_out=256, kernel=3),
+                                    model.flogo.layers.convolutional.Conv(channel_in=256, channel_out=256, kernel=3),
+                                    model.flogo.layers.convolutional.Conv(channel_in=256, channel_out=128, kernel=3)],
+                           hidden_size=3),
+            FlogoOutputBlock(model.flogo.layers.pool.Pool(pool_type="Avg"))]
 
-flatten = FlogoFlattenBlock(layers.flatten.Flatten(1, 3))
+flatten = FlogoFlattenBlock(Flatten(1, 3))
 
-linear = [FlogoLinearBlock([Linear(4608, 4096),
-                            layers.activation.Activation("ReLU"),
-                            layers.linear.Linear(4096, 4096),
-                            layers.activation.Activation("ReLU"),
-                            layers.linear.Linear(4096, 2)]
-                           )]
+linear = [FlogoLinearBlock([model.flogo.layers.linear.Linear(156800, 1000),
+                            model.flogo.layers.activation.Activation("ReLU"),
+                            model.flogo.layers.linear.Linear(1000, 2)])]
 
-classification = FlogoClassificationBlock(layers.classification.Classification("Softmax", 1))
+classification = FlogoClassificationBlock(model.flogo.layers.classification.Classification("Softmax", 1))
 
-convolutional_section = ConvolutionalSection(convolutional).build()
-flatten_section = FlattenSection(flatten).build()
-linear_section = FeedForwardSection(linear).build()
-classification_section = ClassificationSection(classification).build()
+residualSection = ResidualSection(residual).build()
+flattenSection = FlattenSection(flatten).build()
+feedForwardSection = FeedForwardSection(linear).build()
+classificationSection = ClassificationSection(classification).build()
 
-model = SimpleModel(convolutional_section + [flatten_section] + linear_section)
+train_data_loader, test_data_loader = images_source_type(226, 0, 1, "/Users/jose_juan/Desktop/training", 4)
+
+residualModule = ResidualModule(residualSection)
+flattenModule = ForwardModule(flattenSection)
+linearModule = ForwardModule(feedForwardSection)
+classificationModule = ForwardModule(classificationSection)
+model = CombinationModule(residualModule, flattenModule, linearModule, classificationModule)
 
 print(model)
 
-train_data_loader, test_data_loader = images_source_type(226, 0, 1, "/Users/jose_juan/Desktop/training", 2)
-# Training(20, model, train_data_loader, test_data_loader,
-#          torch.nn.MSELoss(),
-#          torch.optim.Adam(model.parameters(), lr=0.001)).train()
+for i in train_data_loader:
+    print(model(i[0]))
+    break
 
-sequential = torch.nn.Sequential(torch.load("/Users/jose_juan/PycharmProjects/Flogo/models/model_18"))
-print([sequential(i) for i in train_data_loader])
-
-
-Training(FlogoTraining(5, model, training_loader=train_data_loader, validation_loader=test_data_loader,
-              loss_function=FlogoLossFunction("MSELoss"),
-              optimizer=FlogoOptimizer("", model_params=model.parameters(), lr=0.1))).train()
-
-# residual = [CompiledInputBlock(compiled_layers.convolutional.Conv((), 10, 10, (), ()),
-#                                compiled_layers.pool.Pool((), (), (), "Max")),
-#             CompiledBodyBlock([compiled_layers.convolutional.Conv((), 10, 10, (), ()),
-#                                  compiled_layers.activation.Activation("ReLU"),
-#                                  compiled_layers.convolutional.Conv((), 10, 10, (), ())], 2),
-#             CompiledOutputBlock(compiled_layers.pool.Pool((), (), (), "Max"))]
-# ResidualSection(residual).build()
-#
-# recurrent = [CompiledRecurrentBlock(3, 15, 5, "GRUCell", "ReLU", True)]
-# RecurrentSection(recurrent).build()
+# Training(FlogoTraining(20, model, train_data_loader, test_data_loader,
+#          model.flogo.training.training.FlogoLossFunction("MSELoss"),
+#          model.flogo.training.training.FlogoOptimizer("Adam", model.parameters(), 0.01))).train()

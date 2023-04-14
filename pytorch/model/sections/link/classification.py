@@ -7,7 +7,7 @@ class ClassificationSection:
         self.classification_block = ClassificationBlock(architecture)
 
     def build(self):
-        return self.classification_block.build()
+        return [self.classification_block.build()]
 
 
 class ClassificationBlock:
