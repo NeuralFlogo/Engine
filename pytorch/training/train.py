@@ -97,4 +97,4 @@ class Training:
         return 100 * value / len(batch)
 
     def __init_tensorboard(self):
-        os.system(f"tensorboard --logdir=runs")
+        os.system("tensorboard --logdir=runs")
