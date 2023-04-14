@@ -43,22 +43,22 @@ class LSTMCell(nn.Module):
         for weight in self.parameters():
             weight.data.uniform_(-std, std)
 
-    def forward(self, input, states=None):
+    def forward(self, x, states=None):
         if states is None: states = self.initialize()
-        current_long_term_state = (self.forget_gate(input, states) * states[0]) + self.input_gate(input, states)
-        output_gate_output = self.output_gate(current_long_term_state, input, states)
+        current_long_term_state = (self.forget_gate(x, states) * states[0]) + self.input_gate(x, states)
+        output_gate_output = self.output_gate(current_long_term_state, x, states)
         return output_gate_output, [current_long_term_state, output_gate_output]
 
-    def forget_gate(self, input, states):
-        return self.sigmoid(self.input_forget_layer(input) + self.state_forget_layer(states[1]))
+    def forget_gate(self, x, states):
+        return self.sigmoid(self.input_forget_layer(x) + self.state_forget_layer(states[1]))
 
-    def input_gate(self, input, states):
-        sigmoid_input_gate_output = self.sigmoid(self.input_input_layer(input) + self.state_input_layer(states[1]))
+    def input_gate(self, x, states):
+        sigmoid_input_gate_output = self.sigmoid(self.input_input_layer(x) + self.state_input_layer(states[1]))
         input_gate_output = sigmoid_input_gate_output * self.tanh(states[1])
         return input_gate_output
 
-    def output_gate(self, current_long_term_state, input, states):
-        sigmoid_output_gate = self.sigmoid(self.input_output_gate(input) + self.state_output_gate(states[1]))
+    def output_gate(self, current_long_term_state, x, states):
+        sigmoid_output_gate = self.sigmoid(self.input_output_gate(x) + self.state_output_gate(states[1]))
         output_gate_output = sigmoid_output_gate * self.tanh(current_long_term_state)
         return output_gate_output
 

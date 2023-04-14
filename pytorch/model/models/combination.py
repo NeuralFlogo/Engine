@@ -2,12 +2,12 @@ from torch.nn import Module
 
 
 class CombinationModule(Module):
-    def __init__(self, *models: Module):
+    def __init__(self, *modules: Module):
         super().__init__()
-        self.models = models
+        self.modules = modules
 
     def forward(self, x):
-        for model in self.models:
-            x = model.forward(x)
+        for module in self.modules:
+            x = module.forward(x)
         return x
 
