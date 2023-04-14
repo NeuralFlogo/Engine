@@ -1,5 +1,6 @@
 from pathlib import Path
 from datetime import datetime
+from tensorboard import program
 
 import torch
 from torch.utils.tensorboard import SummaryWriter
@@ -19,6 +20,7 @@ class Training:
         self.loss_function = LossFunction(train.loss_function).build()
         self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
         self.writer = SummaryWriter("runs/model_{}".format(self.timestamp))
+        self.__init_tensorboard()
 
     def train(self):
         best_vloss = 1_000_000.
@@ -93,3 +95,8 @@ class Training:
 
     def __to_percentage(self, value, batch):
         return 100 * value / len(batch)
+
+    def __init_tensorboard(self):
+        tb = program.TensorBoard()
+        tb.configure(argv=[None, '--logdir', "runs"])
+        tb.launch()
