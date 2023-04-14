@@ -18,9 +18,9 @@ class RNNCell(nn.Module):
         for w in self.parameters():
             w.data.uniform_(-std, std)
 
-    def forward(self, input, state=None):
+    def forward(self, x, state=None):
         if state is None: state = torch.zeros(self.hidden_size)
-        return self.activation(self.input_layer(input.to(torch.float)) + self.previous_layer(state))
+        return self.activation(self.input_layer(x.to(torch.float)) + self.previous_layer(state))
 
 
 class LSTMCell(nn.Module):
@@ -87,20 +87,20 @@ class GRUCell(nn.Module):
         for w in self.parameters():
             w.data.uniform_(-std, std)
 
-    def forward(self, input, state=None):
+    def forward(self, x, state=None):
         if state is None: state = self.initialize()
-        update_gate_output = self.update_gate(input, state)
-        candidate_gate_output = self.candidate_gate(input, self.reset_gate(input, state), state)
+        update_gate_output = self.update_gate(x, state)
+        candidate_gate_output = self.candidate_gate(x, self.reset_gate(x, state), state)
         return update_gate_output * state + (1 - update_gate_output) * candidate_gate_output
 
-    def reset_gate(self, input, state):
-        return self.sigmoid(self.input_reset_layer(input) + self.state_reset_layer(state))
+    def reset_gate(self, x, state):
+        return self.sigmoid(self.input_reset_layer(x) + self.state_reset_layer(state))
 
-    def update_gate(self, input, state):
-        return self.sigmoid(self.input_update_layer(input) + self.state_update_layer(state))
+    def update_gate(self, x, state):
+        return self.sigmoid(self.input_update_layer(x) + self.state_update_layer(state))
 
-    def candidate_gate(self, input, reset_gate_output, state):
-        return self.tanh(self.input_candidate_layer(input) + self.state_candidate_layer(reset_gate_output * state))
+    def candidate_gate(self, x, reset_gate_output, state):
+        return self.tanh(self.input_candidate_layer(x) + self.state_candidate_layer(reset_gate_output * state))
 
     def initialize(self):
         return torch.zeros(self.hidden_size, dtype=torch.float)

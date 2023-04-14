@@ -10,7 +10,7 @@ from model.flogo.layers import pool
 from model.flogo.layers.flatten import Flatten
 from pytorch.model.models.combination import CombinationModule
 from pytorch.model.models.forward import ForwardModule
-from pytorch.model.models.recurrent import RecurrentModule, LstmModel
+from pytorch.model.models.recurrent import RecurrentModule, LstmModule
 from pytorch.model.models.residual import ResidualModule
 from pytorch.model.sections.link.classification import ClassificationSection
 from pytorch.model.sections.link.flatten import FlattenSection
@@ -73,9 +73,8 @@ from pytorch.preprocesing.SourceTypeFunctions import images_source_type
 #          model.flogo.training.training.FlogoOptimizer("Adam", model.parameters(), 0.01))).train()
 
 
-recurrent = [FlogoRecurrentBlock(3, 1, 24, "GRUCell", "ReLU", True)]
+recurrent = [FlogoRecurrentBlock(3, 1, 2, "LSTMCell", "ReLU", True)]
 recurrentBuild = RecurrentSection(recurrent).build()
-lstmModule = RecurrentModule(recurrentBuild)
+lstmModule = LstmModule(recurrentBuild)
 
-print(len(recurrentBuild))
-print(lstmModule.forward(torch.ones(3)))
+print(lstmModule.forward([torch.ones(3), torch.ones(3)]))
