@@ -1,6 +1,6 @@
 from pathlib import Path
 from datetime import datetime
-from tensorboard import program
+import os
 
 import torch
 from torch.utils.tensorboard import SummaryWriter
@@ -97,6 +97,4 @@ class Training:
         return 100 * value / len(batch)
 
     def __init_tensorboard(self):
-        tb = program.TensorBoard()
-        tb.configure(argv=[None, '--logdir', "runs"])
-        tb.launch()
+        os.system(f"tensorboard --logdir=runs")
