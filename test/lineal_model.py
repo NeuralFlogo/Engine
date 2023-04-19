@@ -4,17 +4,17 @@ from model.flogo.layers.activation import Activation
 from model.flogo.layers.classification import Classification
 from model.flogo.layers.linear import Linear
 from model.flogo.training.loss import FlogoLossFunction
-from model.flogo.training.flogooptimizer import FlogoOptimizer
-from model.flogo.training.flogotraining import FlogoTraining
-from pytorch.model.models.simple_model import SimpleModel
+from model.flogo.training.optimizer import FlogoOptimizer
+from model.flogo.training.training import FlogoTraining
+from pytorch.model.models.forward import ForwardModule
 from pytorch.model.sections.link.classification import ClassificationSection
 from pytorch.model.sections.processing.feed_forward import FeedForwardSection
 from pytorch.preprocesing.SourceTypeFunctions import numbers_source_type_csv
 from pytorch.training.test import Testing
-from pytorch.training.train import Training
+from pytorch.training.train import ForwardTraining
 
 BATCH_SIZE = 50
-EPOCHS = 200
+EPOCHS = 20
 parameters = ["one-hot"] * 22
 
 feedforward = [FlogoLinearBlock([
@@ -36,14 +36,13 @@ classification = FlogoClassificationBlock(Classification("Softmax", 1))
 linear_section = FeedForwardSection(feedforward).build()
 classification_section = ClassificationSection(classification).build()
 
-model = SimpleModel(linear_section + [classification_section])
+model = ForwardModule(linear_section + classification_section)
 
 train_data_loader, test_data_loader = numbers_source_type_csv("C:/Users/Joel/Desktop/breast cancer/mushrooms.csv",
                                                               parameters, BATCH_SIZE)
 
-
-Training(FlogoTraining(EPOCHS, model, training_loader=train_data_loader, validation_loader=train_data_loader,
-                       loss_function=FlogoLossFunction("MSELoss"),
-                       optimizer=FlogoOptimizer("SGD", model_params=model.parameters(), lr=0.1))).train()
+ForwardTraining(FlogoTraining(EPOCHS, model, training_loader=train_data_loader, validation_loader=train_data_loader,
+                              loss_function=FlogoLossFunction("MSELoss"),
+                              optimizer=FlogoOptimizer("SGD", model_params=model.parameters(), lr=0.1))).train()
 
 Testing(model, test_data_loader).test()

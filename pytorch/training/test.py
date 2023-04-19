@@ -1,4 +1,7 @@
 import torch
+from torch.nn.functional import one_hot
+
+from pytorch.preprocesing.NumericProcessor import one_hot_encode
 
 
 class Testing:
@@ -12,9 +15,8 @@ class Testing:
         with torch.no_grad():
             for i, data in enumerate(self.testing_loader):
                 inputs, labels = data
-                print(inputs.shape)
                 outputs = self.model(inputs)
-                # print(outputs)
+                labels = torch.tensor(one_hot_encode(labels), dtype=torch.float32)
                 predictions = torch.argmax(outputs, dim=1)
                 expected = torch.argmax(labels, dim=1)
                 correct += torch.sum(torch.eq(predictions, expected)).item()
