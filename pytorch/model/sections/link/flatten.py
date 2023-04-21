@@ -12,8 +12,7 @@ class FlattenSection:
 
 class FlattenBlock:
     def __init__(self, block: FlogoFlattenBlock):
-        self.start_dim = block.flatten.start_dim
-        self.end_dim = block.flatten.end_dim
+        self.flatten = block.flatten
 
     def build(self):
-        return FlattenFunction(start_dim=self.start_dim, end_dim=self.end_dim).build()
+        return FlattenFunction(self.flatten).build()

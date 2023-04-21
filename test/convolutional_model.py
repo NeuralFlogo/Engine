@@ -13,7 +13,6 @@ from model.flogo.layers.pool import Pool
 from model.flogo.training.loss import FlogoLossFunction
 from model.flogo.training.optimizer import FlogoOptimizer
 from model.flogo.training.training import FlogoTraining
-from pytorch.model.models.combination import CombinationModule
 from pytorch.model.models.forward import ForwardModule
 from pytorch.model.sections.link.flatten import FlattenSection
 from pytorch.model.sections.processing.convolutional import ConvolutionalSection

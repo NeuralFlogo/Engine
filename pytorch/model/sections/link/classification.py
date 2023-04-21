@@ -12,7 +12,7 @@ class ClassificationSection:
 
 class ClassificationBlock:
     def __init__(self, block: FlogoClassificationBlock):
-        self.function = ClassificationFunction(block.classification.name, block.classification.dimension)
+        self.function = ClassificationFunction(block.classification)
 
     def build(self):
         return self.function.build()

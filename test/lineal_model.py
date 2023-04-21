@@ -11,7 +11,7 @@ from pytorch.model.sections.link.classification import ClassificationSection
 from pytorch.model.sections.processing.feed_forward import FeedForwardSection
 from pytorch.preprocesing.SourceTypeFunctions import numbers_source_type_csv
 from pytorch.training.test import Testing
-from pytorch.training.train import ForwardTraining
+from pytorch.training.forward_train import ForwardTraining
 
 BATCH_SIZE = 50
 EPOCHS = 20

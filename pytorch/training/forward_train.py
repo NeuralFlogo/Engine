@@ -1,16 +1,15 @@
-from pathlib import Path
-from datetime import datetime
 import subprocess
+from datetime import datetime
+from pathlib import Path
 
 import torch
-from torch.nn.functional import one_hot
 from torch.utils.tensorboard import SummaryWriter
 
 from model.flogo.training.training import FlogoTraining
 from pytorch.training.loss import LossFunction
 from pytorch.training.optimizer import Optimizer
 
-PATH = "C:/Users/Joel/Documents/Universidad/TercerCurso/SegundoSemestre/PracticasExternas/Proyectos/Flogo/"
+
 class ForwardTraining:
     def __init__(self, train: FlogoTraining):
         self.model = train.model
@@ -20,7 +19,7 @@ class ForwardTraining:
         self.optimizer = Optimizer(train.optimizer).build()
         self.loss_function = LossFunction(train.loss_function).build()
         self.timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-        self.writer = SummaryWriter(PATH + "runs/model_{}".format(self.timestamp))
+        self.writer = SummaryWriter("runs/model_{}".format(self.timestamp))
         self.__init_tensorboard()
 
     def train(self):
@@ -41,7 +40,6 @@ class ForwardTraining:
         running_loss = 0.
         for i, data in enumerate(self.training_loader, start=1):
             inputs, labels = data
-            labels = one_hot(labels, num_classes=101).float()
             self.optimizer.zero_grad()
             preds = self.__evaluate(inputs)
             loss = self.__compute_loss(preds, labels)
@@ -59,7 +57,6 @@ class ForwardTraining:
         vloss = 0.
         for i, data in enumerate(self.validation_loader, start=1):
             inputs, labels = data
-            labels = one_hot(labels, num_classes=101).float()
             preds = self.__evaluate(inputs)
             vloss += self.__compute_loss(preds, labels).item()
             self.__log_to_tensorboard(self.__training_count(epoch, i),
@@ -75,8 +72,9 @@ class ForwardTraining:
     def __compute_loss(self, preds, labels):
         return self.loss_function(preds, labels)
 
-    def __compute_accuracy(self, preds, labels):
-        return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1))).item()
+    def __compute_accuracy(self, preds, labels):  # FIXME
+        # return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1))).item()
+        return torch.sum(torch.eq(torch.argmax(preds, dim=1), labels)).item()
 
     def __log_epoch_losses(self, epoch, avg_loss, avg_vloss):
         self.writer.add_scalars('Training - Validation Loss',
@@ -87,8 +85,8 @@ class ForwardTraining:
         self.writer.add_scalar(field, value, training_count)
 
     def __save_model(self, epoch):
-        Path(PATH + 'models').mkdir(parents=True, exist_ok=True)
-        torch.save(self.model.state_dict(), PATH + 'models/model_{}_{}'.format(self.timestamp, epoch))
+        Path('models').mkdir(parents=True, exist_ok=True)
+        torch.save(self.model.state_dict(), 'models/model_{}_{}'.format(self.timestamp, epoch))
 
     def __training_count(self, epoch, i):
         return epoch * len(self.training_loader) + i

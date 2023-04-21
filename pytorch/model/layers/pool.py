@@ -1,12 +1,14 @@
 from torch.nn import MaxPool2d, AvgPool2d
 
+import model.flogo.layers.pool
+
 
 class Pool:
-    def __init__(self, kernel, stride, padding, pool_type):
-        self.kernel = kernel
-        self.stride = stride
-        self.padding = padding
-        self.pooling_type = pool_type
+    def __init__(self, pool: model.flogo.layers.pool.Pool):
+        self.kernel = pool.kernel
+        self.stride = pool.stride
+        self.padding = pool.padding
+        self.pooling_type = pool.pool_type
 
     def build(self):
         if self.pooling_type == "Max":

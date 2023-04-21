@@ -1,64 +1,61 @@
-from model.flogo.blocks.residual import FlogoInputBlock, FlogoBodyBlock, FlogoOutputBlock
-from model.flogo.layers.activation import Activation
-from model.flogo.layers.convolutional import Conv
-from model.flogo.layers.linear import Linear
+import torch.nn
+
+from model.flogo.blocks.residual import FlogoResidualBlock
 from pytorch.model.layers.activation import ActivationFunction
 from pytorch.model.layers.convolution import Conv2d
-from pytorch.model.layers.pool import Pool
-from model.flogo.layers.pool import Pool as PoolComp
+from pytorch.model.layers.normalization import Normalization
 
 
 class ResidualSection:
     def __init__(self, section):
-        body = [BodyBlock(block) for block in section[1:-1]]
-        self.section = [InputBlock(section[0])] + body + [OutputBlock(section[-1])]
+        self.section = [Stage(stage) for stage in section]
 
     def build(self):
-        return [block.build() for block in self.section]
+        result = []
+        for stage in self.section:
+            result += stage.build()
+        return result
 
 
-class InputBlock:
-    def __init__(self, block: FlogoInputBlock):
-        self.conv = Conv2d(block.conv.kernel, block.conv.channel_in,
-                           block.conv.channel_out, block.conv.stride, block.conv.padding)
-        self.pool = Pool(block.pool.kernel, block.pool.stride, block.pool.padding, block.pool.pool_type)
-
-    def build(self):
-        return self.conv.build(), self.pool.build()
-
-
-class BodyBlock:
-    def __init__(self, block: FlogoBodyBlock):
-        self.stages = [ResidualBlock(block.content) for _ in range(block.hidden_size)]
+class Stage:
+    def __init__(self, block: FlogoResidualBlock):
+        self.content = [_ResidualBlock(block) for _ in range(block.hidden_size)]
 
     def build(self):
-        return [res_block.build() for res_block in self.stages]
+        return [block.build() for block in self.content]
 
 
-class ResidualBlock:
-    def __init__(self, block):
-        self.content = []
-        for layer in block:
-            if type(layer) == Conv: self.content.append(Conv2d(layer.kernel,
-                                                               layer.channel_in,
-                                                               layer.channel_out,
-                                                               layer.stride,
-                                                               layer.padding))
-            if type(layer) == Activation: self.content.append(ActivationFunction(layer.name))
-            if type(layer) == PoolComp: self.content.append(Pool(layer.kernel,
-                                                                 layer.stride,
-                                                                 layer.padding,
-                                                                 layer.pool_type))
-            if type(layer) == Linear: self.content.append(Linear(layer.input_dimension,
-                                                                 layer.output_dimension))
+class _ResidualBlock:
+    def __init__(self, block: FlogoResidualBlock):
+        self.stage1 = Block(Conv2d(block.conv1), Normalization(block.norm1), ActivationFunction(block.activation))
+        self.stage2 = Block(Conv2d(block.conv2), Normalization(block.norm2))
+        self.downsample = block.downsample
+        self.activation = ActivationFunction(block.activation)
 
     def build(self):
-        return [layer.build() for layer in self.content]
+        return ResidualBlock(self)
 
 
-class OutputBlock:
-    def __init__(self, block: FlogoOutputBlock):
-        self.pool = Pool(block.pool.kernel, block.pool.stride, block.pool.padding, block.pool.pool_type)
+class Block:
+    def __init__(self, *content):
+        self.content = content
 
     def build(self):
-        return self.pool.build()
+        return torch.nn.Sequential(*[layer.build() for layer in self.content])
+
+
+class ResidualBlock(torch.nn.Module):
+    def __init__(self, block: _ResidualBlock):
+        super().__init__()
+        self.block1 = block.stage1.build()
+        self.block2 = block.stage2.build()
+        self.downsample = block.downsample
+        self.activation = block.activation.build()
+
+    def forward(self, x):
+        residual = x
+        out = self.block1(x)
+        out = self.block2(out)
+        if self.downsample:
+            residual = self.downsample(x)
+        return self.activation(out + residual)

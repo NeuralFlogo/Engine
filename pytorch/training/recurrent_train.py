@@ -54,7 +54,7 @@ class RecurrentTrain:
         for i, data in enumerate(self.validation_loader, start=1):
             inputs, labels = data
             preds = self.__evaluate(inputs)
-            vloss += self.__compute_loss(preds, labels).item()
+            vloss += self.__compute_loss(preds, labels)
             self.__log_to_tensorboard(self.__training_count(epoch, i),
                                       'Loss/validation', vloss)
             self.__log_to_tensorboard(self.__training_count(epoch, i),
@@ -72,14 +72,14 @@ class RecurrentTrain:
             self.optimizer.zero_grad()
             loss += self.loss_function(pred, labels[i])
             running_loss += loss.item()
-            loss.backward()
             self.optimizer.step()
+        loss.backward()
         return running_loss
 
     def __compute_accuracy(self, preds, labels):
         acc = 0.
         for i, pred in enumerate(preds):
-            acc += torch.sum(torch.eq(torch.argmax(pred, dim=1), torch.argmax(labels[i], dim=1))).item()
+            acc += torch.sum(torch.eq(torch.argmax(pred, dim=0), torch.argmax(labels[i], dim=0))).item()
         return acc
 
     def __log_epoch_losses(self, epoch, avg_loss, avg_vloss):
