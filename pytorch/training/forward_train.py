@@ -6,6 +6,7 @@ import torch
 from torch.utils.tensorboard import SummaryWriter
 
 from model.flogo.training.training import FlogoTraining
+from pytorch.preprocesing.NumericProcessor import one_hot_encode
 from pytorch.training.loss import LossFunction
 from pytorch.training.optimizer import Optimizer
 
@@ -73,8 +74,8 @@ class ForwardTraining:
         return self.loss_function(preds, labels)
 
     def __compute_accuracy(self, preds, labels):  # FIXME
-        # return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1))).item()
-        return torch.sum(torch.eq(torch.argmax(preds, dim=1), labels)).item()
+        return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1))).item()
+        # return torch.sum(torch.eq(torch.argmax(preds, dim=1), labels)).item()
 
     def __log_epoch_losses(self, epoch, avg_loss, avg_vloss):
         self.writer.add_scalars('Training - Validation Loss',

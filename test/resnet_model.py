@@ -24,29 +24,9 @@ from pytorch.preprocesing.SourceTypeFunctions import images_source_type
 from pytorch.training.forward_train import ForwardTraining
 from pytorch.training.test import Testing
 
-train_loader = torch.utils.data.DataLoader(datasets.CIFAR10("./cifar",
-                                                            download=True,
-                                                            transform=transforms.Compose([
-                                                                transforms.ToTensor(),
-                                                                transforms.Resize(size=(224, 224)),
-                                                                transforms.Normalize(mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])])),
-                                           batch_size=10,
-                                           shuffle=True)
-
-# download and transform test dataset
-test_loader = torch.utils.data.DataLoader(datasets.CIFAR10("./cifar",
-                                                           download=True,
-                                                           transform=transforms.Compose([
-                                                               transforms.ToTensor(),
-                                                               transforms.Resize(size=(224, 224)),
-                                                               transforms.Normalize(mean=[0.4914, 0.4822, 0.4465],
-                                                                                    std=[0.2023, 0.1994, 0.2010])])),
-                                          batch_size=10,
-                                          shuffle=True)
-
-EPOCHS = 200
-parameters = ["one-hot"] * 22
-train_data_loader, test_data_loader = images_source_type(256, 0, 1, "/Users/jose_juan/Desktop/training", 1)
+EPOCHS = 10
+train_loader, test_loader = images_source_type(256, 0, 1,
+                                               "/Users/jose_juan/Desktop/monentia/training_set_test", 5)
 
 convolutional1 = [FlogoConvolutionalBlock([Conv(3, 64, kernel=7, stride=2, padding=3), Normalization(64),
                                            Activation("ReLU"), Pool(kernel=3, stride=2, padding=1, pool_type="Max")])]
@@ -67,10 +47,9 @@ residual = [FlogoResidualBlock(64, 64, "ReLU", hidden_size=3),
 
 convolutional2 = [FlogoConvolutionalBlock([Pool(kernel=7, stride=1, padding=0, pool_type="Avg")])]
 
-
 classification = FlogoFlattenBlock(Flatten(1, 3))
 
-linear = [FlogoLinearBlock([Linear(1280000, 10)])]
+linear = [FlogoLinearBlock([Linear(1722368, 2)])]
 
 residualSection = ResidualSection(residual).build()
 convolutional1Section = ConvolutionalSection(convolutional1).build()
@@ -78,8 +57,12 @@ convolutional2Section = ConvolutionalSection(convolutional2).build()
 flatmapSection = FlattenSection(classification).build()
 linearSection = FeedForwardSection(linear).build()
 
+# model = ForwardModule(convolutional1Section + residualSection + convolutional2Section + flatmapSection + linearSection)
+# ForwardTraining(FlogoTraining(EPOCHS, model, training_loader=train_loader, validation_loader=train_loader,
+#                               loss_function=FlogoLossFunction("CrossEntropyLoss"),
+#                               optimizer=FlogoOptimizer("SGD", model_params=model.parameters(), lr=0.01))).train()
+
 model = ForwardModule(convolutional1Section + residualSection + convolutional2Section + flatmapSection + linearSection)
-ForwardTraining(FlogoTraining(EPOCHS, model, training_loader=train_loader, validation_loader=train_loader,
-                              loss_function=FlogoLossFunction("CrossEntropyLoss"),
-                              optimizer=FlogoOptimizer("SGD", model_params=model.parameters(), lr=0.01))).train()
+model.load_state_dict(torch.load("/Users/jose_juan/PycharmProjects/Flogo/test/models/model_20230426_085928_3"))
+model.eval()
 Testing(model, test_loader).test()

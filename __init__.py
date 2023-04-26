@@ -57,9 +57,11 @@ flattenSection = FlattenSection(flatten).build()
 #          model.flogo.training.training.FlogoOptimizer("Adam", model.parameters(), 0.01))).train()
 
 
-EPOCHS = 200
-parameters = ["one-hot"] * 22
-train_data_loader, test_data_loader = images_source_type(256, 0, 1, "/Users/jose_juan/Desktop/training", 1)
+EPOCHS = 10
+train_data_loader, test_data_loader = images_source_type(256, 0, 1,
+                                                         "/Users/jose_juan/Desktop/monentia/training_set_test", 1)
+
+
 
 convolutional1 = [FlogoConvolutionalBlock([Conv(3, 64, kernel=7, stride=2, padding=3), Normalization(64),
                                            Activation("ReLU"), Pool(kernel=3, stride=2, padding=1, pool_type="Max")])]
