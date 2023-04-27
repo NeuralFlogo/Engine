@@ -1,4 +1,4 @@
-from pytorch.structure.sections.blocks.flatten import FlattenBlock
+from pytorch.structure.blocks.flatten import FlattenBlock
 
 
 class FlattenSection:

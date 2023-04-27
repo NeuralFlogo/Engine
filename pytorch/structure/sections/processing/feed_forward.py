@@ -1,4 +1,4 @@
-from pytorch.structure.sections.blocks.linear import LinearBlock
+from pytorch.structure.blocks.linear import LinearBlock
 
 
 class FeedForwardSection:

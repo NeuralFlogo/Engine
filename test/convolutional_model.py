@@ -5,20 +5,20 @@ from torchvision.transforms import transforms
 from flogo.structure.blocks.convolutional import ConvolutionalBlock
 from flogo.structure.blocks.flatten import FlattenBlock
 from flogo.structure.blocks.linear import LinearBlock
-from flogo.structure.layers.activation import Activation
 from flogo.structure.layers.convolutional import Convolutional
-from flogo.structure.layers.flatten import Flatten
-from flogo.structure.layers.linear import Linear
-from flogo.structure.layers.pool import Pool
-from flogo.training.loss import FlogoLossFunction
-from flogo.training.optimizer import FlogoOptimizer
-from flogo.training.training import FlogoTraining
 from pytorch.architecture.forward import ForwardArchitecture
-from pytorch.structure.sections.link.flatten import FlattenSection
-from pytorch.structure.sections.processing.convolutional import ConvolutionalSection
-from pytorch.structure.sections.processing.feed_forward import FeedForwardSection
-from pytorch.training.forward_train import ForwardTraining
-from pytorch.training.test import Testing
+from flogo.layers.activation import Activation
+from flogo.layers.flatten import Flatten
+from flogo.layers.linear import Linear
+from flogo.layers.pool import Pool
+from flogo.discovery.hyperparameters.loss import Loss
+from flogo.discovery.hyperparameters.optimizer import Optimizer
+from flogo.discovery.training.training_task import TrainingTask
+from pytorch.model.sections.link.flatten import FlattenSection
+from pytorch.model.sections.processing.convolutional import ConvolutionalSection
+from pytorch.model.sections.processing.feed_forward import FeedForwardSection
+from pytorch.discovery.training_strategies.forward_strategy import ForwardStrategy
+from pytorch.discovery.test_task import Testing
 
 BATCH_SIZE = 50
 PATH = "C:/Users/Joel/Documents/Universidad/TercerCurso/SegundoSemestre/PracticasExternas/Proyectos/food"
@@ -50,9 +50,9 @@ feed_forward = [LinearBlock([
     Linear(200, 101)]
 )]
 
-convolutional_section = ConvolutionalSection(convolutional).build()
-flatten_section = FlattenSection(flatten).build()
-feed_forward_section = FeedForwardSection(feed_forward).build()
+convolutional_section = ConvolutionalSection(convolutional).__build()
+flatten_section = FlattenSection(flatten).__build()
+feed_forward_section = FeedForwardSection(feed_forward).__build()
 
 model = ForwardArchitecture(convolutional_section + flatten_section + feed_forward_section)
 
@@ -82,9 +82,9 @@ test_loader = torch.utils.data.DataLoader(datasets.food101.Food101(PATH,
                                           batch_size=100,
                                           shuffle=True)
 
-ForwardTraining(FlogoTraining(EPOCHS, model, training_loader=train_loader, validation_loader=train_loader,
-                              loss_function=FlogoLossFunction("MSELoss"),
-                              optimizer=FlogoOptimizer("SGD", model_params=model.parameters(), lr=0.1))).train()
+ForwardStrategy(TrainingTask(EPOCHS, model, training_dataset=train_loader, validation_dataset=train_loader,
+                             loss_function=Loss("MSELoss"),
+                             optimizer=Optimizer("SGD", model_params=model.parameters(), lr=0.1))).train()
 print("Testear")
 
 

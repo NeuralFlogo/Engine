@@ -1,4 +1,4 @@
-from pytorch.structure.sections.blocks.classification import ClassificationBlock
+from pytorch.structure.blocks.classification import ClassificationBlock
 
 
 class ClassificationSection:

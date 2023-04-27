@@ -1,4 +1,4 @@
-from pytorch.structure.sections.blocks.recurrent import RecurrentBlock
+from pytorch.structure.blocks.recurrent import RecurrentBlock
 
 
 class RecurrentSection:
@@ -8,5 +8,5 @@ class RecurrentSection:
             self.architecture += (RecurrentBlock(block) for _ in range(block.hidden_size))
 
     def build(self):
-        return [block.build() for block in self.architecture]
+        return [block.__build() for block in self.architecture]
 

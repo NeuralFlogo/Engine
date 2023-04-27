@@ -1,4 +1,4 @@
-from pytorch.structure.sections.blocks.convolutional import ConvolutionalBlock
+from pytorch.structure.blocks.convolutional import ConvolutionalBlock
 
 
 class ConvolutionalSection:

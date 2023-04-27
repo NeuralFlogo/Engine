@@ -15,8 +15,24 @@ from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.structure.sections.processing.convolutional import ConvolutionalSection
 from pytorch.structure.sections.processing.feed_forward import FeedForwardSection
 from pytorch.structure.sections.processing.residual import ResidualSection
+from pytorch.model.sections.link.flatten import FlattenSection
+from flogo.blocks.convolutional import FlogoConvolutionalBlock
+from flogo.blocks.flatten import FlogoFlattenBlock
+from flogo.blocks.linear import FlogoLinearBlock
+from flogo.blocks.residual import FlogoResidualBlock
+from flogo.layers.activation import Activation
+from flogo.layers.convolutional import Conv
+from flogo.layers.flatten import Flatten
+from flogo.layers.linear import Linear
+from flogo.layers.normalization import Normalization
+from flogo.layers.pool import Pool
+from pytorch.model.models.forward import ForwardModule
+from pytorch.model.sections.processing.convolutional import ConvolutionalSection
+from pytorch.model.sections.processing.feed_forward import FeedForwardSection
+from pytorch.model.sections.processing.residual import ResidualSection
 from pytorch.preprocesing.SourceTypeFunctions import images_source_type
 from pytorch.training.test import Testing
+from pytorch.discovery.test_task import Testing
 
 EPOCHS = 10
 train_loader, test_loader = images_source_type(256, 0, 1,
@@ -45,11 +61,11 @@ classification = FlattenBlock(Flatten(1, 3))
 
 linear = [LinearBlock([Linear(1722368, 2)])]
 
-residualSection = ResidualSection(residual).build()
-convolutional1Section = ConvolutionalSection(convolutional1).build()
-convolutional2Section = ConvolutionalSection(convolutional2).build()
-flatmapSection = FlattenSection(classification).build()
-linearSection = FeedForwardSection(linear).build()
+residualSection = ResidualSection(residual).__build()
+convolutional1Section = ConvolutionalSection(convolutional1).__build()
+convolutional2Section = ConvolutionalSection(convolutional2).__build()
+flatmapSection = FlattenSection(classification).__build()
+linearSection = FeedForwardSection(linear).__build()
 
 # architectures = ForwardModule(convolutional1Section + residualSection + convolutional2Section + flatmapSection + linearSection)
 # ForwardTraining(FlogoTraining(EPOCHS, architectures, training_loader=train_loader, validation_loader=train_loader,
