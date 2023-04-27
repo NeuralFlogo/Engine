@@ -1,6 +1,6 @@
 from torch import nn
 
-from model.flogo.training.loss import FlogoLossFunction
+from flogo.training.loss import FlogoLossFunction
 
 
 class LossFunction:

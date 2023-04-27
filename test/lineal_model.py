@@ -1,14 +1,14 @@
-from model.flogo.blocks.classification import FlogoClassificationBlock
-from model.flogo.blocks.linear import FlogoLinearBlock
-from model.flogo.layers.activation import Activation
-from model.flogo.layers.classification import Classification
-from model.flogo.layers.linear import Linear
-from model.flogo.training.loss import FlogoLossFunction
-from model.flogo.training.optimizer import FlogoOptimizer
-from model.flogo.training.training import FlogoTraining
-from pytorch.model.models.forward import ForwardModule
-from pytorch.model.sections.link.classification import ClassificationSection
-from pytorch.model.sections.processing.feed_forward import FeedForwardSection
+from flogo.structure.blocks.classification import ClassificationBlock
+from flogo.structure.blocks.linear import LinearBlock
+from flogo.structure.layers.activation import Activation
+from flogo.structure.layers.classification import Classification
+from flogo.structure.layers.linear import Linear
+from flogo.training.loss import FlogoLossFunction
+from flogo.training.optimizer import FlogoOptimizer
+from flogo.training.training import FlogoTraining
+from pytorch.architecture.forward import ForwardArchitecture
+from pytorch.structure.sections.link.classification import ClassificationSection
+from pytorch.structure.sections.processing.feed_forward import FeedForwardSection
 from pytorch.preprocesing.SourceTypeFunctions import numbers_source_type_csv
 from pytorch.training.test import Testing
 from pytorch.training.forward_train import ForwardTraining
@@ -17,7 +17,7 @@ BATCH_SIZE = 50
 EPOCHS = 20
 parameters = ["one-hot"] * 22
 
-feedforward = [FlogoLinearBlock([
+feedforward = [LinearBlock([
     Linear(110, 150),
     Activation("ReLU"),
     Linear(150, 200),
@@ -31,12 +31,12 @@ feedforward = [FlogoLinearBlock([
     Linear(10, 2)
 ])]
 
-classification = FlogoClassificationBlock(Classification("Softmax", 1))
+classification = ClassificationBlock(Classification("Softmax", 1))
 
 linear_section = FeedForwardSection(feedforward).build()
 classification_section = ClassificationSection(classification).build()
 
-model = ForwardModule(linear_section + classification_section)
+model = ForwardArchitecture(linear_section + classification_section)
 
 train_data_loader, test_data_loader = numbers_source_type_csv("C:/Users/Joel/Desktop/breast cancer/mushrooms.csv",
                                                               parameters, BATCH_SIZE)

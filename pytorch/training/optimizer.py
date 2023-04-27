@@ -1,6 +1,6 @@
 from torch import optim
 
-from model.flogo.training.optimizer import FlogoOptimizer
+from flogo.training.optimizer import FlogoOptimizer
 
 
 class Optimizer:

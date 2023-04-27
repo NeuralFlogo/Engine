@@ -2,21 +2,21 @@ import torch
 from torchvision import datasets
 from torchvision.transforms import transforms
 
-from model.flogo.blocks.convolutional import FlogoConvolutionalBlock
-from model.flogo.blocks.flatten import FlogoFlattenBlock
-from model.flogo.blocks.linear import FlogoLinearBlock
-from model.flogo.layers.activation import Activation
-from model.flogo.layers.convolutional import Conv
-from model.flogo.layers.flatten import Flatten
-from model.flogo.layers.linear import Linear
-from model.flogo.layers.pool import Pool
-from model.flogo.training.loss import FlogoLossFunction
-from model.flogo.training.optimizer import FlogoOptimizer
-from model.flogo.training.training import FlogoTraining
-from pytorch.model.models.forward import ForwardModule
-from pytorch.model.sections.link.flatten import FlattenSection
-from pytorch.model.sections.processing.convolutional import ConvolutionalSection
-from pytorch.model.sections.processing.feed_forward import FeedForwardSection
+from flogo.structure.blocks.convolutional import ConvolutionalBlock
+from flogo.structure.blocks.flatten import FlattenBlock
+from flogo.structure.blocks.linear import LinearBlock
+from flogo.structure.layers.activation import Activation
+from flogo.structure.layers.convolutional import Convolutional
+from flogo.structure.layers.flatten import Flatten
+from flogo.structure.layers.linear import Linear
+from flogo.structure.layers.pool import Pool
+from flogo.training.loss import FlogoLossFunction
+from flogo.training.optimizer import FlogoOptimizer
+from flogo.training.training import FlogoTraining
+from pytorch.architecture.forward import ForwardArchitecture
+from pytorch.structure.sections.link.flatten import FlattenSection
+from pytorch.structure.sections.processing.convolutional import ConvolutionalSection
+from pytorch.structure.sections.processing.feed_forward import FeedForwardSection
 from pytorch.training.forward_train import ForwardTraining
 from pytorch.training.test import Testing
 
@@ -24,27 +24,27 @@ BATCH_SIZE = 50
 PATH = "C:/Users/Joel/Documents/Universidad/TercerCurso/SegundoSemestre/PracticasExternas/Proyectos/food"
 EPOCHS = 1
 
-convolutional = [FlogoConvolutionalBlock([
-    Conv(3, 50),
+convolutional = [ConvolutionalBlock([
+    Convolutional(3, 50),
     Activation("ReLU"),
-    Conv(50, 100),
-    Activation("ReLU"),
-    Pool("Max"),
-    Conv(100, 250),
-    Activation("ReLU"),
-    Conv(250, 500),
+    Convolutional(50, 100),
     Activation("ReLU"),
     Pool("Max"),
-    Conv(500, 250),
+    Convolutional(100, 250),
     Activation("ReLU"),
-    Conv(250, 100),
+    Convolutional(250, 500),
+    Activation("ReLU"),
+    Pool("Max"),
+    Convolutional(500, 250),
+    Activation("ReLU"),
+    Convolutional(250, 100),
     Activation("ReLU"),
     Pool("Max")
 ])]
 
-flatten = FlogoFlattenBlock(Flatten(1, 3))
+flatten = FlattenBlock(Flatten(1, 3))
 
-feed_forward = [FlogoLinearBlock([
+feed_forward = [LinearBlock([
     Linear(400, 200),
     Activation("ReLU"),
     Linear(200, 101)]
@@ -54,7 +54,7 @@ convolutional_section = ConvolutionalSection(convolutional).build()
 flatten_section = FlattenSection(flatten).build()
 feed_forward_section = FeedForwardSection(feed_forward).build()
 
-model = ForwardModule(convolutional_section + flatten_section + feed_forward_section)
+model = ForwardArchitecture(convolutional_section + flatten_section + feed_forward_section)
 
 train_loader = torch.utils.data.DataLoader(datasets.food101.Food101(PATH,
                                                                     download=True,

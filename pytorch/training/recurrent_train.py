@@ -5,7 +5,7 @@ from pathlib import Path
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-from model.flogo.training.training import FlogoTraining
+from flogo.training.training import FlogoTraining
 from pytorch.training.loss import LossFunction
 from pytorch.training.optimizer import Optimizer
 
@@ -88,8 +88,8 @@ class RecurrentTrain:
                                 epoch + 1)
 
     def __save_model(self, epoch):
-        Path('models').mkdir(parents=True, exist_ok=True)
-        torch.save(self.model.state_dict(), 'models/model_{}_{}'.format(self.timestamp, epoch))
+        Path('architectures').mkdir(parents=True, exist_ok=True)
+        torch.save(self.model.state_dict(), 'architectures/model_{}_{}'.format(self.timestamp, epoch))
 
     def __log_to_tensorboard(self, training_count, field, value):
         self.writer.add_scalar(field, value, training_count)
