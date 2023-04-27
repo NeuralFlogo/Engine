@@ -1,37 +1,21 @@
 import torch.nn
 
-from pytorch.structure.sections.link.flatten import FlattenSection
 from flogo.structure.blocks.convolutional import ConvolutionalBlock
 from flogo.structure.blocks.flatten import FlattenBlock
 from flogo.structure.blocks.linear import LinearBlock
 from flogo.structure.blocks.residual import ResidualBlock
-from flogo.structure.layers.activation import Activation
 from flogo.structure.layers.convolutional import Convolutional
-from flogo.structure.layers.flatten import Flatten
-from flogo.structure.layers.linear import Linear
-from flogo.structure.layers.normalization import Normalization
-from flogo.structure.layers.pool import Pool
 from pytorch.architecture.forward import ForwardArchitecture
-from pytorch.structure.sections.processing.convolutional import ConvolutionalSection
-from pytorch.structure.sections.processing.feed_forward import FeedForwardSection
-from pytorch.structure.sections.processing.residual import ResidualSection
 from pytorch.model.sections.link.flatten import FlattenSection
-from flogo.blocks.convolutional import FlogoConvolutionalBlock
-from flogo.blocks.flatten import FlogoFlattenBlock
-from flogo.blocks.linear import FlogoLinearBlock
-from flogo.blocks.residual import FlogoResidualBlock
 from flogo.layers.activation import Activation
-from flogo.layers.convolutional import Conv
 from flogo.layers.flatten import Flatten
 from flogo.layers.linear import Linear
 from flogo.layers.normalization import Normalization
 from flogo.layers.pool import Pool
-from pytorch.model.models.forward import ForwardModule
 from pytorch.model.sections.processing.convolutional import ConvolutionalSection
 from pytorch.model.sections.processing.feed_forward import FeedForwardSection
 from pytorch.model.sections.processing.residual import ResidualSection
 from pytorch.preprocesing.SourceTypeFunctions import images_source_type
-from pytorch.training.test import Testing
 from pytorch.discovery.test_task import Testing
 
 EPOCHS = 10
@@ -73,6 +57,6 @@ linearSection = FeedForwardSection(linear).__build()
 #                               optimizer=FlogoOptimizer("SGD", model_params=architectures.parameters(), lr=0.01))).train()
 
 model = ForwardArchitecture(convolutional1Section + residualSection + convolutional2Section + flatmapSection + linearSection)
-model.load_state_dict(torch.load("/Users/jose_juan/PycharmProjects/Flogo/test/models/model_20230426_085928_3"))
+model.load_state_dict(torch.load("/Users/jose_juan/PycharmProjects/Flogo/implementations/models/model_20230426_085928_3"))
 model.eval()
-Testing(model, test_loader).test()
+Testing(model, test_loader).execute()

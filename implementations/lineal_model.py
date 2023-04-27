@@ -1,13 +1,13 @@
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-from flogo.discovery.training.training_task import TrainingTask
+from flogo.discovery.training_task import TrainingTask
 from flogo.structure.blocks.classification import ClassificationBlock
 from flogo.structure.blocks.linear import LinearBlock
 from flogo.structure.layers.activation import Activation
 from flogo.structure.layers.classification import Classification
 from flogo.structure.layers.linear import Linear
 from pytorch.architecture.forward import ForwardArchitecture
-from pytorch.discovery.training_strategies.forward_strategy import ForwardStrategy
+from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
 from pytorch.discovery.test_task import Testing
 from pytorch.preprocesing.SourceTypeFunctions import numbers_source_type_csv
 from pytorch.structure.sections.link.classification import ClassificationSection
@@ -41,8 +41,8 @@ model = ForwardArchitecture(linear_section + classification_section)
 train_data_loader, test_data_loader = numbers_source_type_csv("C:/Users/Joel/Desktop/breast cancer/mushrooms.csv",
                                                               parameters, BATCH_SIZE)
 
-ForwardStrategy(TrainingTask(EPOCHS, model, training_loader=train_data_loader, validation_dataset=train_data_loader,
-                             loss_function=Loss("MSELoss"),
-                             optimizer=Optimizer("SGD", model_params=model.parameters(), lr=0.1))).train()
+ForwardTrainer(TrainingTask(EPOCHS, model, training_loader=train_data_loader, validation_dataset=train_data_loader,
+                            loss_function=Loss("MSELoss"),
+                            optimizer=Optimizer("SGD", model_params=model.parameters(), lr=0.1))).train()
 
-Testing(model, test_data_loader).test()
+Testing(model, test_data_loader).execute()

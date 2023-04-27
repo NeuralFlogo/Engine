@@ -5,7 +5,7 @@ from pathlib import Path
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-from flogo.discovery.training.training_task import TrainingTask
+from flogo.discovery.training_task import TrainingTask
 
 
 class RecurrentTrain:
