@@ -1,12 +1,4 @@
-from flogo.structure.blocks import convolutional
-from flogo.structure.layers.activation import Activation
-from flogo.structure.layers.convolutional import Convolutional
-from flogo.structure.layers import normalization
-from flogo.structure.layers.pool import Pool as PoolComp
-from pytorch.structure.layers.activation import PActivation
-from pytorch.structure.layers.convolution import PConvolutional
-from pytorch.structure.layers.normalization import PNormalization
-from pytorch.structure.layers.pool import PPool
+from pytorch.structure.sections.blocks.convolutional import ConvolutionalBlock
 
 
 class ConvolutionalSection:
@@ -17,16 +9,3 @@ class ConvolutionalSection:
         result = []
         for block in self.section: result.extend(block.build())
         return result
-
-
-class ConvolutionalBlock:
-    def __init__(self, block: convolutional.ConvolutionalBlock):
-        self.content = []
-        for layer in block.content:
-            if type(layer) == Convolutional: self.content.append(PConvolutional(layer))
-            if type(layer) == Activation: self.content.append(PActivation(layer))
-            if type(layer) == PoolComp: self.content.append(PPool(layer))
-            if type(layer) == normalization.Normalization: self.content.append(PNormalization(layer))
-
-    def build(self):
-        return [layer.build() for layer in self.content]

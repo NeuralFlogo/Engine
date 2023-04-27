@@ -1,5 +1,4 @@
-from flogo.structure.blocks import flatten
-from pytorch.structure.layers.flatten import PFlatten
+from pytorch.structure.sections.blocks.flatten import FlattenBlock
 
 
 class FlattenSection:
@@ -8,11 +7,3 @@ class FlattenSection:
 
     def build(self):
         return [self.flatten_block.build()]
-
-
-class FlattenBlock:
-    def __init__(self, block: flatten.FlattenBlock):
-        self.flatten = block.flatten
-
-    def build(self):
-        return PFlatten(self.flatten).build()

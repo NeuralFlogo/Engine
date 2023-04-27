@@ -1,5 +1,4 @@
-from flogo.structure.blocks import classification
-from pytorch.structure.layers.classification import PClassification
+from pytorch.structure.sections.blocks.classification import ClassificationBlock
 
 
 class ClassificationSection:
@@ -8,11 +7,3 @@ class ClassificationSection:
 
     def build(self):
         return [self.classification_block.build()]
-
-
-class ClassificationBlock:
-    def __init__(self, block: classification.ClassificationBlock):
-        self.function = PClassification(block.classification)
-
-    def build(self):
-        return self.function.build()
