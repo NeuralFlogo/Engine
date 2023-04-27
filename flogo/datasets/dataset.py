@@ -1,4 +1,4 @@
-class FlogoDataset:
+class Dataset:
 
     def __init__(self, inputs, outputs, mapper, batch_size):
         self.inputs = inputs
@@ -37,16 +37,16 @@ class FlogoDataset:
 
     def divide_to(self, test_proportion=0, validation_proportion=0):
         test_position, validation_position = self.__get_positions(test_proportion, validation_proportion)
-        train_dataset = FlogoDataset(self.inputs[:test_position],
+        train_dataset = Dataset(self.inputs[:test_position],
                                      self.outputs[:test_position],
+                                self.mapper,
+                                self.batch_size)
+        test_dataset = Dataset(self.inputs[test_position:validation_position],
+                                    self.outputs[test_position:validation_position],
+                               self.mapper,
+                               self.batch_size)
+        validation_dataset = Dataset(self.inputs[validation_position:],
+                                          self.outputs[validation_position:],
                                      self.mapper,
                                      self.batch_size)
-        test_dataset = FlogoDataset(self.inputs[test_position:validation_position],
-                                    self.outputs[test_position:validation_position],
-                                    self.mapper,
-                                    self.batch_size)
-        validation_dataset = FlogoDataset(self.inputs[validation_position:],
-                                          self.outputs[validation_position:],
-                                          self.mapper,
-                                          self.batch_size)
         return train_dataset, test_dataset, validation_dataset

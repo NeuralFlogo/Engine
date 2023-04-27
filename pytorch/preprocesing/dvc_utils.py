@@ -1,6 +1,4 @@
-import csv
-
-from pytorch.datasets.FlogoDataset import FlogoDataset
+from flogo.datasets.dataset import Dataset
 from pytorch.datasets.transformers.ImageDirectoryNumpyTransformer import ImageDirectoryNumpyTransformer
 from pytorch.datasets.transformers.NumericNumpyTransformer import NumericNumpyTransformer
 from pytorch.preprocesing.ImageProcessor import preprocess_images
@@ -18,10 +16,10 @@ def __process_images(path, mapper, parameters):
                                            parameters[IMAGE_MEAN_PARAMETER],
                                            parameters[IMAGEN_STD_PARAMETER])
     transformer = ImageDirectoryNumpyTransformer(path, image_preprocessor, True)
-    return FlogoDataset(transformer.transform_inputs(),
-                        transformer.transform_outputs(),
-                        mapper,
-                        parameters[BATCH_SIZE_PARAMETER])
+    return Dataset(transformer.transform_inputs(),
+                   transformer.transform_outputs(),
+                   mapper,
+                   parameters[BATCH_SIZE_PARAMETER])
 
 
 def read_csv(path):
@@ -33,10 +31,10 @@ def __process_numeric(path, mapper, parameters):
     data_array = __get_array_from(read_csv(path))
     transformer = NumericNumpyTransformer(data_array, parameters[PREPROCESSING_PARAMETER],
                                           parameters[SHUFFLE_PARAMETER])
-    return FlogoDataset(transformer.transform_inputs(),
-                        transformer.transform_outputs(),
-                        mapper,
-                        parameters[BATCH_SIZE_PARAMETER])
+    return Dataset(transformer.transform_inputs(),
+                   transformer.transform_outputs(),
+                   mapper,
+                   parameters[BATCH_SIZE_PARAMETER])
 
 
 def __process_text(path, mapper, parameters):
