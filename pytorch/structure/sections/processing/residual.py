@@ -8,7 +8,7 @@ from pytorch.structure.layers.normalization import PNormalization
 
 class ResidualSection:
     def __init__(self, section):
-        self.section = [Stage(stage) for stage in section]
+        self.section = [Stage(stage) for stage in section.section]
 
     def build(self):
         result = []

@@ -6,7 +6,7 @@ from pytorch.structure import layers
 
 class FeedForwardSection:
     def __init__(self, section):
-        self.section = [LinearBlock(block) for block in section]
+        self.section = [LinearBlock(block) for block in section.section]
 
     def build(self):
         result = []

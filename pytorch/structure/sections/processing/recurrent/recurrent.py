@@ -5,7 +5,7 @@ from pytorch.structure.sections.processing.recurrent.recurrent_pytorch_units imp
 class RecurrentSection:
     def __init__(self, section):
         self.architecture = []
-        for block in section:
+        for block in section.section:
             self.architecture += (RecurrentBlock(block) for _ in range(block.hidden_size))
 
     def build(self):
