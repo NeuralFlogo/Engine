@@ -1,15 +1,15 @@
 from flogo.structure.sections.link.flatten import FlattenSection
 from flogo.structure.sections.processing.convolutional import ConvolutionalSection
-from flogo.structure.sections.processing.feed_forward import FeedForward
+from flogo.structure.sections.processing.feed_forward import LinearSection
 from flogo.structure.sections.processing.recurrent import RecurrentSection
 from flogo.structure.sections.processing.residual import ResidualSection
-from pytorch.structure.sections.link.classification import ClassificationSection
+from flogo.structure.sections.link.classificationsection import ClassificationSection
 import pytorch.structure.sections.processing.convolutional as convolutional
 import pytorch.structure.sections.processing.feed_forward as feed_forward
 import pytorch.structure.sections.processing.residual as residual
-import pytorch.structure.sections.processing.recurrent.recurrent as recurrent
 import pytorch.structure.sections.link.classification as classification
 import pytorch.structure.sections.link.flatten as flatten
+from pytorch.structure.sections.processing import recurrent
 
 
 class PytorchGenerator:
@@ -21,7 +21,7 @@ class PytorchGenerator:
 
     def __switch(self, section):
         if type(section) == ConvolutionalSection: return convolutional.ConvolutionalSection(section).build()
-        if type(section) == FeedForward: return feed_forward.FeedForwardSection(section).build()
+        if type(section) == LinearSection: return feed_forward.FeedForwardSection(section).build()
         if type(section) == RecurrentSection: return recurrent.RecurrentSection(section).build()
         if type(section) == ResidualSection: return residual.ResidualSection(section).build()
         if type(section) == ClassificationSection: return classification.ClassificationSection(section).build()

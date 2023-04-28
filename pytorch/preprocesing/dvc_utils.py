@@ -1,5 +1,5 @@
 from flogo.datasets.dataset import Dataset
-from pytorch.datasets.transformers.ImageDirectoryNumpyTransformer import ImageDirectoryNumpyTransformer
+from pytorch.datasets.transformers.ImageDirectoryNumpyTransformer import ImageDirectoryProcessor
 from pytorch.datasets.transformers.NumericNumpyTransformer import NumericNumpyTransformer
 from pytorch.preprocesing.ImageProcessor import preprocess_images
 from pytorch.preprocesing.ParametersName import *
@@ -15,7 +15,7 @@ def __process_images(path, mapper, parameters):
     image_preprocessor = preprocess_images(parameters[IMAGE_SIZE_PARAMETER],
                                            parameters[IMAGE_MEAN_PARAMETER],
                                            parameters[IMAGEN_STD_PARAMETER])
-    transformer = ImageDirectoryNumpyTransformer(path, image_preprocessor, True)
+    transformer = ImageDirectoryProcessor(path, image_preprocessor, True)
     return Dataset(transformer.transform_inputs(),
                    transformer.transform_outputs(),
                    mapper,

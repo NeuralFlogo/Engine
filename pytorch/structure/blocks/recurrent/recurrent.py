@@ -1,5 +1,5 @@
 from flogo.structure.blocks import recurrent
-from pytorch.structure.sections.processing.recurrent.recurrent_pytorch_units import LSTMCell, RNNCell, GRUCell
+from pytorch.structure.blocks.recurrent.recurrent_pytorch_units import LSTMCell, RNNCell, GRUCell
 
 
 class RecurrentBlock:

@@ -18,11 +18,9 @@ class ImageDirectoryProcessor:
             self.__shuffle()
 
     def __shuffle(self):
-        indexs = np.arange(len(self.labels))
-        np.random.shuffle(indexs)
-
-        self.labels = self.labels[indexs]
-        self.inputs = self.inputs[indexs]
+        index = np.random.permutation(len(self.labels))
+        self.labels = self.labels[index]
+        self.inputs = self.inputs[index]
 
     def __extract_data_from_dir(self):
         for directory in os.listdir(self.data_dir):
@@ -30,6 +28,8 @@ class ImageDirectoryProcessor:
                 image = self.__read_image(os.path.join(self.data_dir, directory, file))
                 self.labels.append(directory)
                 self.inputs.append(image)
+        self.labels = np.array(self.labels)
+        self.inputs = np.array(self.inputs)
 
     def __read_image(self, path):
         image = np.array(Image.open(path))

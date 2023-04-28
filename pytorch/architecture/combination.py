@@ -2,12 +2,12 @@ from torch.nn import Module
 
 
 class CombinationArchitecture(Module):
-    def __init__(self, *modules: Module):
+    def __init__(self, *architectures: Module):
         super().__init__()
-        self.modules = modules
+        self.architecture = architectures
 
     def forward(self, x):
-        for module in self.modules:
-            x = module.forward(x)
+        for architecture in self.architecture:
+            x = architecture.forward(x)
         return x
 

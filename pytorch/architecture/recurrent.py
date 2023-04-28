@@ -2,9 +2,9 @@ from torch.nn import Module, ModuleList
 
 
 class RecurrentArchitecture(Module):
-    def __init__(self, architecture):
+    def __init__(self, structure):
         super().__init__()
-        self.architecture = ModuleList(architecture)
+        self.architecture = ModuleList(structure)
 
     def forward(self, x: list):
         result = []
@@ -17,9 +17,9 @@ class RecurrentArchitecture(Module):
 
 
 class LstmArchitecture(Module):
-    def __init__(self, architecture):
+    def __init__(self, structure):
         super().__init__()
-        self.architecture = ModuleList(architecture)
+        self.architecture = ModuleList(structure)
 
     def forward(self, x: list):
         result = []

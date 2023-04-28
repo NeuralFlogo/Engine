@@ -1,30 +1,46 @@
-import torch
-from torchvision import datasets
-from torchvision.transforms import transforms
-
-from flogo.structure.blocks.convolutional import ConvolutionalBlock
-from flogo.structure.blocks.flatten import FlattenBlock
-from flogo.structure.blocks.linear import LinearBlock
-from flogo.structure.layers.convolutional import Convolutional
-from pytorch.architecture.forward import ForwardArchitecture
-from flogo.layers.activation import Activation
-from flogo.layers.flatten import Flatten
-from flogo.layers.linear import Linear
-from flogo.layers.pool import Pool
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
 from flogo.discovery.training_task import TrainingTask
-from pytorch.model.sections.link.flatten import FlattenSection
-from pytorch.model.sections.processing.convolutional import ConvolutionalSection
-from pytorch.model.sections.processing.feed_forward import FeedForwardSection
+from flogo.structure.blocks.classification import ClassificationBlock
+from flogo.structure.blocks.convolutional import ConvolutionalBlock
+from flogo.structure.blocks.flatten import FlattenBlock
+from flogo.structure.blocks.linear import LinearBlock
+from flogo.structure.layers.activation import Activation
+from flogo.structure.layers.classification import Classification
+from flogo.structure.layers.convolutional import Convolutional
+from flogo.structure.layers.flatten import Flatten
+from flogo.structure.layers.linear import Linear
+from flogo.structure.layers.pool import Pool
+from flogo.structure.sections.link.classificationsection import ClassificationSection
+from flogo.structure.sections.link.flatten import FlattenSection
+from flogo.structure.sections.processing.convolutional import ConvolutionalSection
+from flogo.structure.sections.processing.feed_forward import LinearSection
+from flogo.structure.structure_factory import StructureFactory
+from pytorch.architecture.forward import ForwardArchitecture
+from pytorch.datasets.mappers.PytorchMapper import PytorchMapper
+from pytorch.discovery.hyperparameters.loss import PytorchLoss
+from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
-from pytorch.discovery.test_task import Testing
+from pytorch.preprocesing.dvc_utils import read_from_dvc
+from pytorch.structure.generator import PytorchGenerator
 
-BATCH_SIZE = 50
-PATH = "C:/Users/Joel/Documents/Universidad/TercerCurso/SegundoSemestre/PracticasExternas/Proyectos/food"
-EPOCHS = 1
+epochs = 200
 
-convolutional = [ConvolutionalBlock([
+parameters = {
+    "shuffle": True,
+    "size": 50,
+    "mean": 0,
+    "std": 1,
+    "batch_size": 2
+}
+
+path = "/Users/jose_juan/Desktop/prueba"
+
+dataset = read_from_dvc(path, "images", PytorchMapper(),  parameters)
+
+train_dataset, test_dataset, validation_dataset = dataset.divide_to(0.2, 0.2)
+
+convolutionalSection = ConvolutionalSection([ConvolutionalBlock([
     Convolutional(3, 50),
     Activation("ReLU"),
     Convolutional(50, 100),
@@ -39,54 +55,31 @@ convolutional = [ConvolutionalBlock([
     Activation("ReLU"),
     Convolutional(250, 100),
     Activation("ReLU"),
-    Pool("Max")
-])]
+    Pool("Max")])])
 
-flatten = FlattenBlock(Flatten(1, 3))
+flattenSection = FlattenSection(FlattenBlock(Flatten(1, 3)))
 
-feed_forward = [LinearBlock([
-    Linear(400, 200),
+linearSection = LinearSection([LinearBlock([
+    Linear(400, 150),
     Activation("ReLU"),
-    Linear(200, 101)]
-)]
+    Linear(150, 200),
+    Activation("ReLU"),
+    Linear(200, 100),
+    Activation("ReLU"),
+    Linear(100, 50),
+    Activation("ReLU"),
+    Linear(50, 10),
+    Activation("ReLU"),
+    Linear(10, 2)])])
 
-convolutional_section = ConvolutionalSection(convolutional).__build()
-flatten_section = FlattenSection(flatten).__build()
-feed_forward_section = FeedForwardSection(feed_forward).__build()
+classificationSection = ClassificationSection(ClassificationBlock(Classification("Softmax", 1)))
 
-model = ForwardArchitecture(convolutional_section + flatten_section + feed_forward_section)
+structure = StructureFactory([convolutionalSection, flattenSection, linearSection, classificationSection],
+                             PytorchGenerator()).create_structure()
 
-train_loader = torch.utils.data.DataLoader(datasets.food101.Food101(PATH,
-                                                                    download=True,
-                                                                    transform=transforms.Compose([
-                                                                        transforms.ToTensor(),
-                                                                        transforms.Resize(size=(50, 50)),
-                                                                        # first, convert image to PyTorch tensor
-                                                                        transforms.Normalize([0.485, 0.456, 0.406],
-                                                                                             [0.229, 0.224, 0.225])
+model = ForwardArchitecture(structure)
 
-                                                                        # normalize inputs
-                                                                    ])),
-                                           batch_size=100,
-                                           shuffle=True)
+print(model)
 
-# download and transform implementations dataset
-test_loader = torch.utils.data.DataLoader(datasets.food101.Food101(PATH,
-                                                                   download=True,
-                                                                   transform=transforms.Compose([
-                                                                       transforms.ToTensor(),
-                                                                       transforms.Resize(size=(50, 50)),
-                                                                       transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-                                                                       # normalize inputs
-                                                                   ])),
-                                          batch_size=100,
-                                          shuffle=True)
-
-ForwardTrainer(TrainingTask(EPOCHS, model, training_dataset=train_loader, validation_dataset=train_loader,
-                            loss_function=Loss("MSELoss"),
-                            optimizer=Optimizer("SGD", model_params=model.parameters(), lr=0.1))).train()
-print("Testear")
-
-
-
-Testing(model, test_loader).execute()
+TrainingTask(epochs, model, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+             Optimizer(PytorchOptimizer("SGD", model.parameters(), 1)), ForwardTrainer).execute()

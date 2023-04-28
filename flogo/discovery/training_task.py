@@ -18,6 +18,5 @@ class TrainingTask:
                      self.training_dataset,
                      self.validation_dataset,
                      self.loss_function,
-                     self.optimizer,
-                     self.trainer
+                     self.optimizer
                      ).train()

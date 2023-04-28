@@ -53,10 +53,10 @@ class ForwardTrainer:
         return loss / self.epochs
 
     def __compute_accuracy(self, preds, labels):
-        return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1))).item()
+        return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1)))
 
     def __to_percentage(self, value, size):
-        return 100 * value / len(size)
+        return 100 * value / size
 
     def __log_epoch_accuracy(self, epoch, correct):
         print('Epoch {} Accuracy: {}/{} ({:.0f}%)'

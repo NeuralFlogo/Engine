@@ -1,4 +1,4 @@
-from pytorch.structure.blocks.recurrent import RecurrentBlock
+from pytorch.structure.blocks.recurrent.recurrent import RecurrentBlock
 
 
 class RecurrentSection:
