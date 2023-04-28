@@ -3,4 +3,4 @@ class PrecisionMonitor:
         self.threshold = threshold
 
     def monitor(self, loss, accuracy):
-        return accuracy >= self.threshold
+        return accuracy < self.threshold

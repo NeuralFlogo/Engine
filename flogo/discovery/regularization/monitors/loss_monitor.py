@@ -8,4 +8,4 @@ class LossMonitor:
 
     def monitor(self, accuracy, loss) -> bool:
         self.history.append(loss)
-        return self.history.pop(0) - min(self.history) <= self.improvement_threshold
+        return self.history.pop(0) - min(self.history) >= self.improvement_threshold

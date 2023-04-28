@@ -24,7 +24,7 @@ class ForwardTrainer:
             vloss, hit = self.__validate_model()
             self.__log_epoch_losses(epoch, loss, vloss)
             self.__log_epoch_accuracy(epoch, hit)
-            if not self.early_stopping.check(vloss, self.__to_percentage(hit, len(self.validation_dataset))):
+            if not self.early_stopping.check(self.__to_percentage(hit, len(self.validation_dataset)), vloss):
                 return self.__to_percentage(hit, len(self.validation_dataset))
         return self.__to_percentage(hit, len(self.validation_dataset))
 
@@ -62,7 +62,7 @@ class ForwardTrainer:
         return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1)))
 
     def __to_percentage(self, value, size):
-        return 100 * value / size
+        return (100 * value / size).item()
 
     def __log_epoch_accuracy(self, epoch, correct):
         print('Epoch {} Accuracy: {}/{} ({:.0f}%)'

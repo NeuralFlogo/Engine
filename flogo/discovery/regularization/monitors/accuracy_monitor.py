@@ -5,4 +5,4 @@ class AccuracyMonitor:
 
     def monitor(self, accuracy, loss) -> bool:
         self.history.append(accuracy)
-        return self.history.pop(0) - max(self.history) >= self.improvement_threshold
+        return max(self.history) - self.history.pop(0) >= self.improvement_threshold
