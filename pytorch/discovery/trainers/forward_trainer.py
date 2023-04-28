@@ -18,8 +18,9 @@ class ForwardTrainer:
             self.model.train(True)
             loss = self.__train_model()
             self.model.train(False)
-            vloss = self.__validate_model()
+            vloss, correct = self.__validate_model()
             self.__log_epoch_losses(epoch, loss, vloss)
+            self.__log_epoch_accuracy(epoch, correct)
 
     def __train_model(self):
         running_loss = 0.
@@ -34,23 +35,30 @@ class ForwardTrainer:
 
     def __validate_model(self):
         running_loss = 0.
+        correct = 0
         for i, data in enumerate(self.validation_dataset, start=1):
             inputs, labels = data
             preds = self.__evaluate(inputs)
             running_loss += self.loss_function.compute(preds, labels).item()
-        return self.__epoch_average_loss(running_loss)
+            correct += self.__compute_accuracy(preds, labels)
+        return self.__epoch_average_loss(running_loss), correct
 
     def __evaluate(self, inputs):
         return self.model(inputs)
 
     def __log_epoch_losses(self, epoch, train_loss, val_loss):
-        print('Training - Validation Loss: Training = {}, Validation = {}\n'.format(train_loss, val_loss, epoch + 1))
+        print('Epoch {} Training - Validation Loss: Training = {}, Validation = {}'.format(epoch + 1, train_loss, val_loss))
 
     def __epoch_average_loss(self, loss):
         return loss / self.epochs
 
-    def compute_accuracy(self, preds, labels):
+    def __compute_accuracy(self, preds, labels):
         return torch.sum(torch.eq(torch.argmax(preds, dim=1), torch.argmax(labels, dim=1))).item()
 
-    def to_percentage(self, value, batch):
-        return 100 * value / len(batch)
+    def __to_percentage(self, value, size):
+        return 100 * value / len(size)
+
+    def __log_epoch_accuracy(self, epoch, correct):
+        print('Epoch {} Accuracy: {}/{} ({:.0f}%)'
+              .format(epoch + 1, correct, len(self.validation_dataset),
+                      self.__to_percentage(correct, len(self.validation_dataset))))
