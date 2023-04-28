@@ -2,25 +2,31 @@ import torch
 
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
+from flogo.discovery.regularization.early_stopping import EarlyStopping
 
 
 class ForwardTrainer:
-    def __init__(self, epochs: int, model, training_dataset, validation_dataset, loss_function: Loss, optimizer: Optimizer):
+    def __init__(self, epochs: int, model, training_dataset, validation_dataset, loss_function: Loss, optimizer: Optimizer, early_stopping: EarlyStopping):
         self.epochs = epochs
         self.model = model
         self.training_dataset = training_dataset
         self.validation_dataset = validation_dataset
         self.loss_function = loss_function
         self.optimizer = optimizer
+        self.early_stopping = early_stopping
 
     def train(self):
+        hit = 0
         for epoch in range(self.epochs):
             self.model.train(True)
             loss = self.__train_model()
             self.model.train(False)
-            vloss, correct = self.__validate_model()
+            vloss, hit = self.__validate_model()
             self.__log_epoch_losses(epoch, loss, vloss)
-            self.__log_epoch_accuracy(epoch, correct)
+            self.__log_epoch_accuracy(epoch, hit)
+            if not self.early_stopping.check(vloss, self.__to_percentage(hit, len(self.validation_dataset))):
+                return self.__to_percentage(hit, len(self.validation_dataset))
+        return self.__to_percentage(hit, len(self.validation_dataset))
 
     def __train_model(self):
         running_loss = 0.
@@ -35,13 +41,13 @@ class ForwardTrainer:
 
     def __validate_model(self):
         running_loss = 0.
-        correct = 0
+        hit = 0
         for i, data in enumerate(self.validation_dataset, start=1):
             inputs, labels = data
             preds = self.__evaluate(inputs)
             running_loss += self.loss_function.compute(preds, labels).item()
-            correct += self.__compute_accuracy(preds, labels)
-        return self.__epoch_average_loss(running_loss), correct
+            hit += self.__compute_accuracy(preds, labels)
+        return self.__epoch_average_loss(running_loss), hit
 
     def __evaluate(self, inputs):
         return self.model(inputs)
