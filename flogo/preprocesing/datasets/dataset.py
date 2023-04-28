@@ -38,15 +38,22 @@ class Dataset:
     def divide_to(self, test_proportion=0, validation_proportion=0):
         test_position, validation_position = self.__get_positions(test_proportion, validation_proportion)
         train_dataset = Dataset(self.inputs[:test_position],
-                                     self.outputs[:test_position],
+                                self.outputs[:test_position],
                                 self.mapper,
                                 self.batch_size)
         test_dataset = Dataset(self.inputs[test_position:validation_position],
-                                    self.outputs[test_position:validation_position],
+                               self.outputs[test_position:validation_position],
                                self.mapper,
                                self.batch_size)
         validation_dataset = Dataset(self.inputs[validation_position:],
-                                          self.outputs[validation_position:],
+                                     self.outputs[validation_position:],
                                      self.mapper,
                                      self.batch_size)
         return train_dataset, test_dataset, validation_dataset
+
+    @staticmethod
+    def get(transformer, mapper, batch_size):
+        return Dataset(transformer.transform_inputs(),
+                       transformer.transform_outputs(),
+                       mapper,
+                       batch_size)

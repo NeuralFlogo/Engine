@@ -10,7 +10,7 @@ from flogo.structure.sections.link.classificationsection import ClassificationSe
 from flogo.structure.sections.processing.feed_forward import LinearSection
 from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
-from pytorch.datasets.mappers.PytorchMapper import PytorchMapper
+from pytorch.datasets.mappers.pytorch_mapper import PytorchMapper
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.test_task import PytorchTestTask
