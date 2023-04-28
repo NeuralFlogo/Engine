@@ -6,7 +6,7 @@ from PIL import Image
 from pytorch.preprocesing.NumericProcessor import one_hot_encode
 
 
-class ImageDirectoryNumpyTransformer:
+class ImageDirectoryProcessor:
 
     def __init__(self, data_dir, transformer, boolean_shuffle):
         self.data_dir = data_dir
@@ -14,15 +14,24 @@ class ImageDirectoryNumpyTransformer:
         self.labels = []
         self.inputs = []
         self.__extract_data_from_dir()
+        if boolean_shuffle:
+            self.__shuffle()
+
+    def __shuffle(self):
+        indexs = np.arange(len(self.labels))
+        np.random.shuffle(indexs)
+
+        self.labels = self.labels[indexs]
+        self.inputs = self.inputs[indexs]
 
     def __extract_data_from_dir(self):
         for directory in os.listdir(self.data_dir):
             for file in os.listdir(os.path.join(self.data_dir, directory)):
-                image = self.read_image(os.path.join(self.data_dir, directory, file))
+                image = self.__read_image(os.path.join(self.data_dir, directory, file))
                 self.labels.append(directory)
                 self.inputs.append(image)
 
-    def read_image(self, path):
+    def __read_image(self, path):
         image = np.array(Image.open(path))
         return np.array(self.transformer(image))
 
