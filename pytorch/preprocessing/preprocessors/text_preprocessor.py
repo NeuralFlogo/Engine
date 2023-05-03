@@ -5,7 +5,7 @@ from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
 
-class textPreprocessor:
+class TextPreprocessor:
 
     def __init__(self, language="English", lemmatize=False):
         self.language = language

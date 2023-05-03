@@ -3,8 +3,8 @@ import os
 import numpy as np
 from PIL import Image
 
-from pytorch.datasets.preprocessor.images.image_adapter import ImageAdapter
-from pytorch.datasets.preprocessor.numbers.one_hot_preprocessor import OneHotPreprocessor
+from pytorch.preprocessing.preprocessors.images.image_adapter import ImageAdapter
+from pytorch.preprocessing.preprocessors.numbers.one_hot_preprocessor import OneHotPreprocessor
 
 
 class ImageDirectoryPreprocessor:
