@@ -13,4 +13,4 @@ class ModelExplorer:
         return self.test_task.execute(strategy.implement())
 
     def find_best_model(self, accuracies):
-        return self.training_tasks.index(max(accuracies)).model
+        return self.training_tasks.index(max(accuracies)).architecture

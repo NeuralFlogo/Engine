@@ -73,10 +73,10 @@ linear = LinearSection([LinearBlock([Linear(25088, 10)])])
 structure = StructureFactory([convolutional1, residual, convolutional2, flatten, linear],
                              PytorchGenerator()).create_structure()
 
-model = ForwardArchitecture(structure)
+architecture = ForwardArchitecture(structure)
 
-TrainingTask(epochs, model, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
-             Optimizer(PytorchOptimizer("Adam", model.parameters(), 0.001)), ForwardTrainer).execute()
+TrainingTask(epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+             Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001)), ForwardTrainer).execute()
 
-TestTask(model, test_dataset, PytorchTestTask).test()
+TestTask(architecture, test_dataset, PytorchTestTask).test()
 
