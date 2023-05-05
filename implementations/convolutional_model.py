@@ -34,9 +34,7 @@ parameters = {
 path = "/Users/jose_juan/Desktop/mnist"
 
 dataset = read_from_dvc(path, "images", PytorchMapper(),  parameters)
-
 train_dataset, test_dataset, validation_dataset = dataset.divide_to(0.2, 0.2)
-
 convolutionalSection = ConvolutionalSection([ConvolutionalBlock([
     Convolutional(1, 6, kernel=5),
     Pool("Max"),
@@ -52,6 +50,12 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(120, 10)])])
 
+# PipelineFactory.create(Convolutional)
+#     .dataAdquisition(dataset)
+#     .dataPreprocessing(...)
+#     .modeling(Structure.of(convolutionalSection)
+#     .train(linearSection)
+#     .
 
 structure = StructureFactory([convolutionalSection, flattenSection, linearSection],
                              PytorchGenerator()).create_structure()

@@ -5,9 +5,9 @@ from flogo.discovery.regularization.monitors.loss_monitor import LossMonitor
 from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
 from flogo.discovery.test_task import TestTask
 from flogo.discovery.training_task import TrainingTask
-from flogo.preprocesing.datasets.dataset import Dataset
-from flogo.preprocesing.readers.file_reader import FileReader
-from flogo.preprocesing.transformers.numeric_transformer import NumericTransformer
+from flogo.preprocesing_old.datasets.dataset import Dataset
+from flogo.preprocesing_old.readers.file_reader import FileReader
+from flogo.preprocesing_old.transformers.numeric_transformer import NumericTransformer
 from flogo.structure.blocks.classification import ClassificationBlock
 from flogo.structure.blocks.linear import LinearBlock
 from flogo.structure.layers.activation import Activation
