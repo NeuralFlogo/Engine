@@ -1,18 +1,10 @@
 from flogo.preprocessing.columns.categorical import CategoricalColumn
 from flogo.preprocessing.columns.number import NumericColumn
-from flogo.preprocessing.dataframe import Dataframe
 from flogo.preprocessing.map_orchestrator import MapOrchestrator
 from flogo.preprocessing.mappers.normalization_mapper import NormalizationMapper
 from flogo.preprocessing.mappers.one_hot_mapper import OneHotMapper
 from flogo.preprocessing.mappers.standarization_mapper import StandardizationMapper
 from flogo.preprocessing.readers.delimeted_file_reader import DelimitedFileReader
-
-# path = "C:/Users/Joel/Desktop/prueba"
-# dataframe = ImageReader().read(path)
-# for index in range(len(dataframe)):
-#     for sub_index in range(len(dataframe.get(index))):
-#         print(dataframe.get(index).get(sub_index))
-
 
 path = "C:/Users/Joel/Desktop/kaggle/ds_salaries.csv"
 columns = {"work_year": CategoricalColumn(), "experience_level": CategoricalColumn(), "employment_type": CategoricalColumn(),
@@ -25,10 +17,3 @@ dataframe = MapOrchestrator(OneHotMapper(), NormalizationMapper(min=-1, max=1), 
                          "employee_residence", "company_location", "company_size"]
              , ["salary"], ["salary_in_usd", "remote_ratio"])
 print(dataframe.get("salary'").values)
-# print(dataframe.get("work_year1").values)
-# print(dataframe.get("work_year2").values)
-# print(dataframe.get("work_year3").values)
-#
-# for index in range(len(dataframe)):
-#     for sub_index in range(len(dataframe.get(index))):
-#         print(dataframe.get(index).get(sub_index))
