@@ -2,10 +2,9 @@ from pytorch.discovery.test_task import PytorchTestTask
 
 
 class TestTask:
-    def __init__(self, model, dataset, task: PytorchTestTask.__class__):
-        self.model = model
+    def __init__(self, dataset, task: PytorchTestTask.__class__):
         self.dataset = dataset
         self.task = task
 
-    def test(self):
-        self.task(self.model, self.dataset).execute()
+    def test(self, model):
+        return self.task(self.dataset).execute(model)

@@ -5,12 +5,12 @@ class ModelExplorer:
 
     def explore(self):
         accuracies = []
-        for strategy in self.training_tasks:
-            accuracies.append(self.__compute_accuracy(strategy))
+        for trainer in self.training_tasks:
+            accuracies.append(self.__compute_accuracy(trainer))
         return self.find_best_model(accuracies)
 
-    def __compute_accuracy(self, strategy):
-        return self.test_task.execute(strategy.implement())
+    def __compute_accuracy(self, trainer):
+        return self.test_task.test(trainer.execute())
 
     def find_best_model(self, accuracies):
-        return self.training_tasks.index(max(accuracies)).architecture
+        return self.training_tasks[accuracies.index(max(accuracies))].architecture, max(accuracies)

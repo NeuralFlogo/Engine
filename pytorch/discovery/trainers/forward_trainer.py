@@ -22,11 +22,12 @@ class ForwardTrainer:
             loss = self.__train_model()
             self.model.train(False)
             vloss, hit = self.__validate_model()
-            self.__log_epoch_losses(epoch, loss, vloss)
-            self.__log_epoch_accuracy(epoch, hit)
+            #self.__log_epoch_losses(epoch, loss, vloss)
+            #self.__log_epoch_accuracy(epoch, hit)
             if not self.early_stopping.check(self.__to_percentage(hit, len(self.validation_dataset)), vloss):
-                return self.__to_percentage(hit, len(self.validation_dataset))
-        return self.__to_percentage(hit, len(self.validation_dataset))
+                return self.model
+                #return self.__to_percentage(hit, len(self.validation_dataset))
+        return self.model
 
     def __train_model(self):
         running_loss = 0.
