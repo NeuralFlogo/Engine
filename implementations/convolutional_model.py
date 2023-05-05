@@ -2,6 +2,9 @@ from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
 from flogo.discovery.test_task import TestTask
 from flogo.discovery.training_task import TrainingTask
+from flogo.preprocesing.datasets.dataset import Dataset
+from flogo.preprocesing.readers.file_reader import FileReader
+from flogo.preprocesing.transformers.image_transformer import ImageTransformer
 from flogo.structure.blocks.convolutional import ConvolutionalBlock
 from flogo.structure.blocks.flatten import FlattenBlock
 from flogo.structure.blocks.linear import LinearBlock
@@ -19,22 +22,19 @@ from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.test_task import PytorchTestTask
 from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
+from pytorch.preprocessing.mappers.pytorch_mapper import PytorchMapper
+from pytorch.preprocessing.preprocessors.images.image_directory_preprocessor import ImageDirectoryPreprocessor
 from pytorch.structure.generator import PytorchGenerator
 
 epochs = 100
 
-parameters = {
-    "shuffle": True,
-    "size": 50,
-    "mean": 0,
-    "std": 1,
-    "batch_size": 2
-}
 
 path = "/Users/jose_juan/Desktop/mnist"
 
-dataset = read_from_dvc(path, "images", PytorchMapper(),  parameters)
+dataset = Dataset.get(ImageTransformer(FileReader(path), ImageDirectoryPreprocessor(50), True), PytorchMapper(), 2)
+
 train_dataset, test_dataset, validation_dataset = dataset.divide_to(0.2, 0.2)
+
 convolutionalSection = ConvolutionalSection([ConvolutionalBlock([
     Convolutional(1, 6, kernel=5),
     Pool("Max"),
@@ -50,21 +50,15 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(120, 10)])])
 
-# PipelineFactory.create(Convolutional)
-#     .dataAdquisition(dataset)
-#     .dataPreprocessing(...)
-#     .modeling(Structure.of(convolutionalSection)
-#     .train(linearSection)
-#     .
 
 structure = StructureFactory([convolutionalSection, flattenSection, linearSection],
                              PytorchGenerator()).create_structure()
 
-model = ForwardArchitecture(structure)
+architecture = ForwardArchitecture(structure)
 
-print(model)
+print(architecture)
 
-TrainingTask(epochs, model, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
-             Optimizer(PytorchOptimizer("SGD", model.parameters(), 0.001)), ForwardTrainer).execute()
+TrainingTask(epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+             Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.001)), ForwardTrainer).execute()
 
-TestTask(model, test_dataset, PytorchTestTask).test()
+TestTask(architecture, test_dataset, PytorchTestTask).test()

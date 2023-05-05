@@ -51,9 +51,9 @@ classificationSection = ClassificationSection(ClassificationBlock(Classification
 
 structure = StructureFactory([linearSection, classificationSection], PytorchGenerator()).create_structure()
 
-model = ForwardArchitecture(structure)
+architecture = ForwardArchitecture(structure)
 
-TrainingTask(epochs, model, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
-             Optimizer(PytorchOptimizer("SGD", model.parameters(), 0.1)), ForwardTrainer, early_stopping=EarlyStopping(LossMonitor(5, 0.005))).execute()
+TrainingTask(epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+             Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.1)), ForwardTrainer, early_stopping=EarlyStopping(LossMonitor(5, 0.005))).execute()
 
-TestTask(model, test_dataset, PytorchTestTask).test()
+TestTask(architecture, test_dataset, PytorchTestTask).test()
