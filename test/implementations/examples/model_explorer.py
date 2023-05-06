@@ -51,7 +51,7 @@ structure = StructureFactory([linearSection, classificationSection], PytorchGene
 
 architecture = ForwardArchitecture(structure)
 
-_, accuracy = ModelExplorer(
+model, accuracy = ModelExplorer(
     [TrainingTask(epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
                   Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.1)), ForwardTrainer,
                   early_stopping=EarlyStopping(LossMonitor(5, 0.005))),

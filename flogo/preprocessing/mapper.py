@@ -10,7 +10,7 @@ class Mapper(Abstract):
     def map(self, dataframe: Dataframe, indexes):
         result = Dataframe()
         for index in indexes:
-            result.append_updated_columns(index, self.apply(dataframe.get(index)))
+            result.append_column(index + "'", self.apply(dataframe.get(index)))
         result.update(dataframe)
         return result
 

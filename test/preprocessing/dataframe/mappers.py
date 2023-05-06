@@ -5,12 +5,15 @@ from flogo.preprocessing.columns.loaded_image import LoadedImageColumn
 from flogo.preprocessing.columns.number import NumericColumn
 from flogo.preprocessing.columns.unloaded_image import UnloadedImageColumn
 from flogo.preprocessing.dataframe import Dataframe
-from flogo.preprocessing.mappers.grayscale_mapper import GrayScaleMapper
-from flogo.preprocessing.mappers.resize_mapper import ResizeMapper
-from flogo.preprocessing.mappers.standarization_mapper import StandardizationMapper
-from flogo.preprocessing.mappers.type_mapper import TypeMapper
-from flogo.preprocessing.mappers.normalization_mapper import NormalizationMapper
-from flogo.preprocessing.mappers.one_hot_mapper import OneHotMapper
+
+
+from flogo.preprocessing.mappers.composite import CompositeMapper
+from flogo.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
+from flogo.preprocessing.mappers.leaf.normalization_mapper import NormalizationMapper
+from flogo.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
+from flogo.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
+from flogo.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
+from flogo.preprocessing.mappers.leaf.type_mapper import TypeMapper
 from pytorch.preprocessing.mappers.tensor_mapper import TensorMapper
 from test.utils import abs_image_path, image_sizes
 
@@ -36,7 +39,7 @@ class MappersTest(unittest.TestCase):
         onehot_mapper = OneHotMapper()
         dataframe0 = onehot_mapper.map(csv_dataframe, ["work_year"])
         expected = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
-        self.assertEqual(expected, dataframe0.get("work_year0").get_values())
+        self.assertEqual(expected, dataframe0.get("work_year_2022").get_values())
 
     def test_normalization_mapper(self):
         normalization_mapper = NormalizationMapper()
@@ -82,3 +85,14 @@ class MappersTest(unittest.TestCase):
                     [3, 292, 269], [3, 371, 499], [3, 335, 272], [3, 101, 135], [3, 380, 500], [3, 403, 499],
                     [3, 500, 274], [3, 331, 500]]
         self.assertEqual(expected, [list(tensor.shape) for tensor in dataframe6.get("loaded_input'").get_values()])
+
+    def test_composite_mapper(self):
+        composite_mapper = CompositeMapper([(ResizeMapper((70, 50))), GrayScaleMapper()])
+        dataframe7 = composite_mapper.map(image_dataframe, ["loaded_input"])
+        expected = [[(70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50),
+                    (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50),
+                    (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50)],
+                    ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',
+                     'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L']]
+        self.assertEqual(expected, [[image.size for image in dataframe7.get("loaded_input'").get_values()],
+                                    [image.mode for image in dataframe7.get("loaded_input'").get_values()]])
