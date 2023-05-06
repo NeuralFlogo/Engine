@@ -3,8 +3,9 @@ from flogo.preprocessing.column import Column
 
 class NumericColumn(Column):
 
-    def __init__(self, values=[], dtype=int):
+    def __init__(self, values=list(), dtype=int):
         self.dtype = dtype
+        self.values = [] if len(values) == 0 else values
         super(NumericColumn, self).__init__(self.convert(values))
 
     def convert(self, values):

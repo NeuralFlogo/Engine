@@ -11,3 +11,6 @@ class Column:
 
     def get(self, idx):
         return self.values[idx]
+
+    def get_values(self):
+        return self.values

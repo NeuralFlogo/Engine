@@ -1,5 +1,3 @@
-import numpy as np
-import torch
 from torchvision import transforms
 
 from flogo.preprocessing.columns.loaded_image import LoadedImageColumn

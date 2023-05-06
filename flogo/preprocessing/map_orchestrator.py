@@ -11,6 +11,6 @@ class MapOrchestrator:
 
     def process(self, dataframe: Dataframe, *indexes):
         for index, mapper in enumerate(self.mappers):
-            dataframe = mapper.process(dataframe, indexes[index])
+            dataframe = mapper.map(dataframe, indexes[index])
             dataframe = self.delete_operator.delete(dataframe, indexes[index])
         return dataframe
