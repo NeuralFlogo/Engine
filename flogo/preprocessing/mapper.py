@@ -1,8 +1,8 @@
 from abc import ABC as Abstract
 from abc import abstractmethod
 
-from flogo.preprocessing.column import Column
-from flogo.preprocessing.dataframe import Dataframe
+from flogo.data.column import Column
+from flogo.data.dataframe import Dataframe
 
 
 class Mapper(Abstract):

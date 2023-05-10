@@ -1,9 +1,9 @@
-from flogo.preprocessing.dataframe import Dataframe
+from flogo.data.dataframe import Dataframe
 from flogo.preprocessing.delete_column import DeleteOperator
 from flogo.preprocessing.mapper import Mapper
 
 
-class MapOrchestrator:
+class Orchestrator:
 
     def __init__(self, *mappers: Mapper):
         self.mappers = mappers

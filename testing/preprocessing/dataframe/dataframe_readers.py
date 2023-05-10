@@ -1,11 +1,11 @@
 import copy
 import unittest
 
-from flogo.preprocessing.columns.categorical import CategoricalColumn
-from flogo.preprocessing.columns.number import NumericColumn
-from flogo.preprocessing.readers.delimeted_file_reader import DelimitedFileReader
-from flogo.preprocessing.readers.image_reader import ImageReader
-from test.utils import abs_path
+from flogo.data.columns.categorical import CategoricalColumn
+from flogo.data.columns.number import NumericColumn
+from flogo.data.readers.delimeted_file_reader import DelimitedFileReader
+from flogo.data.readers.image_reader import ImageReader
+from testing.utils import abs_path
 
 columns = {"work_year": CategoricalColumn(), "experience_level": CategoricalColumn(),
            "employment_type": CategoricalColumn(),

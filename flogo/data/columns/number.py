@@ -1,4 +1,4 @@
-from flogo.preprocessing.column import Column
+from flogo.data.column import Column
 
 
 class NumericColumn(Column):

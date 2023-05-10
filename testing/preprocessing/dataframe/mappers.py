@@ -1,12 +1,10 @@
 import unittest
 
-from flogo.preprocessing.columns.categorical import CategoricalColumn
-from flogo.preprocessing.columns.loaded_image import LoadedImageColumn
-from flogo.preprocessing.columns.number import NumericColumn
-from flogo.preprocessing.columns.unloaded_image import UnloadedImageColumn
-from flogo.preprocessing.dataframe import Dataframe
-
-
+from flogo.data.columns.categorical import CategoricalColumn
+from flogo.data.columns.loaded_image import LoadedImageColumn
+from flogo.data.columns.number import NumericColumn
+from flogo.data.columns.unloaded_image import UnloadedImageColumn
+from flogo.data.dataframe import Dataframe
 from flogo.preprocessing.mappers.composite import CompositeMapper
 from flogo.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
 from flogo.preprocessing.mappers.leaf.normalization_mapper import NormalizationMapper
@@ -15,7 +13,7 @@ from flogo.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
 from flogo.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
 from flogo.preprocessing.mappers.leaf.type_mapper import TypeMapper
 from pytorch.preprocessing.mappers.tensor_mapper import TensorMapper
-from test.utils import abs_image_path, image_sizes
+from testing.utils import abs_image_path, image_sizes
 
 csv_dataframe = Dataframe({
     "work_year": CategoricalColumn(["2023", "2023", "2023", "2023", "2023", "2023", "2023", "2023", "2023", "2022"]),

@@ -1,6 +1,6 @@
 import numpy as np
 
-from flogo.preprocessing.columns.number import NumericColumn
+from flogo.data.columns.number import NumericColumn
 from flogo.preprocessing.mapper import Mapper
 
 

@@ -1,10 +1,10 @@
 import unittest
 
-from flogo.preprocessing.columns.categorical import CategoricalColumn
-from flogo.preprocessing.columns.loaded_image import LoadedImageColumn
-from flogo.preprocessing.columns.number import NumericColumn
-from flogo.preprocessing.columns.unloaded_image import UnloadedImageColumn
-from test.utils import abs_image_path, image_sizes
+from flogo.data.columns.categorical import CategoricalColumn
+from flogo.data.columns.loaded_image import LoadedImageColumn
+from flogo.data.columns.number import NumericColumn
+from flogo.data.columns.unloaded_image import UnloadedImageColumn
+from testing.utils import image_sizes, abs_image_path
 
 
 class ColumnTest(unittest.TestCase):

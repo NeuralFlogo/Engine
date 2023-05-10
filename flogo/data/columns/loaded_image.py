@@ -1,6 +1,6 @@
 from PIL import Image
 
-from flogo.preprocessing.column import Column
+from flogo.data.column import Column
 
 
 class LoadedImageColumn(Column):
