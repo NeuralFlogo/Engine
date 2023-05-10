@@ -4,7 +4,6 @@ from flogo.preprocessing.mapper import Mapper
 
 
 class ResizeMapper(Mapper):
-
     def __init__(self, size):
         self.size = size
 

@@ -7,14 +7,13 @@ from flogo.preprocessing.mapper import Mapper
 
 
 class OneHotMapper(Mapper):
-
-    def map(self, dataframe: Dataframe, indexes):
-        result = Dataframe()
+    def map(self, input: Dataframe, indexes):
+        output = Dataframe()
         for column_name in indexes:
-            categories, columns = self.apply(dataframe.get(column_name))
-            dataframe.append_columns(self.__get_new_column_names(column_name, categories), columns)
-        result.update(dataframe)
-        return result
+            categories, columns = self.apply(input.get(column_name))
+            input.append_columns(self.__get_new_column_names(column_name, categories), columns)
+        output.update(input)
+        return output
 
     def apply(self, column: CategoricalColumn):
         categories, inverse = np.unique(column.values, return_inverse=True)
@@ -23,6 +22,5 @@ class OneHotMapper(Mapper):
     def __get_new_column_names(self, column_name, names):
         return [column_name + "_" + name for name in names]
 
-    @staticmethod
-    def __create_columns(one_hot_array):
+    def __create_columns(self, one_hot_array):
         return [NumericColumn(one_hot_array[:, index]) for index in range(one_hot_array.shape[1])]

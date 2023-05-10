@@ -19,6 +19,7 @@ class RecurrentBlock:
             return Block(self.input_size, self.hidden_size, self.num_layers, torch.nn.LSTM)
 
 
+
 class Block(torch.nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, unit):
         super().__init__()

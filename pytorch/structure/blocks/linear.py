@@ -12,5 +12,6 @@ class LinearBlock:
             if type(layer) == Activation: self.content.append(PActivation(layer))
             if type(layer) == Linear: self.content.append(PLinear(layer))
 
+
     def build(self):
         return [layer.build() for layer in self.content]

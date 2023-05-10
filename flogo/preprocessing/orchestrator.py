@@ -4,7 +4,6 @@ from flogo.preprocessing.mapper import Mapper
 
 
 class Orchestrator:
-
     def __init__(self, *mappers: Mapper):
         self.mappers = mappers
         self.delete_operator = DeleteOperator()

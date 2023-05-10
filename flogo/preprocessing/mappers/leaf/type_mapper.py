@@ -5,7 +5,6 @@ from flogo.preprocessing.mapper import Mapper
 
 
 class TypeMapper(Mapper):
-
     def __init__(self, column_type):
         self.column_type = column_type
 

@@ -5,7 +5,6 @@ from flogo.preprocessing.mapper import Mapper
 
 
 class NormalizationMapper(Mapper):
-
     def __init__(self, min=0, max=1):
         self.min = min
         self.max = max

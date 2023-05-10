@@ -26,6 +26,7 @@ class Stack:
         return torch.nn.Sequential(*[layer.build() for layer in self.content])
 
 
+
 class ResidualBlock(Module):
     def __init__(self, block: _ResidualBlock):
         super().__init__()

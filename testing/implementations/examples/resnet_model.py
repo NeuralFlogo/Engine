@@ -82,8 +82,8 @@ structure = StructureFactory([convolutional1, residual, convolutional2, flatten,
 architecture = ForwardArchitecture(structure)
 
 
-model = TrainingTask(epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
-             Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001)), ForwardTrainer).execute()
+model = TrainingTask(ForwardTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+             Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001))).execute()
 
 TestTask(test_dataset, PytorchTestTask).test(model)
 

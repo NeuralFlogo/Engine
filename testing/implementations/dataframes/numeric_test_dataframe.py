@@ -30,4 +30,4 @@ dataframe = MapOrchestrator(OneHotMapper(), NormalizationMapper(min=-1, max=1), 
              ["salary"],
              ["salary'"])
 
-print(dataframe.get_column_names())
+print(dataframe.column_names())

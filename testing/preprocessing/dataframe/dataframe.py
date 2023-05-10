@@ -23,4 +23,4 @@ class DataframeTest(unittest.TestCase):
     def test_len_method(self):
         dataframe.append_column("testing", NumericColumn([85847, 30000, 25500, 175000, 120000,
                                                           222200, 136000, 219000, 141000, 147100]))
-        self.assertEqual(5, dataframe.get_column_names().index("testing"))
+        self.assertEqual(5, dataframe.column_names().index("testing"))

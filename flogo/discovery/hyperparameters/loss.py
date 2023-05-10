@@ -2,5 +2,5 @@ class Loss:
     def __init__(self, loss_function):
         self.loss_function = loss_function
 
-    def compute(self, preds, labels):
-        return self.loss_function.compute(preds, labels)
+    def compute(self, predictions, labels):
+        return self.loss_function.compute(predictions, labels)

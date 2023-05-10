@@ -53,7 +53,7 @@ structure = StructureFactory([linearSection, classificationSection], PytorchGene
 
 architecture = ForwardArchitecture(structure)
 
-TrainingTask(epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
-             Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.1)), ForwardTrainer, early_stopping=EarlyStopping(LossMonitor(5, 0.005))).execute()
+TrainingTask(ForwardTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+             Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.1)), early_stopping=EarlyStopping(LossMonitor(5, 0.005))).execute()
 
 TestTask(architecture, test_dataset, PytorchTestTask).test()

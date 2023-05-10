@@ -6,13 +6,12 @@ from flogo.data.dataframe import Dataframe
 
 
 class Mapper(Abstract):
-
-    def map(self, dataframe: Dataframe, indexes):
-        result = Dataframe()
+    def map(self, input: Dataframe, indexes):
+        output = Dataframe()
         for index in indexes:
-            result.append_column(index + "'", self.apply(dataframe.get(index)))
-        result.update(dataframe)
-        return result
+            output.append_column(index + "'", self.apply(input.get(index)))
+        output.update(input)
+        return output
 
     @abstractmethod
     def apply(self, column: Column):

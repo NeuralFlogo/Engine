@@ -4,3 +4,4 @@ class RecurrentBlock:
         self.hidden_size = hidden_size
         self.num_layers = num_layers
         self.recurrent_unit = recurrent_unit
+

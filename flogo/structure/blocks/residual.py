@@ -13,3 +13,4 @@ class ResidualBlock:
         self.downsample = downsample
         self.activation = Activation(activation)
         self.hidden_size = hidden_size
+

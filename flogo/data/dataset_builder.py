@@ -10,14 +10,14 @@ class DatasetBuilder:
 
     def build(self, dataframe: Dataframe, input_columns: list, output_columns: list, batch_size: int = 1) -> Dataset:
         entries = []
-        for index in range(0, dataframe.column_size(), batch_size):
+        for index in range(stop=dataframe.column_size(), step=batch_size):
             entries.append(self.__create_entry(dataframe, index, input_columns, output_columns, batch_size))
         return Dataset(entries)
 
     def __create_entry(self, dataframe, index, input_columns, output_columns, batch_size):
-        return Entry(self.__get_values(dataframe, index, input_columns, batch_size),
-                     self.__get_values(dataframe, index, output_columns, batch_size),
-                     self.__entry_size(batch_size, dataframe, index))
+        return Entry(self.__entry_size(batch_size, dataframe, index),
+                     self.__get_values(dataframe, index, input_columns, batch_size),
+                     self.__get_values(dataframe, index, output_columns, batch_size))
 
     def __entry_size(self, batch_size, dataframe, index):
         return batch_size if index + batch_size <= dataframe.column_size() else dataframe.column_size() - index

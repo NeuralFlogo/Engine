@@ -4,10 +4,7 @@ class ModelExplorer:
         self.test_task = test_task
 
     def explore(self):
-        accuracies = []
-        for trainer in self.training_tasks:
-            accuracies.append(self.__compute_accuracy(trainer))
-        return self.find_best_model(accuracies)
+        return self.find_best_model([self.__compute_accuracy(trainer) for trainer in self.training_tasks])
 
     def __compute_accuracy(self, trainer):
         return self.test_task.test(trainer.execute())

@@ -5,6 +5,5 @@ from flogo.preprocessing.mapper import Mapper
 
 
 class GrayScaleMapper(Mapper):
-
     def apply(self, column: LoadedImageColumn):
         return LoadedImageColumn([ImageOps.grayscale(image) for image in column.get_values()], False)

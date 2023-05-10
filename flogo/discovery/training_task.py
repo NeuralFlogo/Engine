@@ -5,8 +5,9 @@ from flogo.discovery.regularization.monitors.accuracy_monitor import AccuracyMon
 
 
 class TrainingTask:
-    def __init__(self, epochs: int, architecture, training_dataset, validation_dataset, loss_function: Loss,
-                 optimizer: Optimizer, trainer, early_stopping=EarlyStopping(AccuracyMonitor(5, 0.005))):
+    def __init__(self, trainer, epochs: int, architecture, training_dataset, validation_dataset, loss_function: Loss,
+                 optimizer: Optimizer, early_stopping=EarlyStopping(AccuracyMonitor(5, 0.005))):
+        self.trainer = trainer
         self.epochs = epochs
         self.architecture = architecture
         self.training_dataset = training_dataset
@@ -14,7 +15,6 @@ class TrainingTask:
         self.loss_function = loss_function
         self.optimizer = optimizer
         self.early_stopping = early_stopping
-        self.trainer = trainer
 
     def execute(self):
         return self.trainer(self.epochs,

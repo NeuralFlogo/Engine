@@ -2,16 +2,10 @@ class Dataset:
 
     def __init__(self, entries: list = []):
         self.entries = entries
-        self.size = self.__get_size()
-
-    def get_entries(self):
-        return self.entries
+        self.size = self.__compute_size()
 
     def __len__(self):
         return self.size
-
-    def batch_count(self):
-        return len(self.entries)
 
     def __getitem__(self, idx):
         return self.entries[idx]
@@ -27,5 +21,11 @@ class Dataset:
         self.index += 1
         return entry
 
-    def __get_size(self):
+    def __compute_size(self):
         return sum([entry.get_size() for entry in self.entries])
+
+    def get_entries(self):
+        return self.entries
+
+    def batch_count(self):
+        return len(self.entries)
