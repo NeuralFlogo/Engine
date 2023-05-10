@@ -10,4 +10,4 @@ class LoadedImageColumn(Column):
         super(LoadedImageColumn, self).__init__(self.__load(values) if load else values)
 
     def __load(self, values):
-        return [Image.open(path) for path in values]  # TODO close image once opened
+        return [Image.open(path) for path in values]

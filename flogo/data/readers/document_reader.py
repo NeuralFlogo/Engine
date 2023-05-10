@@ -1,7 +1,7 @@
 from os import listdir
 from os.path import join
 
-from flogo.preprocessing.data_types.document import Document
+from flogo.data.types.document import Document
 
 
 class DocumentReader:
