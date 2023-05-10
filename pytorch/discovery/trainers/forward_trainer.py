@@ -22,8 +22,8 @@ class ForwardTrainer:
             loss = self.__train_model()
             self.model.train(False)
             vloss, hit = self.__validate_model()
-            #self.__log_epoch_losses(epoch, loss, vloss)
-            #self.__log_epoch_accuracy(epoch, hit)
+            self.__log_epoch_losses(epoch, loss, vloss)
+            self.__log_epoch_accuracy(epoch, hit)
             if not self.early_stopping.check(self.__to_percentage(hit, len(self.validation_dataset)), vloss):
                 return self.model
                 #return self.__to_percentage(hit, len(self.validation_dataset))
@@ -31,8 +31,8 @@ class ForwardTrainer:
 
     def __train_model(self):
         running_loss = 0.
-        for i, data in enumerate(self.training_dataset, start=1):
-            inputs, labels = data
+        for i, entry in enumerate(self.training_dataset, start=1):
+            inputs, labels = entry.get_inputs(), entry.get_outputs()
             preds = self.__evaluate(inputs)
             loss = self.loss_function.compute(preds, labels)
             loss.backward()
@@ -43,8 +43,8 @@ class ForwardTrainer:
     def __validate_model(self):
         running_loss = 0.
         hit = 0
-        for i, data in enumerate(self.validation_dataset, start=1):
-            inputs, labels = data
+        for i, entry in enumerate(self.validation_dataset, start=1):
+            inputs, labels = entry.get_inputs(), entry.get_outputs()
             preds = self.__evaluate(inputs)
             running_loss += self.loss_function.compute(preds, labels).item()
             hit += self.__compute_accuracy(preds, labels)

@@ -1,10 +1,20 @@
+from flogo.data.columns.loaded_image import LoadedImageColumn
+from flogo.data.dataset_builder import DatasetBuilder
+from flogo.data.dataset_splitter import DatasetSplitter
+from flogo.data.readers.image_reader import ImageReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
+from flogo.discovery.regularization.early_stopping import EarlyStopping
+from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
 from flogo.discovery.test_task import TestTask
 from flogo.discovery.training_task import TrainingTask
-from flogo.preprocesing.datasets.dataset import Dataset
-from flogo.preprocesing.readers.file_reader import FileReader
-from flogo.preprocesing.transformers.image_transformer import ImageTransformer
+from flogo.preprocessing.mappers.composite import CompositeMapper
+from flogo.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
+from flogo.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
+from flogo.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
+from flogo.preprocessing.mappers.leaf.type_mapper import TypeMapper
+from flogo.preprocessing.orchestrator import Orchestrator
+
 from flogo.structure.blocks.convolutional import ConvolutionalBlock
 from flogo.structure.blocks.flatten import FlattenBlock
 from flogo.structure.blocks.linear import LinearBlock
@@ -22,18 +32,21 @@ from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.test_task import PytorchTestTask
 from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
-from pytorch.preprocessing.mappers.pytorch_mapper import PytorchMapper
-from pytorch.preprocessing.preprocessors.images.image_directory_preprocessor import ImageDirectoryPreprocessor
+from pytorch.preprocessing.pytorch_caster import PytorchCaster
+
 from pytorch.structure.generator import PytorchGenerator
 
-epochs = 100
+epochs = 250
 
+path = "C:/Users/Joel/Desktop/mnist"
+dataframe = ImageReader().read(path)
+dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50))]))\
+    .process(dataframe, ["output"], ["input"])
 
-path = "/Users/jose_juan/Desktop/mnist"
-
-dataset = Dataset.get(ImageTransformer(FileReader(path), ImageDirectoryPreprocessor(50), True), PytorchMapper(), 2)
-
-train_dataset, test_dataset, validation_dataset = dataset.divide_to(0.2, 0.2)
+dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input'"], ["output_0", "output_1", "output_2", "output_3",
+                                                                        "output_4", "output_5", "output_6", "output_7",
+                                                                        "output_8", "output_9"], 5)
+train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset)
 
 convolutionalSection = ConvolutionalSection([ConvolutionalBlock([
     Convolutional(1, 6, kernel=5),
@@ -56,9 +69,8 @@ structure = StructureFactory([convolutionalSection, flattenSection, linearSectio
 
 architecture = ForwardArchitecture(structure)
 
-print(architecture)
+model = TrainingTask(epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+             Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001)), ForwardTrainer,
+                     EarlyStopping(PrecisionMonitor(100))).execute()
 
-TrainingTask(epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
-             Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.001)), ForwardTrainer).execute()
-
-TestTask(architecture, test_dataset, PytorchTestTask).test()
+TestTask(test_dataset, PytorchTestTask).test(model)

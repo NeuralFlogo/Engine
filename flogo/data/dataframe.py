@@ -20,3 +20,6 @@ class Dataframe:
 
     def update(self, dataframe):
         self.columns.update(dataframe.columns)
+
+    def column_size(self):
+        return len(list(self.columns.values())[0])

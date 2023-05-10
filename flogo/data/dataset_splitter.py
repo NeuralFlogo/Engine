@@ -11,8 +11,8 @@ class DatasetSplitter:
         return Dataset(entries[:test_index]), Dataset(entries[test_index:validation_index]), Dataset(entries[validation_index:])
 
     def __get_indexes(self, dataset, test_proportion, validation_proportion):
-        validation_index = self.__index(len(dataset), validation_proportion, len(dataset))
-        return self.__index(validation_index, test_proportion, len(dataset)), validation_index
+        validation_index = self.__index(dataset.batch_count(), validation_proportion, dataset.batch_count())
+        return self.__index(validation_index, test_proportion, dataset.batch_count()), validation_index
 
     @staticmethod
     def __index(end, proportion, dataset_size):

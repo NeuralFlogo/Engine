@@ -1,10 +1,15 @@
+import PIL
+import numpy as np
 import torch
+from torchvision import transforms
 
 
 class PytorchCaster:
 
-    @staticmethod
-    def cast(values):
-        print(values)
-        print(type(values[0]))
-        return torch.tensor(values, dtype=type(values[0]))
+    def __init__(self):
+        self.transform = transforms.ToTensor()
+
+    def cast(self, values):
+        if type(values[0]) == PIL.Image.Image:
+            return torch.stack([self.transform(value) for value in values])
+        return torch.Tensor(np.array(values))
