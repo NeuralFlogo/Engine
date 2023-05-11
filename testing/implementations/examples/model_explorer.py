@@ -5,9 +5,6 @@ from flogo.discovery.regularization.early_stopping import EarlyStopping
 from flogo.discovery.regularization.monitors.loss_monitor import LossMonitor
 from flogo.discovery.test_task import TestTask
 from flogo.discovery.training_task import TrainingTask
-from flogo.preprocesing.datasets.dataset import Dataset
-from flogo.preprocesing.readers.file_reader import FileReader
-from flogo.preprocesing.transformers.numeric_transformer import NumericTransformer
 from flogo.structure.blocks.classification import ClassificationBlock
 from flogo.structure.blocks.linear import LinearBlock
 from flogo.structure.layers.activation import Activation
@@ -21,17 +18,9 @@ from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.test_task import PytorchTestTask
 from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
-from pytorch.preprocessing.mappers.pytorch_mapper import PytorchMapper
-from pytorch.preprocessing.preprocessors.numbers.one_hot_preprocessor import OneHotPreprocessor
 from pytorch.structure.generator import PytorchGenerator
 
-path = "/Users/jose_juan/Desktop/mushrooms.csv"
-preprocessors = [OneHotPreprocessor()] * 22
-epochs = 101
-
-dataset = Dataset.get(NumericTransformer(FileReader(path), preprocessors, True), PytorchMapper(), 50)
-
-train_dataset, test_dataset, validation_dataset = dataset.divide_to(0.2, 0.2)
+epochs = 100
 
 linearSection = LinearSection([LinearBlock([
     Linear(117, 200),

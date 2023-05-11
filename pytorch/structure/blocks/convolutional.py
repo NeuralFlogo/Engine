@@ -18,6 +18,5 @@ class ConvolutionalBlock:
             if type(layer) == PoolComp: self.content.append(PPool(layer))
             if type(layer) == normalization.Normalization: self.content.append(PNormalization(layer))
 
-
     def build(self):
         return [layer.build() for layer in self.content]

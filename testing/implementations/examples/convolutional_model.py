@@ -4,12 +4,10 @@ from flogo.data.dataset_splitter import DatasetSplitter
 from flogo.data.readers.image_reader import ImageReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-from flogo.discovery.regularization.early_stopping import EarlyStopping
-from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
+from flogo.discovery.monitor.accuracy.label_monitor import LabelMonitor
 from flogo.discovery.test_task import TestTask
 from flogo.discovery.training_task import TrainingTask
 from flogo.preprocessing.mappers.composite import CompositeMapper
-from flogo.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
 from flogo.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
 from flogo.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
 from flogo.preprocessing.mappers.leaf.type_mapper import TypeMapper
@@ -36,11 +34,11 @@ from pytorch.preprocessing.pytorch_caster import PytorchCaster
 
 from pytorch.structure.generator import PytorchGenerator
 
-epochs = 250
+epochs = 10
 
-path = "C:/Users/Joel/Desktop/mnist"
+path = "/Users/jose_juan/Desktop/mnist"
 dataframe = ImageReader().read(path)
-dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50))]))\
+dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50))])) \
     .process(dataframe, ["output"], ["input"])
 
 dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input'"], ["output_0", "output_1", "output_2", "output_3",
@@ -63,14 +61,13 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(120, 10)])])
 
-
 structure = StructureFactory([convolutionalSection, flattenSection, linearSection],
                              PytorchGenerator()).create_structure()
 
 architecture = ForwardArchitecture(structure)
 
-model = TrainingTask(ForwardTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
-             Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001)),
-                     EarlyStopping(PrecisionMonitor(100))).execute()
+model = TrainingTask(ForwardTrainer, epochs, architecture, train_dataset, validation_dataset,
+                     Loss(PytorchLoss("MSELoss")),
+                     Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001)), LabelMonitor()).execute()
 
 TestTask(test_dataset, PytorchTestTask).test(model)

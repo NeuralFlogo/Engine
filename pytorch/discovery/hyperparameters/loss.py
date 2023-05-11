@@ -8,5 +8,5 @@ class PytorchLoss:
     def __build(self, name):
         return getattr(nn, name)()
 
-    def compute(self, preds, labels):
-        return self.function(preds, labels)
+    def compute(self, predictions, labels):
+        return self.function(predictions, labels)

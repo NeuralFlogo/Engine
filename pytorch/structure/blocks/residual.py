@@ -26,7 +26,6 @@ class Stack:
         return torch.nn.Sequential(*[layer.build() for layer in self.content])
 
 
-
 class ResidualBlock(Module):
     def __init__(self, block: _ResidualBlock):
         super().__init__()
@@ -36,9 +35,9 @@ class ResidualBlock(Module):
         self.activation = block.activation.build()
 
     def forward(self, x):
-        residual = x
+        residue = x
         out = self.block1(x)
         out = self.block2(out)
         if self.downsample:
-            residual = self.downsample(x)
-        return self.activation(out + residual)
+            residue = self.downsample(x)
+        return self.activation(out + residue)

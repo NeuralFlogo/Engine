@@ -10,7 +10,7 @@ class DatasetBuilder:
 
     def build(self, dataframe: Dataframe, input_columns: list, output_columns: list, batch_size: int = 1) -> Dataset:
         entries = []
-        for index in range(stop=dataframe.column_size(), step=batch_size):
+        for index in range(0, dataframe.column_size(), batch_size):
             entries.append(self.__create_entry(dataframe, index, input_columns, output_columns, batch_size))
         return Dataset(entries)
 

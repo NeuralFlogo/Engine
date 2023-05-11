@@ -19,7 +19,6 @@ class RecurrentBlock:
             return Block(self.input_size, self.hidden_size, self.num_layers, torch.nn.LSTM)
 
 
-
 class Block(torch.nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, unit):
         super().__init__()
@@ -28,12 +27,12 @@ class Block(torch.nn.Module):
         self.unit = unit(input_size, hidden_size, num_layers, batch_first=True)
 
     def forward(self, x):
-        hidden_state = self.initialize_state(x)
-        out, _ = self.unit(x, (hidden_state, self.initialize_state(x))) if self.isLSTM() else self.unit(x, hidden_state)
+        hidden_state = self.initialize_state()
+        out, _ = self.unit(x, (hidden_state, self.initialize_state())) if self.isLSTM() else self.unit(x, hidden_state)
         return out.reshape(out.shape[0], -1)
 
     def isLSTM(self):
         return type(self.unit) == torch.nn.LSTM
 
-    def initialize_state(self, x):
-        return torch.zeros(self.num_layers, x.size(0), self.hidden_size)
+    def initialize_state(self):
+        return torch.zeros(self.num_layers, self.hidden_size)

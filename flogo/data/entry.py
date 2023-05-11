@@ -8,8 +8,8 @@ class Entry:
     def get_size(self):
         return self.size
 
-    def get_inputs(self):
+    def get_input(self):
         return self.inputs
 
-    def get_outputs(self):
+    def get_output(self):
         return self.outputs

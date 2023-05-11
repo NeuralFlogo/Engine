@@ -10,13 +10,13 @@ class PytorchTestTask:
         correct = 0
         with torch.no_grad():
             for i, entry in enumerate(self.dataset):
-                inputs, labels = entry.get_inputs(), entry.get_outputs()
+                inputs, labels = entry.get_input(), entry.get_output()
                 correct += self.__count_number_of_correct_predictions(self.__evaluate(model, inputs), labels)
         print('Test Accuracy: {}/{} ({:.0f}%)'.format(correct, len(self.dataset), self.__to_percentage(correct)))
         return self.__to_percentage(correct)
 
-    def __count_number_of_correct_predictions(self, preds, labels):
-        return torch.sum(torch.eq(self.find_index_with_greatest_value(preds),
+    def __count_number_of_correct_predictions(self, predictions, labels):
+        return torch.sum(torch.eq(self.find_index_with_greatest_value(predictions),
                                   self.find_index_with_greatest_value(labels))).item()
 
     def __evaluate(self, model, inputs):
