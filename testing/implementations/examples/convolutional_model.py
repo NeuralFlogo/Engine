@@ -4,8 +4,10 @@ from flogo.data.dataset_splitter import DatasetSplitter
 from flogo.data.readers.image_reader import ImageReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-from flogo.discovery.test_task import TestTask
-from flogo.discovery.training_task import TrainingTask
+from flogo.discovery.regularization.early_stopping import EarlyStopping
+from flogo.discovery.regularization.monitors.growth_monitor import GrowthMonitor
+from flogo.discovery.tasks.test_task import TestTask
+from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.preprocessing.mappers.composite import CompositeMapper
 from flogo.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
 from flogo.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
@@ -28,6 +30,7 @@ from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.measurers.accuracy_measurer import AccuracyMeasurer
+
 from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.discovery.validator import PytorchValidator
@@ -37,7 +40,7 @@ from pytorch.structure.generator import PytorchGenerator
 
 epochs = 10
 
-path = "/Users/jose_juan/Desktop/mnist"
+path = "C:/Users/Joel/Desktop/mnist"
 dataframe = ImageReader().read(path)
 dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50))])) \
     .process(dataframe, ["output"], ["input"])
@@ -72,4 +75,10 @@ model = TrainingTask(PytorchTrainer(
     PytorchValidator(AccuracyMeasurer())
 ).execute(epochs, architecture, train_dataset, validation_dataset)
 
-TestTask(test_dataset, PytorchTester).execute(model)
+
+model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
+                                    Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
+                     EarlyStopping(GrowthMonitor(1, 0.1)))\
+    .execute(epochs, architecture, train_dataset, validation_dataset)
+
+print("Test: ", TestTask(test_dataset, AccuracyMeasurer(), PytorchTester).execute(model))

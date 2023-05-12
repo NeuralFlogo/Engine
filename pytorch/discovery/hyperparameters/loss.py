@@ -9,4 +9,6 @@ class PytorchLoss:
         return getattr(nn, name)()
 
     def compute(self, predictions, labels):
-        return self.function(predictions, labels).backward().item()
+        loss = self.function(predictions, labels)
+        loss.backward()
+        return loss.item()

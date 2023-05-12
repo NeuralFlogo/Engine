@@ -6,10 +6,8 @@ from flogo.data.dataset_splitter import DatasetSplitter
 from flogo.data.readers.delimeted_file_reader import DelimitedFileReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-from pytorch.discovery.regularization.measurers.loss_measurer import LossMeasurer
-from flogo.discovery.regularization.early_stopping import EarlyStopping
-from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
-from flogo.discovery.training_task import TrainingTask
+
+from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.structure.blocks.linear import LinearBlock
 from flogo.structure.layers.linear import Linear
 from flogo.structure.sections.processing.feed_forward import LinearSection
@@ -17,7 +15,10 @@ from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
+from pytorch.discovery.measurers.loss_measurer import LossMeasurer
+from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
+from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
 
@@ -31,11 +32,14 @@ columns = {"input": NumericColumn(), "output": NumericColumn()}
 
 dataframe = DelimitedFileReader(",").read(abs_path("/resources/regression_dataset.csv"), columns)
 
+dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input"], ["output"], 1)
+
+train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset)
+
 linearSection = LinearSection([LinearBlock([
     Linear(1, 1),
 ])])
 
-dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input"], ["output"], 1)
 
 training_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset, 0, 0, shuffle=True)
 
@@ -43,8 +47,10 @@ structure = StructureFactory([linearSection], PytorchGenerator()).create_structu
 
 architecture = ForwardArchitecture(structure)
 
-model = TrainingTask(PytorchTrainer, epochs, architecture, training_dataset, training_dataset,
-                     Loss(PytorchLoss("MSELoss")),
-                     Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.001)), LossMeasurer(),
-                     EarlyStopping(PrecisionMonitor(9000000))).execute()
+model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
+                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer("MSELoss")))\
+    .execute(epochs, architecture, train_dataset, validation_dataset)
+
+print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
+
 

@@ -7,11 +7,11 @@ from flogo.data.dataset_splitter import DatasetSplitter
 from flogo.data.readers.delimeted_file_reader import DelimitedFileReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-from flogo.discovery.monitor.accuracy.numeric_monitor import NumericMonitor
+
 from flogo.discovery.regularization.early_stopping import EarlyStopping
 from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
-from flogo.discovery.test_task import TestTask
-from flogo.discovery.training_task import TrainingTask
+from flogo.discovery.tasks.test_task import TestTask
+from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.preprocessing.delete_column import DeleteOperator
 from flogo.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
 from flogo.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
@@ -24,8 +24,11 @@ from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
+from pytorch.discovery.measurers.loss_measurer import LossMeasurer
 from pytorch.discovery.tester import PytorchTester
-from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
+from pytorch.discovery.trainer import PytorchTrainer
+from pytorch.discovery.validator import PytorchValidator
+
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
 
@@ -69,13 +72,15 @@ structure = StructureFactory([linearSection], PytorchGenerator()).create_structu
 
 architecture = ForwardArchitecture(structure)
 
-model = TrainingTask(ForwardTrainer, epochs, architecture, train_dataset, validation_dataset,
-                     Loss(PytorchLoss("MSELoss")),
-                     Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.1)), NumericMonitor(),
-                     EarlyStopping(PrecisionMonitor(9000000))).execute()
+model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
+                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()),
+                     EarlyStopping(PrecisionMonitor(100)))\
+    .execute(epochs, architecture, train_dataset, validation_dataset)
 
-for entry in test_dataset:
-    input, output = entry.get_input(), entry.get_output()
-    print("Esperado: ", output)
-    print("Resultado: ", model(input))
+print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
+
+# for entry in test_dataset:
+#     input, output = entry.get_input(), entry.get_output()
+#     print("Esperado: ", output)
+#     print("Resultado: ", model(input))
 # TestTask(test_dataset, PytorchTestTask).test(model)

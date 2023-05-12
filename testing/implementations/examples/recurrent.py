@@ -7,29 +7,26 @@ from flogo.data.dataset_splitter import DatasetSplitter
 from flogo.data.readers.delimeted_file_reader import DelimitedFileReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-from flogo.discovery.monitor.accuracy.numeric_monitor import NumericMonitor
 from flogo.discovery.regularization.early_stopping import EarlyStopping
 from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
-from flogo.discovery.test_task import TestTask
-from flogo.discovery.training_task import TrainingTask
+from flogo.discovery.tasks.test_task import TestTask
+from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.preprocessing.delete_column import DeleteOperator
 from flogo.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
 from flogo.preprocessing.orchestrator import Orchestrator
-from flogo.structure.blocks.flatten import FlattenBlock
 from flogo.structure.blocks.linear import LinearBlock
 from flogo.structure.blocks.recurrent import RecurrentBlock
-from flogo.structure.layers.activation import Activation
-from flogo.structure.layers.flatten import Flatten
 from flogo.structure.layers.linear import Linear
-from flogo.structure.sections.link.flatten import FlattenSection
 from flogo.structure.sections.processing.feed_forward import LinearSection
 from flogo.structure.sections.processing.recurrent import RecurrentSection
 from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
+from pytorch.discovery.measurers.loss_measurer import LossMeasurer
 from pytorch.discovery.tester import PytorchTester
-from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
+from pytorch.discovery.trainer import PytorchTrainer
+from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
 
@@ -53,19 +50,24 @@ dataframe = Orchestrator(StandardizationMapper()) \
 dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["open'", "high'", "close'", "volume'"], ["close'"], 1)
 train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset)
 
-recurrentSection = RecurrentSection([RecurrentBlock(28, 100, 2, "RNN")])
+recurrentSection = RecurrentSection([RecurrentBlock(4, 200, 2, "RNN")])
 
 linearSection = LinearSection([LinearBlock([
-    Linear(100 * 28, 1000),
-    Linear(1000, 250),
-    Linear(250, 1)])])
+    Linear(200, 100),
+    Linear(100, 50),
+    Linear(50, 1)])])
 
 structure = StructureFactory([recurrentSection, linearSection],
                              PytorchGenerator()).create_structure()
 
 architecture = ForwardArchitecture(structure)
 
-model = TrainingTask(epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
-             Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.01)), ForwardTrainer).execute()
+model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
+                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()),
+                     EarlyStopping(PrecisionMonitor(0)))\
+    .execute(epochs, architecture, train_dataset, validation_dataset)
+
+print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
+
 
 # TestTask(test_dataset, PytorchTestTask).test(model)

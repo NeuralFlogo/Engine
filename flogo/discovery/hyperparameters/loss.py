@@ -3,4 +3,4 @@ class Loss:
         self.loss_function = loss_function
 
     def compute(self, predictions, labels):
-        return self.loss_function.measure(predictions, labels)
+        return self.loss_function.compute(predictions, labels)

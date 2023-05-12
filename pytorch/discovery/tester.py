@@ -7,7 +7,7 @@ class PytorchTester:
         self.dataset = dataset
         self.measurer = measurer
 
-    def tester(self, model):
+    def test(self, model):
         measure = 0
         with torch.no_grad():
             for entry in self.dataset:
@@ -16,6 +16,7 @@ class PytorchTester:
         return self.__average_quality(measure)
 
     def __average_quality(self, measure):
+        print(measure / len(self.dataset))
         return measure / len(self.dataset)
 
     def __evaluate(self, model, inputs):
