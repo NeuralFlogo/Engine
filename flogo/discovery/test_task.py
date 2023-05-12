@@ -1,8 +1,8 @@
-from pytorch.discovery.test_task import PytorchTestTask
+from pytorch.discovery.tester import PytorchTester
 
 
 class TestTask:
-    def __init__(self, dataset, task: PytorchTestTask.__class__):
+    def __init__(self, dataset, task: PytorchTester.__class__):
         self.dataset = dataset
         self.task = task
 

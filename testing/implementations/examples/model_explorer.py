@@ -16,7 +16,7 @@ from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
-from pytorch.discovery.test_task import PytorchTestTask
+from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.structure.generator import PytorchGenerator
 
@@ -47,6 +47,6 @@ model, accuracy = ModelExplorer(
      TrainingTask(PytorchTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
                   Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.1)),
                   early_stopping=EarlyStopping(LossMonitor(5, 0.005)))],
-    TestTask(test_dataset, PytorchTestTask)).explore()
+    TestTask(test_dataset, PytorchTester)).explore()
 
 print(accuracy)

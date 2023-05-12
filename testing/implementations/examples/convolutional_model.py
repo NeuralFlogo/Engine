@@ -4,8 +4,6 @@ from flogo.data.dataset_splitter import DatasetSplitter
 from flogo.data.readers.image_reader import ImageReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-from flogo.discovery.regularization.early_stopping import EarlyStopping
-from flogo.discovery.regularization.monitors.growth_monitor import GrowthMonitor
 from flogo.discovery.test_task import TestTask
 from flogo.discovery.training_task import TrainingTask
 from flogo.preprocessing.mappers.composite import CompositeMapper
@@ -30,7 +28,7 @@ from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.measurers.accuracy_measurer import AccuracyMeasurer
-from pytorch.discovery.test_task import PytorchTestTask
+from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
@@ -74,4 +72,4 @@ model = TrainingTask(PytorchTrainer(
     PytorchValidator(AccuracyMeasurer())
 ).execute(epochs, architecture, train_dataset, validation_dataset)
 
-TestTask(test_dataset, PytorchTestTask).test(model)
+TestTask(test_dataset, PytorchTester).test(model)

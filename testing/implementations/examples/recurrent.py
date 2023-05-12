@@ -28,7 +28,7 @@ from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
-from pytorch.discovery.test_task import PytorchTestTask
+from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator

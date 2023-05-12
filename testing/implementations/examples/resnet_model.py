@@ -31,7 +31,7 @@ from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
-from pytorch.discovery.test_task import PytorchTestTask
+from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
@@ -82,5 +82,5 @@ architecture = ForwardArchitecture(structure)
 model = TrainingTask(PytorchTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
                      Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001))).execute()
 
-TestTask(test_dataset, PytorchTestTask).test(model)
+TestTask(test_dataset, PytorchTester).test(model)
 
