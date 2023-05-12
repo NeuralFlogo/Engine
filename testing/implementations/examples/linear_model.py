@@ -45,4 +45,4 @@ model = TrainingTask(PytorchTrainer, epochs, architecture, train_dataset, valida
                      Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.1)),
                      early_stopping=EarlyStopping(LossMonitor(5, 0.005))).execute()
 
-TestTask(architecture, test_dataset).test(model)
+TestTask(architecture, test_dataset).execute(model)

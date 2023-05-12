@@ -72,4 +72,4 @@ model = TrainingTask(PytorchTrainer(
     PytorchValidator(AccuracyMeasurer())
 ).execute(epochs, architecture, train_dataset, validation_dataset)
 
-TestTask(test_dataset, PytorchTester).test(model)
+TestTask(test_dataset, PytorchTester).execute(model)

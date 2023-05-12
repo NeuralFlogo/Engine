@@ -1,9 +1,9 @@
 from flogo.discovery.regularization.early_stopping import EarlyStopping
-from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
+from flogo.discovery.regularization.monitors.growth_monitor import GrowthMonitor
 
 
 class TrainingTask:
-    def __init__(self, trainer, validator=None, early_stopping: EarlyStopping = EarlyStopping(PrecisionMonitor(100))):
+    def __init__(self, trainer, validator=None, early_stopping: EarlyStopping = EarlyStopping(GrowthMonitor(5, 0.01))):
         self.trainer = trainer
         self.validator = validator
         self.early_stopping = early_stopping

@@ -7,7 +7,7 @@ class PytorchTester:
         self.dataset = dataset
         self.measurer = measurer
 
-    def execute(self, model):
+    def tester(self, model):
         measure = 0
         with torch.no_grad():
             for entry in self.dataset:

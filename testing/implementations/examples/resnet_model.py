@@ -82,5 +82,5 @@ architecture = ForwardArchitecture(structure)
 model = TrainingTask(PytorchTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
                      Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001))).execute()
 
-TestTask(test_dataset, PytorchTester).test(model)
+TestTask(test_dataset, PytorchTester).execute(model)
 

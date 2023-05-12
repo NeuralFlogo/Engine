@@ -2,11 +2,11 @@ from pytorch.discovery.tester import PytorchTester
 
 
 class TestTask:
-    def __init__(self, dataset, measurer, task: PytorchTester.__class__):
-        self.task = self.__init_task(task, dataset, measurer)
+    def __init__(self, dataset, measurer, tester: PytorchTester.__class__):
+        self.tester = self.__init_task(tester, dataset, measurer)
 
-    def __init_task(self, task, dataset, measurer):
-        return task(dataset, measurer)
+    def __init_task(self, tester, dataset, measurer):
+        return tester(dataset, measurer)
 
-    def test(self, model):
-        return self.task.execute(model)
+    def execute(self, model):
+        return self.tester.test(model)

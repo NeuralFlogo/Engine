@@ -10,4 +10,4 @@ class ModelExplorer:
         return self.training_tasks[accuracies.index(max(accuracies))].architecture, max(accuracies)
 
     def __compute_accuracy(self, training):
-        return self.test_task.test(training.execute())
+        return self.test_task.execute(training.execute())
