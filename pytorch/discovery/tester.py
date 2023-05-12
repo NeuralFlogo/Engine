@@ -16,7 +16,6 @@ class PytorchTester:
         return self.__average_quality(measure)
 
     def __average_quality(self, measure):
-        print(measure / len(self.dataset))
         return measure / len(self.dataset)
 
     def __evaluate(self, model, inputs):

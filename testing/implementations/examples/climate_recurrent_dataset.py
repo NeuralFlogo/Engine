@@ -64,7 +64,7 @@ structure = StructureFactory([recurrentSection, linearSection],
 architecture = ForwardArchitecture(structure)
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
-                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer("MSELoss")))\
+                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()))\
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
 print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
