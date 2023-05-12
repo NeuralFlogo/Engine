@@ -32,7 +32,7 @@ from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.test_task import PytorchTestTask
-from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
+from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
 
@@ -79,8 +79,8 @@ structure = StructureFactory([convolutional1, residual, convolutional2, flatten,
 architecture = ForwardArchitecture(structure)
 
 
-model = TrainingTask(ForwardTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
-             Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001))).execute()
+model = TrainingTask(PytorchTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+                     Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001))).execute()
 
 TestTask(test_dataset, PytorchTestTask).test(model)
 

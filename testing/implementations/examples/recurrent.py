@@ -7,7 +7,7 @@ from flogo.data.dataset_splitter import DatasetSplitter
 from flogo.data.readers.delimeted_file_reader import DelimitedFileReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-from flogo.discovery.monitor.accuracy.numeric_monitor import NumericMonitor
+from pytorch.discovery.regularization.measurers.loss_measurer import LossMeasurer
 from flogo.discovery.regularization.early_stopping import EarlyStopping
 from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
 from flogo.discovery.test_task import TestTask
@@ -17,19 +17,17 @@ from flogo.preprocessing.mappers.leaf.standarization_mapper import Standardizati
 from flogo.preprocessing.orchestrator import Orchestrator
 from flogo.structure.blocks.flatten import FlattenBlock
 from flogo.structure.blocks.linear import LinearBlock
-from flogo.structure.blocks.recurrent import RecurrentBlock
 from flogo.structure.layers.activation import Activation
 from flogo.structure.layers.flatten import Flatten
 from flogo.structure.layers.linear import Linear
 from flogo.structure.sections.link.flatten import FlattenSection
 from flogo.structure.sections.processing.feed_forward import LinearSection
-from flogo.structure.sections.processing.recurrent import RecurrentSection
 from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.test_task import PytorchTestTask
-from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
+from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
 
@@ -76,10 +74,10 @@ architecture = ForwardArchitecture(structure)
 
 print(architecture)
 
-model = TrainingTask(ForwardTrainer, epochs, architecture, train_dataset, validation_dataset,
+model = TrainingTask(PytorchTrainer, epochs, architecture, train_dataset, validation_dataset,
                      Loss(PytorchLoss("MSELoss")),
                      Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.1)),
-                     NumericMonitor(),
+                     LossMeasurer(),
                      EarlyStopping(PrecisionMonitor(9000000))).execute()
 
 TestTask(test_dataset, PytorchTestTask).test(model)

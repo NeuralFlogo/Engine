@@ -1,6 +1,6 @@
 class EarlyStopping:
-    def __init__(self, *monitors):
-        self.monitors = monitors
+    def __init__(self, monitor):
+        self.monitor = monitor
 
-    def check(self, accuracy, loss):
-        return all([monitor.monitor(accuracy=accuracy, loss=loss) for monitor in self.monitors])
+    def check(self, measure):
+        return self.monitor.supervise(measure)

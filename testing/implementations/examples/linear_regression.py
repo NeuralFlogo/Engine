@@ -6,7 +6,7 @@ from flogo.data.dataset_splitter import DatasetSplitter
 from flogo.data.readers.delimeted_file_reader import DelimitedFileReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-from flogo.discovery.monitor.accuracy.numeric_monitor import NumericMonitor
+from pytorch.discovery.regularization.measurers.loss_measurer import LossMeasurer
 from flogo.discovery.regularization.early_stopping import EarlyStopping
 from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
 from flogo.discovery.training_task import TrainingTask
@@ -17,7 +17,7 @@ from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
-from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
+from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
 
@@ -43,8 +43,8 @@ structure = StructureFactory([linearSection], PytorchGenerator()).create_structu
 
 architecture = ForwardArchitecture(structure)
 
-model = TrainingTask(ForwardTrainer, epochs, architecture, training_dataset, training_dataset,
+model = TrainingTask(PytorchTrainer, epochs, architecture, training_dataset, training_dataset,
                      Loss(PytorchLoss("MSELoss")),
-                     Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.001)), NumericMonitor(),
+                     Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.001)), LossMeasurer(),
                      EarlyStopping(PrecisionMonitor(9000000))).execute()
 

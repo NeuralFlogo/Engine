@@ -17,7 +17,7 @@ from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.test_task import PytorchTestTask
-from pytorch.discovery.trainers.forward_trainer import ForwardTrainer
+from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.structure.generator import PytorchGenerator
 
 epochs = 100
@@ -41,10 +41,10 @@ structure = StructureFactory([linearSection, classificationSection], PytorchGene
 architecture = ForwardArchitecture(structure)
 
 model, accuracy = ModelExplorer(
-    [TrainingTask(ForwardTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+    [TrainingTask(PytorchTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
                   Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.1)),
                   early_stopping=EarlyStopping(LossMonitor(5, 0.005))),
-     TrainingTask(ForwardTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
+     TrainingTask(PytorchTrainer, epochs, architecture, train_dataset, validation_dataset, Loss(PytorchLoss("MSELoss")),
                   Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.1)),
                   early_stopping=EarlyStopping(LossMonitor(5, 0.005)))],
     TestTask(test_dataset, PytorchTestTask)).explore()

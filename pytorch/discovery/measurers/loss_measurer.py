@@ -1,12 +1,12 @@
 from torch import nn
 
 
-class PytorchLoss:
+class LossMeasurer:
     def __init__(self, name: str):
         self.function = self.__build(name)
 
     def __build(self, name):
         return getattr(nn, name)()
 
-    def compute(self, predictions, labels):
-        return self.function(predictions, labels).backward().item()
+    def measure(self, predictions, labels):
+        return self.function(predictions, labels).item()
