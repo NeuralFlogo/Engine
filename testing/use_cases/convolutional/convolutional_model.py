@@ -1,3 +1,5 @@
+import os
+
 from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
 from flogo.data.dataframe.readers.image_reader import ImageReader
 from flogo.data.dataset.dataset_builder import DatasetBuilder
@@ -38,9 +40,15 @@ from pytorch.preprocessing.pytorch_caster import PytorchCaster
 
 from pytorch.structure.generator import PytorchGenerator
 
+
+def abs_path(part_path):
+    return os.path.dirname(os.path.dirname(os.path.abspath(os.getcwd()))) + part_path
+
+
+path = abs_path("/resources/mnist")
+
 epochs = 10
 
-path = "C:/Users/Joel/Desktop/mnist"
 dataframe = ImageReader().read(path)
 dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50))])) \
     .process(dataframe, ["output"], ["input"])
@@ -74,6 +82,5 @@ model = TrainingTask(PytorchTrainer(
     Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)), Loss(PytorchLoss("CrossEntropyLoss"))),
     PytorchValidator(AccuracyMeasurer()), EarlyStopping(GrowthMonitor(10, 0.001))
 ).execute(epochs, architecture, train_dataset, validation_dataset)
-
 
 print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer())).execute(model))

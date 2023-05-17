@@ -1,3 +1,5 @@
+import os
+
 from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
 from flogo.data.dataframe.readers.image_reader import ImageReader
 from flogo.data.dataset.dataset_builder import DatasetBuilder
@@ -38,9 +40,15 @@ from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
 
+
+def abs_path(part_path):
+    return os.path.dirname(os.path.dirname(os.path.abspath(os.getcwd()))) + part_path
+
+
 epochs = 30
 
-path = "C:/Users/Joel/Desktop/mnist"
+path = abs_path("/resources/mnist")
+
 dataframe = ImageReader().read(path)
 dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((28, 28))])) \
     .process(dataframe, ["output"], ["input"])
@@ -68,13 +76,13 @@ linearSection = LinearSection([LinearBlock([
 structure = StructureFactory([convolutionalSection, flattenSection, linearSection],
                              PytorchGenerator()).create_structure()
 
-
 architecture1 = ForwardArchitecture(structure)
 wrapper1 = TrainingWrapper(architecture1,
-                           TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture1.parameters(), 0.01)),
-                                                       Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
-                                        EarlyStopping(PrecisionMonitor(1))))
-
+                           TrainingTask(
+                               PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture1.parameters(), 0.01)),
+                                              Loss(PytorchLoss("CrossEntropyLoss"))),
+                               PytorchValidator(AccuracyMeasurer()),
+                               EarlyStopping(PrecisionMonitor(1))))
 
 convolutionalSection = ConvolutionalSection([ConvolutionalBlock([
     Convolutional(1, 20, kernel=3),
@@ -99,9 +107,11 @@ structure = StructureFactory([convolutionalSection, flattenSection, linearSectio
 
 architecture2 = ForwardArchitecture(structure)
 wrapper2 = TrainingWrapper(architecture2,
-                           TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture2.parameters(), 0.01)),
-                                                       Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
-                                        EarlyStopping(PrecisionMonitor(1))))
+                           TrainingTask(
+                               PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture2.parameters(), 0.01)),
+                                              Loss(PytorchLoss("CrossEntropyLoss"))),
+                               PytorchValidator(AccuracyMeasurer()),
+                               EarlyStopping(PrecisionMonitor(1))))
 
 convolutionalSection = ConvolutionalSection([ConvolutionalBlock([
     Convolutional(1, 20, kernel=5),
@@ -128,9 +138,11 @@ structure = StructureFactory([convolutionalSection, flattenSection, linearSectio
 
 architecture3 = ForwardArchitecture(structure)
 wrapper3 = TrainingWrapper(architecture3,
-                           TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture3.parameters(), 0.01)),
-                                                       Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
-                                        EarlyStopping(PrecisionMonitor(1))))
+                           TrainingTask(
+                               PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture3.parameters(), 0.01)),
+                                              Loss(PytorchLoss("CrossEntropyLoss"))),
+                               PytorchValidator(AccuracyMeasurer()),
+                               EarlyStopping(PrecisionMonitor(1))))
 
 training_wrappers = [wrapper1, wrapper2, wrapper3]
 test_task = TestTask(PytorchTester(test_dataset, AccuracyMeasurer()))
