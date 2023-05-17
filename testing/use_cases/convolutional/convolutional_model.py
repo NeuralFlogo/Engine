@@ -5,7 +5,7 @@ from flogo.data.dataset.dataset_splitter import DatasetSplitter
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
 from flogo.discovery.regularization.early_stopping import EarlyStopping
-from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
+from flogo.discovery.regularization.monitors.growth_monitor import GrowthMonitor
 from flogo.discovery.tasks.test_task import TestTask
 from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.preprocessing.mappers.composite import CompositeMapper
@@ -72,8 +72,8 @@ architecture = ForwardArchitecture(structure)
 
 model = TrainingTask(PytorchTrainer(
     Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)), Loss(PytorchLoss("CrossEntropyLoss"))),
-    PytorchValidator(AccuracyMeasurer()), EarlyStopping(PrecisionMonitor(1))
+    PytorchValidator(AccuracyMeasurer()), EarlyStopping(GrowthMonitor(10, 0.001))
 ).execute(epochs, architecture, train_dataset, validation_dataset)
 
 
-print("Test: ", TestTask(test_dataset, AccuracyMeasurer(), PytorchTester).execute(model))
+print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer())).execute(model))

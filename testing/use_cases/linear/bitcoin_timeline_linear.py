@@ -4,7 +4,7 @@ from flogo.data.dataset.dataset_builder import DatasetBuilder
 from flogo.data.dataset.dataset_splitter import DatasetSplitter
 from flogo.data.timeline.parser import Parser
 from flogo.data.timeline.readers.timeline_reader import TimelineReader
-from flogo.data.timeline.utils.metrics import MONTH, DAY, HOUR
+from flogo.data.timeline.utils.metrics import HOUR, DAY
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
 from flogo.discovery.regularization.early_stopping import EarlyStopping
@@ -14,11 +14,9 @@ from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.preprocessing.delete_column import DeleteOperator
 from flogo.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
 from flogo.structure.blocks.linear import LinearBlock
-from flogo.structure.blocks.recurrent import RecurrentBlock
 from flogo.structure.layers.activation import Activation
 from flogo.structure.layers.linear import Linear
 from flogo.structure.sections.processing.feed_forward import LinearSection
-from flogo.structure.sections.processing.recurrent import RecurrentSection
 from flogo.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
@@ -32,13 +30,13 @@ from pytorch.structure.generator import PytorchGenerator
 
 
 def abs_path(part_path):
-    return os.path.dirname(os.path.abspath(os.getcwd())) + part_path
+    return os.path.dirname(os.path.dirname(os.path.abspath(os.getcwd()))) + part_path
 
 
 epochs = 100
 
 timeline = TimelineReader(Parser()).read(abs_path("/resources/kraken.its"))
-dataframe = timeline.group_by(1, HOUR).to_dataframe(20)
+dataframe = timeline.group_by(1, DAY).to_dataframe(20)
 
 dataframe = StandardizationMapper().map(dataframe, ["price_input_0", "price_input_1", "price_input_2", "price_input_3",
                                                     "price_input_4", "price_input_5", "price_input_6", "price_input_7",
@@ -86,4 +84,4 @@ model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architectu
                      EarlyStopping(PrecisionMonitor(0))) \
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
-print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
+print("Test: ", TestTask(PytorchTester(test_dataset, LossMeasurer())).execute(model))

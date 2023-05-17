@@ -132,16 +132,8 @@ wrapper3 = TrainingWrapper(architecture3,
                                                        Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
                                         EarlyStopping(PrecisionMonitor(1))))
 
-training_task2 = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture2.parameters(), 0.01)),
-                                    Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
-                     EarlyStopping(PrecisionMonitor(1)))
-
-training_task3 = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture3.parameters(), 0.01)),
-                                    Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
-                     EarlyStopping(PrecisionMonitor(1)))
-
 training_wrappers = [wrapper1, wrapper2, wrapper3]
-test_task = TestTask(test_dataset, AccuracyMeasurer(), PytorchTester)
+test_task = TestTask(PytorchTester(test_dataset, AccuracyMeasurer()))
 model, accuracy = ModelExplorer(training_wrappers, train_dataset, validation_dataset, test_task).explore(epochs)
 print(model)
 print(accuracy)

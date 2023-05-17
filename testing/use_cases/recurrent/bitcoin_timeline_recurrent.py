@@ -1,17 +1,18 @@
 import os
 
-from flogo.data.dataframe.columns.categorical import CategoricalColumn
-from flogo.data.dataframe.columns.number import NumericColumn
-from flogo.data.dataframe.readers.delimeted_file_reader import DelimitedFileReader
 from flogo.data.dataset.dataset_builder import DatasetBuilder
 from flogo.data.dataset.dataset_splitter import DatasetSplitter
+from flogo.data.timeline.parser import Parser
+from flogo.data.timeline.readers.timeline_reader import TimelineReader
+from flogo.data.timeline.utils.metrics import DAY
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
+from flogo.discovery.regularization.early_stopping import EarlyStopping
+from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
 from flogo.discovery.tasks.test_task import TestTask
 from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.preprocessing.delete_column import DeleteOperator
-from flogo.preprocessing.mappers.leaf.normalization_mapper import NormalizationMapper
-from flogo.preprocessing.orchestrator import Orchestrator
+from flogo.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
 from flogo.structure.blocks.linear import LinearBlock
 from flogo.structure.blocks.recurrent import RecurrentBlock
 from flogo.structure.layers.activation import Activation
@@ -31,32 +32,30 @@ from pytorch.structure.generator import PytorchGenerator
 
 
 def abs_path(part_path):
-    return os.path.dirname(os.path.abspath(os.getcwd())) + part_path
+    return os.path.dirname(os.path.dirname(os.path.abspath(os.getcwd()))) + part_path
 
 
-epochs = 20
+epochs = 100
 
-columns = {"Date": CategoricalColumn(), "Temp": NumericColumn(dtype=float),
-           "Humidity": NumericColumn(dtype=float), "Wind_speed": NumericColumn(dtype=float),
-           "Pressure": NumericColumn(dtype=float)}
+timeline = TimelineReader(Parser()).read(abs_path("/resources/kraken.its"))
+dataframe = timeline.group_by(2, DAY).to_dataframe(2)
 
-dataframe = DelimitedFileReader(",").read(abs_path("/resources/climate_dataset.csv"), columns)
+dataframe = StandardizationMapper().map(dataframe, ["price_input_0", "price_input_1", "price_output"])
 
-dataframe = DeleteOperator().delete(dataframe, ["Date"])
+dataframe = DeleteOperator().delete(dataframe, ["price_input_0", "price_input_1", "price_output"])
 
-dataframe = Orchestrator(NormalizationMapper(5, -5)).process(dataframe, ["Temp", "Humidity", "Wind_speed", "Pressure"])
+dataset = DatasetBuilder(PytorchCaster()).build(dataframe,
+                                                ["price_input_0'", "price_input_1'"], ["price_output'"], 5)
+train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset)
 
-dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["Temp'", "Humidity'", "Wind_speed'"],["Pressure'"], 1)
-train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset, shuffle=False)
-
-recurrentSection = RecurrentSection([RecurrentBlock(3, 100, 2, "RNN")])
+recurrentSection = RecurrentSection([RecurrentBlock(2, 200, 2, "RNN")])
 
 linearSection = LinearSection([LinearBlock([
+    Linear(200, 100),
+    Activation("ReLU"),
     Linear(100, 50),
     Activation("ReLU"),
-    Linear(50, 25),
-    Activation("ReLU"),
-    Linear(25, 1)])])
+    Linear(50, 1)])])
 
 structure = StructureFactory([recurrentSection, linearSection],
                              PytorchGenerator()).create_structure()
@@ -64,10 +63,8 @@ structure = StructureFactory([recurrentSection, linearSection],
 architecture = ForwardArchitecture(structure)
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
-                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()))\
+                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()),
+                     EarlyStopping(PrecisionMonitor(0))) \
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
-print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
-
-
-# TestTask(test_dataset, PytorchTestTask).test(model)
+print("Test: ", TestTask(PytorchTester(test_dataset, LossMeasurer())).execute(model))

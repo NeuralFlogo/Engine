@@ -84,8 +84,8 @@ architecture = ForwardArchitecture(structure)
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
                                     Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
-                     EarlyStopping(GrowthMonitor(1, 0.1)))\
+                     EarlyStopping(GrowthMonitor(1, 0.001)))\
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
-print("Test: ", TestTask(test_dataset, AccuracyMeasurer(), PytorchTester).execute(model))
+print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer())).execute(model))
 

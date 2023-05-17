@@ -7,9 +7,6 @@ from flogo.data.dataset.dataset_builder import DatasetBuilder
 from flogo.data.dataset.dataset_splitter import DatasetSplitter
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
-
-from flogo.discovery.regularization.early_stopping import EarlyStopping
-from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
 from flogo.discovery.tasks.test_task import TestTask
 from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.preprocessing.delete_column import DeleteOperator
@@ -28,7 +25,6 @@ from pytorch.discovery.measurers.loss_measurer import LossMeasurer
 from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.discovery.validator import PytorchValidator
-
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
 
@@ -44,7 +40,7 @@ columns = {"Gender": CategoricalColumn(), "Ethnicity": CategoricalColumn(), "Par
            "Math": NumericColumn(dtype=int), "Reading": NumericColumn(dtype=int),
            "Writing": NumericColumn(dtype=int)}
 
-dataframe = DelimitedFileReader(",").read(abs_path("/testing/resources/students_performance_dataset.csv"), columns)
+dataframe = DelimitedFileReader(",").read(abs_path("/resources/students_performance_dataset.csv"), columns)
 
 dataframe = DeleteOperator().delete(dataframe, ["Test", "Lunch", "Ethnicity"])
 
@@ -65,7 +61,7 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(50, 25),
     Activation("ReLU"),
-    Linear(25, 5)
+    Linear(25, 1)
 ])])
 
 structure = StructureFactory([linearSection], PytorchGenerator()).create_structure()
@@ -73,14 +69,7 @@ structure = StructureFactory([linearSection], PytorchGenerator()).create_structu
 architecture = ForwardArchitecture(structure)
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.01)),
-                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()),
-                     EarlyStopping(PrecisionMonitor(100)))\
+                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()))\
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
-# print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
-
-# for entry in test_dataset:
-#     input, output = entry.get_input(), entry.get_output()
-#     print("Esperado: ", output)
-#     print("Resultado: ", model(input))
-# TestTask(test_dataset, PytorchTestTask).test(model)
+print("Test: ", TestTask(PytorchTester(test_dataset, LossMeasurer())).execute(model))
