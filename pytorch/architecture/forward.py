@@ -1,4 +1,5 @@
 from torch.nn import Module, Sequential
+import torch
 
 
 class ForwardArchitecture(Module):
@@ -9,3 +10,6 @@ class ForwardArchitecture(Module):
 
     def forward(self, x):
         return self.architecture(x)
+
+    def save(self, path):
+        torch.save(self, path)

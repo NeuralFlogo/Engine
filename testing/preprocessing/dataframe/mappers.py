@@ -80,16 +80,16 @@ class MappersTest(unittest.TestCase):
         dataframe6 = pytorch_tensor_mapper.map(image_dataframe, ["loaded_input"])
         expected = [[3, 303, 400], [3, 499, 495], [3, 144, 175], [3, 375, 499], [3, 280, 300], [3, 414, 500],
                     [3, 396, 312], [3, 499, 489], [3, 425, 320], [3, 345, 461], [3, 287, 300], [3, 376, 499],
-                    [3, 292, 269], [3, 371, 499], [3, 335, 272], [3, 101, 135], [3, 380, 500], [3, 403, 499],
-                    [3, 500, 274], [3, 331, 500]]
+                    [3, 292, 269], [3, 101, 135], [3, 380, 500], [3, 335, 272], [3, 371, 499], [3, 403, 499],
+                    [3, 500, 274], [3, 375, 499]]
         self.assertEqual(expected, [list(tensor.shape) for tensor in dataframe6.get("loaded_input'").get_values()])
 
     def test_composite_mapper(self):
         composite_mapper = CompositeMapper([(ResizeMapper((70, 50))), GrayScaleMapper()])
         dataframe7 = composite_mapper.map(image_dataframe, ["loaded_input"])
         expected = [[(70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50),
-                    (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50),
-                    (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50)],
+                     (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50),
+                     (70, 50), (70, 50), (70, 50), (70, 50), (70, 50), (70, 50)],
                     ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L',
                      'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L']]
         self.assertEqual(expected, [[image.size for image in dataframe7.get("loaded_input'").get_values()],

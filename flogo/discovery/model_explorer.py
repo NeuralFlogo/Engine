@@ -5,11 +5,11 @@ class ModelExplorer:
         self.validation_dataset = validation_dataset
         self.test_task = test_task
 
-    def explore(self, epochs):
-        return self.__select_best_model([self.__compute_accuracy(wrapper, epochs) for wrapper in self.training_wrappers])
+    def explore(self, epochs, path, mode=max):
+        self.__select_best_model([self.__compute_quality(epochs, wrapper) for wrapper in self.training_wrappers], mode).save(path)
 
-    def __select_best_model(self, accuracies):
-        return self.training_wrappers[accuracies.index(max(accuracies))].get_model(), max(accuracies)
+    def __select_best_model(self, accuracies, function):
+        return self.training_wrappers[accuracies.index(function(accuracies))].get_model()
 
-    def __compute_accuracy(self, training_wrapper, epochs):
-        return self.test_task.execute(training_wrapper.execute(epochs, self.training_dataset, self.validation_dataset))
+    def __compute_quality(self, epochs, training_task):
+        return self.test_task.execute(training_task.execute(epochs, self.training_dataset, self.validation_dataset))

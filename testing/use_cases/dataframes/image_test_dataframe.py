@@ -21,10 +21,10 @@ path = abs_path("/resources/image_data")
 
 dataframe = ImageReader().read(path)
 dataframe1 = Orchestrator(CompositeMapper([TypeMapper(LoadedImageColumn), TensorMapper()])).process(dataframe, ["input"])
-plt.imshow(torch.tensor(dataframe1.get("input'").timeseries[1]).permute(1, 2, 0))
+plt.imshow(torch.tensor(dataframe1.get("input'").get_values()[1]).permute(1, 2, 0))
 plt.show()
 
 dataframe = Orchestrator(CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50)), GrayScaleMapper(),
                                           TensorMapper()])).process(dataframe, ["input"])
-plt.imshow(dataframe.get("input'").timeseries[1].permute(1, 2, 0))
+plt.imshow(dataframe.get("input'").get_values()[1].permute(1, 2, 0))
 plt.show()

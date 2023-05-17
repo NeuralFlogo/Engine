@@ -146,6 +146,4 @@ wrapper3 = TrainingWrapper(architecture3,
 
 training_wrappers = [wrapper1, wrapper2, wrapper3]
 test_task = TestTask(PytorchTester(test_dataset, AccuracyMeasurer()))
-model, accuracy = ModelExplorer(training_wrappers, train_dataset, validation_dataset, test_task).explore(epochs)
-print(model)
-print(accuracy)
+ModelExplorer(training_wrappers, train_dataset, validation_dataset, test_task).explore(epochs, abs_path("/resources/model"))

@@ -14,5 +14,4 @@ class PytorchValidator:
         return model(inputs)
 
     def __average_quality(self, measure, size):
-        print(measure / size)
         return measure / size
