@@ -1,4 +1,4 @@
-from flogo.data.column import Column
+from flogo.data.dataframe.column import Column
 from flogo.preprocessing.mapper import Mapper
 
 

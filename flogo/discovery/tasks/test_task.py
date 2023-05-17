@@ -1,8 +1,5 @@
-from pytorch.discovery.tester import PytorchTester
-
-
 class TestTask:
-    def __init__(self, dataset, measurer, tester: PytorchTester.__class__):
+    def __init__(self, dataset, measurer, tester):
         self.tester = self.__init_tester(tester, dataset, measurer)
 
     def __init_tester(self, tester, dataset, measurer):

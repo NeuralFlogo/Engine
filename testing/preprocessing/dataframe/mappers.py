@@ -1,10 +1,10 @@
 import unittest
 
-from flogo.data.columns.categorical import CategoricalColumn
-from flogo.data.columns.loaded_image import LoadedImageColumn
-from flogo.data.columns.number import NumericColumn
-from flogo.data.columns.unloaded_image import UnloadedImageColumn
-from flogo.data.dataframe import Dataframe
+from flogo.data.dataframe.columns.categorical import CategoricalColumn
+from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
+from flogo.data.dataframe.columns.number import NumericColumn
+from flogo.data.dataframe.columns.unloaded_image import UnloadedImageColumn
+from flogo.data.dataframe.dataframe import Dataframe
 from flogo.preprocessing.mappers.composite import CompositeMapper
 from flogo.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
 from flogo.preprocessing.mappers.leaf.normalization_mapper import NormalizationMapper

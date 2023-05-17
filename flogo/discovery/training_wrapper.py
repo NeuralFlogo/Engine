@@ -1,4 +1,4 @@
-from flogo.data.dataset import Dataset
+from flogo.data.dataset.dataset import Dataset
 from flogo.discovery.tasks.training_task import TrainingTask
 
 
