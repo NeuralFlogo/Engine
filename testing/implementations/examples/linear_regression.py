@@ -6,6 +6,7 @@ from flogo.data.dataset_splitter import DatasetSplitter
 from flogo.data.readers.delimeted_file_reader import DelimitedFileReader
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
+from flogo.discovery.tasks.test_task import TestTask
 
 from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.structure.blocks.linear import LinearBlock
@@ -32,7 +33,7 @@ columns = {"input": NumericColumn(), "output": NumericColumn()}
 
 dataframe = DelimitedFileReader(",").read(abs_path("/resources/regression_dataset.csv"), columns)
 
-dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input"], ["output"], 1)
+dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input"], ["output"], 2)
 
 train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset)
 
@@ -41,14 +42,14 @@ linearSection = LinearSection([LinearBlock([
 ])])
 
 
-training_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset, 0, 0, shuffle=True)
+training_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset, shuffle=False)
 
 structure = StructureFactory([linearSection], PytorchGenerator()).create_structure()
 
 architecture = ForwardArchitecture(structure)
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
-                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer("MSELoss")))\
+                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()))\
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
 print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
