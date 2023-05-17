@@ -1,10 +1,10 @@
 import os
 
-from flogo.data.columns.categorical import CategoricalColumn
-from flogo.data.columns.number import NumericColumn
-from flogo.data.dataset_builder import DatasetBuilder
-from flogo.data.dataset_splitter import DatasetSplitter
-from flogo.data.readers.delimeted_file_reader import DelimitedFileReader
+from flogo.data.dataframe.columns.categorical import CategoricalColumn
+from flogo.data.dataframe.columns.number import NumericColumn
+from flogo.data.dataframe.readers.delimeted_file_reader import DelimitedFileReader
+from flogo.data.dataset.dataset_builder import DatasetBuilder
+from flogo.data.dataset.dataset_splitter import DatasetSplitter
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
 from flogo.discovery.regularization.early_stopping import EarlyStopping

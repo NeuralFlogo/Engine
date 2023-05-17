@@ -1,7 +1,7 @@
 from torchvision import transforms
 
-from flogo.data.columns.loaded_image import LoadedImageColumn
-from flogo.data.columns.number import NumericColumn
+from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
+from flogo.data.dataframe.columns.number import NumericColumn
 from flogo.preprocessing.mapper import Mapper
 
 

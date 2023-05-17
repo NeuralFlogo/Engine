@@ -1,9 +1,9 @@
 import torch.nn
 
-from flogo.data.columns.loaded_image import LoadedImageColumn
-from flogo.data.dataset_builder import DatasetBuilder
-from flogo.data.dataset_splitter import DatasetSplitter
-from flogo.data.readers.image_reader import ImageReader
+from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
+from flogo.data.dataframe.readers.image_reader import ImageReader
+from flogo.data.dataset.dataset_builder import DatasetBuilder
+from flogo.data.dataset.dataset_splitter import DatasetSplitter
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
 from flogo.discovery.regularization.early_stopping import EarlyStopping

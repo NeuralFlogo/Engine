@@ -1,9 +1,9 @@
 import unittest
 
-from flogo.data.columns.categorical import CategoricalColumn
-from flogo.data.columns.loaded_image import LoadedImageColumn
-from flogo.data.columns.number import NumericColumn
-from flogo.data.columns.unloaded_image import UnloadedImageColumn
+from flogo.data.dataframe.columns.categorical import CategoricalColumn
+from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
+from flogo.data.dataframe.columns.number import NumericColumn
+from flogo.data.dataframe.columns.unloaded_image import UnloadedImageColumn
 from testing.utils import image_sizes, abs_image_path
 
 
