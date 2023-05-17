@@ -1,4 +1,4 @@
-from flogo.data.dataframe import Dataframe
+from flogo.data.dataframe.dataframe import Dataframe
 
 
 class DeleteOperator:

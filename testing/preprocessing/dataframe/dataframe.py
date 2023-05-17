@@ -1,8 +1,8 @@
 import unittest
 
-from flogo.data.columns.categorical import CategoricalColumn
-from flogo.data.columns.number import NumericColumn
-from flogo.data.dataframe import Dataframe
+from flogo.data.dataframe.columns.categorical import CategoricalColumn
+from flogo.data.dataframe.columns.number import NumericColumn
+from flogo.data.dataframe.dataframe import Dataframe
 
 dataframe = Dataframe({
     "work_year": CategoricalColumn(["2023", "2023", "2023", "2023", "2023", "2023", "2023", "2023", "2023", "2023"]),

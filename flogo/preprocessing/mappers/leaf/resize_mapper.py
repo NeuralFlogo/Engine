@@ -1,5 +1,5 @@
-from flogo.data.column import Column
-from flogo.data.columns.loaded_image import LoadedImageColumn
+from flogo.data.dataframe.column import Column
+from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
 from flogo.preprocessing.mapper import Mapper
 
 
