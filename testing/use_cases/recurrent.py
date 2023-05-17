@@ -40,7 +40,7 @@ columns = {"ts": CategoricalColumn(), "open": NumericColumn(dtype=float), "high"
            "low": NumericColumn(dtype=float),
            "close": NumericColumn(dtype=float), "volume": NumericColumn(dtype=float)}
 
-dataframe = DelimitedFileReader(",").read(abs_path("/resources/time_series_dataset.csv"), columns)
+dataframe = DelimitedFileReader(",").read(abs_path("/testing/resources/time_series_dataset.csv"), columns)
 DeleteOperator().delete(dataframe, ["ts"])
 
 dataframe = Orchestrator(StandardizationMapper()) \

@@ -44,7 +44,7 @@ columns = {"Gender": CategoricalColumn(), "Ethnicity": CategoricalColumn(), "Par
            "Math": NumericColumn(dtype=int), "Reading": NumericColumn(dtype=int),
            "Writing": NumericColumn(dtype=int)}
 
-dataframe = DelimitedFileReader(",").read(abs_path("/resources/students_performance_dataset.csv"), columns)
+dataframe = DelimitedFileReader(",").read(abs_path("/testing/resources/students_performance_dataset.csv"), columns)
 
 dataframe = DeleteOperator().delete(dataframe, ["Test", "Lunch", "Ethnicity"])
 
@@ -55,7 +55,7 @@ dataframe = Orchestrator(OneHotMapper(), StandardizationMapper()).process(datafr
 
 dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["Gender_female", "Gender_male",
                                                             "ParentLevel_associate's degree", "Writing'", "Math'"],
-                                                ["Reading'"], 1)
+                                                ["Reading'"], 3)
 train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset)
 
 linearSection = LinearSection([LinearBlock([
@@ -65,19 +65,19 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(50, 25),
     Activation("ReLU"),
-    Linear(25, 1)
+    Linear(25, 5)
 ])])
 
 structure = StructureFactory([linearSection], PytorchGenerator()).create_structure()
 
 architecture = ForwardArchitecture(structure)
 
-model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
+model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.01)),
                                     Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()),
                      EarlyStopping(PrecisionMonitor(100)))\
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
-print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
+# print("Test: ", TestTask(test_dataset, LossMeasurer(), PytorchTester).execute(model))
 
 # for entry in test_dataset:
 #     input, output = entry.get_input(), entry.get_output()

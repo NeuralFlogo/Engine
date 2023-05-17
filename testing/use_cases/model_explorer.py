@@ -48,7 +48,7 @@ dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImage
 dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input'"], ["output_0", "output_1", "output_2", "output_3",
                                                                         "output_4", "output_5", "output_6", "output_7",
                                                                         "output_8", "output_9"], 5)
-train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset)
+train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset, shuffle=True)
 
 convolutionalSection = ConvolutionalSection([ConvolutionalBlock([
     Convolutional(1, 6, kernel=3),

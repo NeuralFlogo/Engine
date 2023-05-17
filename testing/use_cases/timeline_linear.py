@@ -37,7 +37,7 @@ def abs_path(part_path):
 
 epochs = 100
 
-timeline = TimelineReader(Parser()).read(abs_path("/testing/resources/kraken.its"))
+timeline = TimelineReader(Parser()).read(abs_path("/resources/kraken.its"))
 dataframe = timeline.group_by(1, HOUR).to_dataframe(20)
 
 dataframe = StandardizationMapper().map(dataframe, ["price_input_0", "price_input_1", "price_input_2", "price_input_3",

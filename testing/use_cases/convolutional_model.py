@@ -5,7 +5,7 @@ from flogo.data.dataset.dataset_splitter import DatasetSplitter
 from flogo.discovery.hyperparameters.loss import Loss
 from flogo.discovery.hyperparameters.optimizer import Optimizer
 from flogo.discovery.regularization.early_stopping import EarlyStopping
-from flogo.discovery.regularization.monitors.growth_monitor import GrowthMonitor
+from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
 from flogo.discovery.tasks.test_task import TestTask
 from flogo.discovery.tasks.training_task import TrainingTask
 from flogo.preprocessing.mappers.composite import CompositeMapper
@@ -48,7 +48,7 @@ dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImage
 dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input'"], ["output_0", "output_1", "output_2", "output_3",
                                                                         "output_4", "output_5", "output_6", "output_7",
                                                                         "output_8", "output_9"], 1)
-train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset)
+train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset, shuffle=True)
 
 convolutionalSection = ConvolutionalSection([ConvolutionalBlock([
     Convolutional(1, 6, kernel=5),
@@ -71,14 +71,9 @@ structure = StructureFactory([convolutionalSection, flattenSection, linearSectio
 architecture = ForwardArchitecture(structure)
 
 model = TrainingTask(PytorchTrainer(
-    Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.001)), Loss(PytorchLoss("MSELoss"))),
-    PytorchValidator(AccuracyMeasurer())
+    Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)), Loss(PytorchLoss("CrossEntropyLoss"))),
+    PytorchValidator(AccuracyMeasurer()), EarlyStopping(PrecisionMonitor(1))
 ).execute(epochs, architecture, train_dataset, validation_dataset)
 
-
-model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
-                                    Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
-                     EarlyStopping(GrowthMonitor(1, 0.1)))\
-    .execute(epochs, architecture, train_dataset, validation_dataset)
 
 print("Test: ", TestTask(test_dataset, AccuracyMeasurer(), PytorchTester).execute(model))

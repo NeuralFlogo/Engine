@@ -31,9 +31,9 @@ def abs_path(part_path):
 epochs = 100
 columns = {"input": NumericColumn(), "output": NumericColumn()}
 
-dataframe = DelimitedFileReader(",").read(abs_path("/resources/regression_dataset.csv"), columns)
+dataframe = DelimitedFileReader(",").read(abs_path("/testing/resources/regression_dataset.csv"), columns)
 
-dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input"], ["output"], 2)
+dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["input"], ["output"], 1)
 
 train_dataset, test_dataset, validation_dataset = DatasetSplitter().split(dataset)
 
