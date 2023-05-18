@@ -70,7 +70,7 @@ The optimizer determines the optimization algorithm used to update the model's p
 optimizer = Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01))
 ```
 
-## Loss function
+### Loss function
 
 The loss function quantifies the discrepancy between the predicted outputs and the true labels, guiding the model to minimize this discrepancy during training. Flogo provides different loss functions such as Mean Squared Error (MSE), Cross Entropy Loss, and more. For instance, to use the Mean Squared Error loss function, you can define it as follows:
 
@@ -78,21 +78,21 @@ The loss function quantifies the discrepancy between the predicted outputs and t
 loss_function = Loss(PytorchLoss("MSELoss"))
 ```
 
-## Early Stopping
+### Early Stopping
 
 Early stopping is a technique used to prevent overfitting by monitoring a certain metric (e.g., accuracy or loss) on a validation set during training. In Flogo, you can configure early stopping based on your preferred metric. For example, to use early stopping based on precision, you can define it as follows:
 
 ```python
 early_stopping = EarlyStopping(PrecisionMonitor(90))
 ```
-## Validator
+### Validator
 
 The validator evaluates the model's performance during training by measuring specific metrics on the validation set. In Flogo, you can define a validator with a specific metric measurement. For example, to measure the loss during validation, you can define the validator as follows:
 
 ```python
 validator = PytorchValidator(LossMeasurer())
 ```
-## Training task
+### Training task
 
 Once the necessary parameters are defined, we can execute the training using the `TrainingTask` class. This task combines the optimizer, loss function, validator, and early stopping criteria to train the model. We pass the desired number of epochs, the model architecture, and the training and validation datasets to the execute method. Here's an example of how to execute the training task:
 
