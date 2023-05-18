@@ -1,4 +1,4 @@
-from flogo.structure.blocks import residual
+from framework.structure.blocks import residual
 from pytorch.structure.blocks.residual import _ResidualBlock
 
 

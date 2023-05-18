@@ -1,17 +1,17 @@
 import unittest
 
-from flogo.data.dataframe.columns.categorical import CategoricalColumn
-from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
-from flogo.data.dataframe.columns.number import NumericColumn
-from flogo.data.dataframe.columns.unloaded_image import UnloadedImageColumn
-from flogo.data.dataframe.dataframe import Dataframe
-from flogo.preprocessing.mappers.composite import CompositeMapper
-from flogo.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
-from flogo.preprocessing.mappers.leaf.normalization_mapper import NormalizationMapper
-from flogo.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
-from flogo.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
-from flogo.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
-from flogo.preprocessing.mappers.leaf.type_mapper import TypeMapper
+from framework.data.dataframe.columns.categorical import CategoricalColumn
+from framework.data.dataframe.columns.loaded_image import LoadedImageColumn
+from framework.data.dataframe.columns.number import NumericColumn
+from framework.data.dataframe.columns.unloaded_image import UnloadedImageColumn
+from framework.data.dataframe.dataframe import Dataframe
+from framework.preprocessing.mappers.composite import CompositeMapper
+from framework.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
+from framework.preprocessing.mappers.leaf.normalization_mapper import NormalizationMapper
+from framework.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
+from framework.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
+from framework.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
+from framework.preprocessing.mappers.leaf.type_mapper import TypeMapper
 from pytorch.preprocessing.mappers.tensor_mapper import TensorMapper
 from testing.utils import abs_image_path, image_sizes
 

@@ -1,23 +1,23 @@
 import os
 
-from flogo.data.dataset.dataset_builder import DatasetBuilder
-from flogo.data.dataset.dataset_splitter import DatasetSplitter
-from flogo.data.timeline.parser import Parser
-from flogo.data.timeline.readers.timeline_reader import TimelineReader
-from flogo.data.timeline.utils.metrics import HOUR, DAY
-from flogo.discovery.hyperparameters.loss import Loss
-from flogo.discovery.hyperparameters.optimizer import Optimizer
-from flogo.discovery.regularization.early_stopping import EarlyStopping
-from flogo.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
-from flogo.discovery.tasks.test_task import TestTask
-from flogo.discovery.tasks.training_task import TrainingTask
-from flogo.preprocessing.delete_column import DeleteOperator
-from flogo.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
-from flogo.structure.blocks.linear import LinearBlock
-from flogo.structure.layers.activation import Activation
-from flogo.structure.layers.linear import Linear
-from flogo.structure.sections.processing.feed_forward import LinearSection
-from flogo.structure.structure_factory import StructureFactory
+from framework.data.dataset.dataset_builder import DatasetBuilder
+from framework.data.dataset.dataset_splitter import DatasetSplitter
+from framework.data.timeline.parser import Parser
+from framework.data.timeline.readers.timeline_reader import TimelineReader
+from framework.data.timeline.utils.metrics import HOUR, DAY
+from framework.discovery.hyperparameters.loss import Loss
+from framework.discovery.hyperparameters.optimizer import Optimizer
+from framework.discovery.regularization.early_stopping import EarlyStopping
+from framework.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
+from framework.discovery.tasks.test_task import TestTask
+from framework.discovery.tasks.training_task import TrainingTask
+from framework.preprocessing.delete_column import DeleteOperator
+from framework.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
+from framework.structure.blocks.linear import LinearBlock
+from framework.structure.layers.activation import Activation
+from framework.structure.layers.linear import Linear
+from framework.structure.sections.processing.feed_forward import LinearSection
+from framework.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer

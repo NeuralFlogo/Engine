@@ -1,8 +1,8 @@
-from flogo.structure.blocks import convolutional
-from flogo.structure.layers.activation import Activation
-from flogo.structure.layers.convolutional import Convolutional
-from flogo.structure.layers import normalization
-from flogo.structure.layers.pool import Pool as PoolComp
+from framework.structure.blocks import convolutional
+from framework.structure.layers.activation import Activation
+from framework.structure.layers.convolutional import Convolutional
+from framework.structure.layers import normalization
+from framework.structure.layers.pool import Pool as PoolComp
 from pytorch.structure.layers.activation import PActivation
 from pytorch.structure.layers.convolution import PConvolutional
 from pytorch.structure.layers.normalization import PNormalization

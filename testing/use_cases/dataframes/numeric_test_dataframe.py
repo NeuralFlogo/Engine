@@ -1,12 +1,12 @@
 import os
 
-from flogo.data.dataframe.columns.categorical import CategoricalColumn
-from flogo.data.dataframe.columns.number import NumericColumn
-from flogo.data.dataframe.readers.delimeted_file_reader import DelimitedFileReader
-from flogo.preprocessing.mappers.leaf.normalization_mapper import NormalizationMapper
-from flogo.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
-from flogo.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
-from flogo.preprocessing.orchestrator import Orchestrator
+from framework.data.dataframe.columns.categorical import CategoricalColumn
+from framework.data.dataframe.columns.number import NumericColumn
+from framework.data.dataframe.readers.delimeted_file_reader import DelimitedFileReader
+from framework.preprocessing.mappers.leaf.normalization_mapper import NormalizationMapper
+from framework.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
+from framework.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
+from framework.preprocessing.orchestrator import Orchestrator
 
 
 def abs_path(part_path):

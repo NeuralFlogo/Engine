@@ -1,10 +1,10 @@
 import torch.nn
 
-import flogo.structure.layers.normalization
+import framework.structure.layers.normalization
 
 
 class PNormalization:
-    def __init__(self, norm: flogo.structure.layers.normalization.Normalization):
+    def __init__(self, norm: framework.structure.layers.normalization.Normalization):
         self.out_channels = norm.out_channels
         self.momentum = norm.momentum
         self.eps = norm.eps

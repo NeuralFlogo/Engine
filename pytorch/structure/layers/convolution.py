@@ -1,6 +1,6 @@
 import torch
 
-from flogo.structure.layers.convolutional import Convolutional
+from framework.structure.layers.convolutional import Convolutional
 
 
 class PConvolutional:

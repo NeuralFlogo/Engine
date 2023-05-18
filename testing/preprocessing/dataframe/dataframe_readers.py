@@ -1,10 +1,10 @@
 import copy
 import unittest
 
-from flogo.data.dataframe.columns.categorical import CategoricalColumn
-from flogo.data.dataframe.columns.number import NumericColumn
-from flogo.data.dataframe.readers.delimeted_file_reader import DelimitedFileReader
-from flogo.data.dataframe.readers.image_reader import ImageReader
+from framework.data.dataframe.columns.categorical import CategoricalColumn
+from framework.data.dataframe.columns.number import NumericColumn
+from framework.data.dataframe.readers.delimeted_file_reader import DelimitedFileReader
+from framework.data.dataframe.readers.image_reader import ImageReader
 from testing.utils import abs_path
 
 columns = {"work_year": CategoricalColumn(), "experience_level": CategoricalColumn(),

@@ -1,6 +1,6 @@
 from torch import nn
 
-from flogo.structure.layers.flatten import Flatten
+from framework.structure.layers.flatten import Flatten
 
 
 class PFlatten:

@@ -1,5 +1,5 @@
-from flogo.discovery.hyperparameters.loss import Loss
-from flogo.discovery.hyperparameters.optimizer import Optimizer
+from framework.discovery.hyperparameters.loss import Loss
+from framework.discovery.hyperparameters.optimizer import Optimizer
 
 
 class PytorchTrainer:

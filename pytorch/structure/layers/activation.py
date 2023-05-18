@@ -1,6 +1,6 @@
 from torch import nn
 
-from flogo.structure.layers.activation import Activation
+from framework.structure.layers.activation import Activation
 
 
 class PActivation:

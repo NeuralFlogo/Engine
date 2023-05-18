@@ -1,8 +1,8 @@
 from torchvision import transforms
 
-from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
-from flogo.data.dataframe.columns.number import NumericColumn
-from flogo.preprocessing.mapper import Mapper
+from framework.data.dataframe.columns.loaded_image import LoadedImageColumn
+from framework.data.dataframe.columns.number import NumericColumn
+from framework.preprocessing.mapper import Mapper
 
 
 class TensorMapper(Mapper):

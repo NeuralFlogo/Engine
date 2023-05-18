@@ -1,7 +1,7 @@
 import torch
 from torch.nn import Module
 
-from flogo.structure.blocks import residual
+from framework.structure.blocks import residual
 from pytorch.structure.layers.activation import PActivation
 from pytorch.structure.layers.convolution import PConvolutional
 from pytorch.structure.layers.normalization import PNormalization

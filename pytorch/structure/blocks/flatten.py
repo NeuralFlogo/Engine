@@ -1,4 +1,4 @@
-from flogo.structure.blocks import flatten
+from framework.structure.blocks import flatten
 from pytorch.structure.layers.flatten import PFlatten
 
 

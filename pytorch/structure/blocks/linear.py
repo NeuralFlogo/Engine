@@ -1,6 +1,6 @@
-from flogo.structure.blocks import linear
-from flogo.structure.layers.activation import Activation
-from flogo.structure.layers.linear import Linear
+from framework.structure.blocks import linear
+from framework.structure.layers.activation import Activation
+from framework.structure.layers.linear import Linear
 from pytorch.structure.layers.linear import PLinear
 from pytorch.structure.layers.activation import PActivation
 

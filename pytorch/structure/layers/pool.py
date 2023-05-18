@@ -1,10 +1,10 @@
 from torch.nn import MaxPool2d, AvgPool2d
 
-import flogo.structure.layers.pool
+import framework.structure.layers.pool
 
 
 class PPool:
-    def __init__(self, pool: flogo.structure.layers.pool.Pool):
+    def __init__(self, pool: framework.structure.layers.pool.Pool):
         self.kernel = pool.kernel
         self.stride = pool.stride
         self.padding = pool.padding

@@ -1,5 +1,5 @@
 from pytorch.structure.layers.classification import PClassification
-from flogo.structure.blocks import classification
+from framework.structure.blocks import classification
 
 
 class ClassificationBlock:

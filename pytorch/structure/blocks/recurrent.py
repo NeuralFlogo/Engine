@@ -1,6 +1,6 @@
 import torch.nn
 
-from flogo.structure.blocks import recurrent
+from framework.structure.blocks import recurrent
 
 
 class RecurrentBlock:

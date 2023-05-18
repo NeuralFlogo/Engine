@@ -1,4 +1,4 @@
-from flogo.structure.sections.link.classificationsection import ClassificationSection as Classification
+from framework.structure.sections.link.classificationsection import ClassificationSection as Classification
 from pytorch.structure.blocks.classification import ClassificationBlock
 
 

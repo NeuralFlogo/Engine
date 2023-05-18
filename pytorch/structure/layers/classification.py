@@ -1,6 +1,6 @@
 import torch
 
-from flogo.structure.blocks.classification import ClassificationBlock
+from framework.structure.blocks.classification import ClassificationBlock
 
 
 class PClassification:

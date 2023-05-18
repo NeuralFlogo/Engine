@@ -3,13 +3,13 @@ import os
 import torch
 from matplotlib import pyplot as plt
 
-from flogo.data.dataframe.columns.loaded_image import LoadedImageColumn
-from flogo.data.dataframe.readers.image_reader import ImageReader
-from flogo.preprocessing.mappers.composite import CompositeMapper
-from flogo.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
-from flogo.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
-from flogo.preprocessing.mappers.leaf.type_mapper import TypeMapper
-from flogo.preprocessing.orchestrator import Orchestrator
+from framework.data.dataframe.columns.loaded_image import LoadedImageColumn
+from framework.data.dataframe.readers.image_reader import ImageReader
+from framework.preprocessing.mappers.composite import CompositeMapper
+from framework.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
+from framework.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
+from framework.preprocessing.mappers.leaf.type_mapper import TypeMapper
+from framework.preprocessing.orchestrator import Orchestrator
 from pytorch.preprocessing.mappers.tensor_mapper import TensorMapper
 
 
