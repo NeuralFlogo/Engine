@@ -1,16 +1,13 @@
-# Flogo
+# Flogo: A DSL for Neural Networks Development
 
 [![Skill Icons](https://skillicons.dev/icons?i=py,pytorch&perline=2)](https://skillicons.dev)
 
-## Overview
+Welcome to the repository of Flogo, our custom Domain Specific Language (DSL) designed specifically to democratize the development of various types of Neural Networks. With Flogo, we aim to simplify the process of constructing, training, and testing Neural Networks by offering a higher level of abstraction. Flogo's primary goal is to make Neural Network development more approachable, efficient, and flexible. We believe that complex tasks should be manageable, hence Flogo transforms intricate procedures into more intuitive code blocks. By reducing the potential for error and increasing efficiency, Flogo becomes a powerful tool in your deep learning toolkit. Flogo generates code for our proprietary framework, currently built upon the PyTorch library. This framework harnesses the power of PyTorch, giving users the ability to define a broad spectrum of Neural Networks with relative ease, and deploy them using our platform. In essence, Flogo serves as a bridge between users and our underlying framework, providing the functionality of PyTorch while abstracting away its complexity.
 
-Flogo is a versatile deep learning framework and Domain-Specific Language (DSL) developed on top of PyTorch. It can be used with various libraries, offering flexibility and compatibility. Our team comprises developers with prior experience in different deep learning frameworks. With Flogo, we provide an alternative approach to neural network development, infused with our unique perspective.
+## Future Scope
 
-## Key Features
+While our framework's present implementation leverages PyTorch, we strive to continuously improve Flogo's versatility. We're actively planning to extend Flogo's support to other popular Deep Learning libraries. This future-forward approach ensures that users can generate code compatible with the tool of their choice, and that Flogo remains adaptable in the face of evolving technology trends.
 
-- **Expressive**: Flogo emphasizes expressiveness, allowing you to effectively convey complex model architectures and ideas in your code.
-- **User-Friendly**: Flogo offers an intuitive and consistent interface, making the construction and adjustment of models straightforward.
-- **Efficient**: At its core, Flogo utilizes the power and efficiency of PyTorch, ensuring optimized performance.
 
 ## Preprocessing
 
