@@ -4,7 +4,7 @@ from framework.data.dataset.dataset_builder import DatasetBuilder
 from framework.data.dataset.dataset_splitter import DatasetSplitter
 from framework.data.timeline.parser import Parser
 from framework.data.timeline.readers.timeline_reader import TimelineReader
-from framework.data.timeline.utils.metrics import HOUR, DAY
+from framework.data.timeline.utils.metrics import DAY
 from framework.discovery.hyperparameters.loss import Loss
 from framework.discovery.hyperparameters.optimizer import Optimizer
 from framework.discovery.regularization.early_stopping import EarlyStopping
