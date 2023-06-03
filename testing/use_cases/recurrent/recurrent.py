@@ -17,7 +17,7 @@ from framework.preprocessing.orchestrator import Orchestrator
 from framework.structure.blocks.linear import LinearBlock
 from framework.structure.blocks.recurrent import RecurrentBlock
 from framework.structure.layers.linear import Linear
-from framework.structure.sections.processing.feed_forward import LinearSection
+from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.sections.processing.recurrent import RecurrentSection
 from framework.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture

@@ -1,7 +1,7 @@
 from pytorch.structure.blocks.linear import LinearBlock
 
 
-class FeedForwardSection:
+class LinearSection:
     def __init__(self, section):
         self.section = [LinearBlock(block) for block in section.section]
 

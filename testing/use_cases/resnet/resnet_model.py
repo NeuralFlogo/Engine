@@ -29,7 +29,7 @@ from framework.structure.layers.normalization import Normalization
 from framework.structure.layers.pool import Pool
 from framework.structure.sections.link.flatten import FlattenSection
 from framework.structure.sections.processing.convolutional import ConvolutionalSection
-from framework.structure.sections.processing.feed_forward import LinearSection
+from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.sections.processing.residual import ResidualSection
 from framework.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
