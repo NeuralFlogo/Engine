@@ -10,7 +10,7 @@ from framework.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMappe
 from framework.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
 from framework.preprocessing.mappers.leaf.type_mapper import TypeMapper
 from framework.preprocessing.orchestrator import Orchestrator
-from pytorch.preprocessing.mappers.tensor_mapper import TensorMapper
+from pytorch.preprocessing.mappers.tensor_mapper import TorchTensorMapper
 
 
 def abs_path(part_path):
@@ -20,11 +20,11 @@ def abs_path(part_path):
 path = abs_path("/resources/image_data")
 
 dataframe = ImageReader().read(path)
-dataframe1 = Orchestrator(CompositeMapper([TypeMapper(LoadedImageColumn), TensorMapper()])).process(dataframe, ["input"])
+dataframe1 = Orchestrator(CompositeMapper([TypeMapper(LoadedImageColumn), TorchTensorMapper()])).process(dataframe, ["input"])
 plt.imshow(torch.tensor(dataframe1.get("input'").get_values()[1]).permute(1, 2, 0))
 plt.show()
 
 dataframe = Orchestrator(CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50)), GrayScaleMapper(),
-                                          TensorMapper()])).process(dataframe, ["input"])
+                                          TorchTensorMapper()])).process(dataframe, ["input"])
 plt.imshow(dataframe.get("input'").get_values()[1].permute(1, 2, 0))
 plt.show()

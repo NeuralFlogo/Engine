@@ -15,15 +15,18 @@ from framework.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
 from framework.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
 from framework.preprocessing.mappers.leaf.type_mapper import TypeMapper
 from framework.preprocessing.orchestrator import Orchestrator
+from framework.structure.blocks.classification import ClassificationBlock
 
 from framework.structure.blocks.convolutional import ConvolutionalBlock
 from framework.structure.blocks.flatten import FlattenBlock
 from framework.structure.blocks.linear import LinearBlock
 from framework.structure.layers.activation import Activation
+from framework.structure.layers.classification import Classification
 from framework.structure.layers.convolutional import Convolutional
 from framework.structure.layers.flatten import Flatten
 from framework.structure.layers.linear import Linear
 from framework.structure.layers.pool import Pool
+from framework.structure.sections.link.classificationsection import ClassificationSection
 from framework.structure.sections.link.flatten import FlattenSection
 from framework.structure.sections.processing.convolutional import ConvolutionalSection
 from framework.structure.sections.processing.linear import LinearSection
@@ -47,7 +50,7 @@ def abs_path(part_path):
 
 path = abs_path("/resources/mnist")
 
-epochs = 10
+epochs = 30
 
 dataframe = ImageReader().read(path)
 dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50))])) \
@@ -73,7 +76,10 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(120, 10)])])
 
-structure = StructureFactory([convolutionalSection, flattenSection, linearSection],
+
+classificationSection = ClassificationSection(ClassificationBlock(Classification("Softmax", 1)))
+
+structure = StructureFactory([convolutionalSection, flattenSection, linearSection, classificationSection],
                              PytorchGenerator()).create_structure()
 
 architecture = ForwardArchitecture(structure)

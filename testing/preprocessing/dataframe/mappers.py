@@ -12,7 +12,7 @@ from framework.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
 from framework.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
 from framework.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
 from framework.preprocessing.mappers.leaf.type_mapper import TypeMapper
-from pytorch.preprocessing.mappers.tensor_mapper import TensorMapper
+from pytorch.preprocessing.mappers.tensor_mapper import TorchTensorMapper
 from testing.utils import abs_image_path, image_sizes
 
 csv_dataframe = Dataframe({
@@ -76,7 +76,7 @@ class MappersTest(unittest.TestCase):
         self.assertEqual(expected, [image.size for image in dataframe5.get("loaded_input'").get_values()])
 
     def test_to_tensor_mapper(self):
-        pytorch_tensor_mapper = TensorMapper()
+        pytorch_tensor_mapper = TorchTensorMapper()
         dataframe6 = pytorch_tensor_mapper.map(image_dataframe, ["loaded_input"])
         expected = [[3, 303, 400], [3, 499, 495], [3, 144, 175], [3, 375, 499], [3, 280, 300], [3, 414, 500],
                     [3, 396, 312], [3, 499, 489], [3, 425, 320], [3, 345, 461], [3, 287, 300], [3, 376, 499],

@@ -5,7 +5,7 @@ from framework.data.dataframe.columns.number import NumericColumn
 from framework.preprocessing.mapper import Mapper
 
 
-class TensorMapper(Mapper):
+class TorchTensorMapper(Mapper):
 
     def __init__(self):
         self.transform = transforms.ToTensor()
