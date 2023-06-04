@@ -2,7 +2,6 @@ import unittest
 
 from torch import nn
 from torch.nn import Conv2d, MaxPool2d, ReLU, BatchNorm2d
-
 from framework.structure.blocks.classification import ClassificationBlock
 from framework.structure.blocks.convolutional import ConvolutionalBlock
 from framework.structure.blocks.flatten import FlattenBlock
@@ -20,8 +19,6 @@ from pytorch.structure.blocks.recurrent import RecurrentBlock as PRecurrentBlock
 from pytorch.structure.blocks.linear import LinearBlock as PLinearBlock
 from pytorch.structure.blocks.flatten import FlattenBlock as PFlattenBlock
 from pytorch.structure.blocks.classification import ClassificationBlock as PClassificationBlock
-
-
 from pytorch.structure.blocks.residual import _ResidualBlock
 
 
