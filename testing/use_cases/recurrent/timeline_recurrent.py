@@ -7,8 +7,6 @@ from framework.data.dataset.dataset_builder import DatasetBuilder
 from framework.data.dataset.dataset_splitter import DatasetSplitter
 from framework.discovery.hyperparameters.loss import Loss
 from framework.discovery.hyperparameters.optimizer import Optimizer
-from framework.discovery.regularization.early_stopping import EarlyStopping
-from framework.discovery.regularization.monitors.growth_monitor import GrowthMonitor
 from framework.discovery.tasks.test_task import TestTask
 from framework.discovery.tasks.training_task import TrainingTask
 from framework.preprocessing.delete_column import DeleteOperator

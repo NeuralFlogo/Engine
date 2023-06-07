@@ -5,6 +5,7 @@ from framework.data.dataframe.columns.categorical import CategoricalColumn
 from framework.data.dataframe.columns.number import NumericColumn
 from framework.data.dataframe.readers.delimeted_file_reader import DelimitedFileReader
 from framework.data.dataset.dataset_builder import DatasetBuilder
+from pytorch.data.torch_cpu_entry_allocator import TorchCpuEntryAllocator
 from pytorch.data.torch_gpu_entry_allocator import TorchGpuEntryAllocator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 
@@ -22,14 +23,14 @@ dataframe = DelimitedFileReader(",").read(path, delimited_file_columns_with_head
 dataset = DatasetBuilder(PytorchCaster()).build(dataframe, ["work_year"], ["salary"])
 
 
-class GpuAllocator(unittest.TestCase):
+class Allocator(unittest.TestCase):
 
-    def test_allocator(self):
+    def test_torch_gpu_allocator(self):
         TorchGpuEntryAllocator().allocate(dataset[0])
         expected = "cuda"
         self.assertEqual(expected, dataset[0].get_input().device.type)
 
-    def test_deallocator(self):
-        TorchGpuEntryAllocator().deallocate(dataset[0])
+    def test_torch_cpu_allocator(self):
+        TorchCpuEntryAllocator().allocate(dataset[0])
         expected = "cpu"
         self.assertEqual(expected, dataset[0].get_input().device.type)
