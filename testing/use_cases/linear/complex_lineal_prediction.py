@@ -19,6 +19,7 @@ from framework.structure.layers.linear import Linear
 from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
+from pytorch.data.torch_gpu_entry_allocator import TorchGpuEntryAllocator
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.measurers.loss_measurer import LossMeasurer
@@ -44,7 +45,6 @@ dataframe = DelimitedFileReader(",").read(abs_path("/resources/students_performa
 
 dataframe = DeleteOperator().delete(dataframe, ["Test", "Lunch", "Ethnicity"])
 
-
 dataframe = Orchestrator(OneHotMapper(), StandardizationMapper()).process(dataframe,
                                                                           ["Gender", "ParentLevel"],
                                                                           ["Math", "Reading", "Writing"])
@@ -67,9 +67,12 @@ linearSection = LinearSection([LinearBlock([
 structure = StructureFactory([linearSection], PytorchGenerator()).create_structure()
 
 architecture = ForwardArchitecture(structure)
+architecture.to_device("cuda")
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("Adam", architecture.parameters(), 0.01)),
-                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()))\
+                                    Loss(PytorchLoss("MSELoss")),
+                                    TorchGpuEntryAllocator()),
+                     PytorchValidator(LossMeasurer(), TorchGpuEntryAllocator())) \
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
-print("Test: ", TestTask(PytorchTester(test_dataset, LossMeasurer())).execute(model))
+print("Test: ", TestTask(PytorchTester(test_dataset, LossMeasurer(), TorchGpuEntryAllocator())).execute(model))

@@ -6,8 +6,6 @@ from framework.data.dataset.dataset_builder import DatasetBuilder
 from framework.data.dataset.dataset_splitter import DatasetSplitter
 from framework.discovery.hyperparameters.loss import Loss
 from framework.discovery.hyperparameters.optimizer import Optimizer
-from framework.discovery.regularization.early_stopping import EarlyStopping
-from framework.discovery.regularization.monitors.growth_monitor import GrowthMonitor
 from framework.discovery.tasks.test_task import TestTask
 from framework.discovery.tasks.training_task import TrainingTask
 from framework.preprocessing.mappers.composite import CompositeMapper
@@ -16,7 +14,6 @@ from framework.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
 from framework.preprocessing.mappers.leaf.type_mapper import TypeMapper
 from framework.preprocessing.orchestrator import Orchestrator
 from framework.structure.blocks.classification import ClassificationBlock
-
 from framework.structure.blocks.convolutional import ConvolutionalBlock
 from framework.structure.blocks.flatten import FlattenBlock
 from framework.structure.blocks.linear import LinearBlock
@@ -32,15 +29,14 @@ from framework.structure.sections.processing.convolutional import ConvolutionalS
 from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
+from pytorch.data.torch_gpu_entry_allocator import TorchGpuEntryAllocator
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.measurers.accuracy_measurer import AccuracyMeasurer
-
 from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
-
 from pytorch.structure.generator import PytorchGenerator
 
 
@@ -76,17 +72,18 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(120, 10)])])
 
-
 classificationSection = ClassificationSection(ClassificationBlock(Classification("Softmax", 1)))
 
 structure = StructureFactory([convolutionalSection, flattenSection, linearSection, classificationSection],
                              PytorchGenerator()).create_structure()
 
 architecture = ForwardArchitecture(structure)
+architecture.to_device("cuda")
 
-model = TrainingTask(PytorchTrainer(
-    Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)), Loss(PytorchLoss("CrossEntropyLoss"))),
-    PytorchValidator(AccuracyMeasurer()), EarlyStopping(GrowthMonitor(10, 0.001))
-).execute(epochs, architecture, train_dataset, validation_dataset)
+model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
+                                    Loss(PytorchLoss("CrossEntropyLoss")),
+                                    TorchGpuEntryAllocator()),
+                     PytorchValidator(AccuracyMeasurer(), TorchGpuEntryAllocator())) \
+    .execute(epochs, architecture, train_dataset, validation_dataset)
 
-print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer())).execute(model))
+print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer(), TorchGpuEntryAllocator())).execute(model))
