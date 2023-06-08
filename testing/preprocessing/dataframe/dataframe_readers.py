@@ -1,11 +1,16 @@
 import copy
+import os
 import unittest
 
 from framework.data.dataframe.columns.categorical import CategoricalColumn
 from framework.data.dataframe.columns.number import NumericColumn
 from framework.data.dataframe.readers.delimeted_file_reader import DelimitedFileReader
 from framework.data.dataframe.readers.image_reader import ImageReader
-from testing.utils import abs_path
+
+
+def abs_path(part_path):
+    return os.path.dirname(os.path.dirname(os.path.abspath(os.getcwd()))) + part_path
+
 
 columns = {"work_year": CategoricalColumn(), "experience_level": CategoricalColumn(),
            "employment_type": CategoricalColumn(),

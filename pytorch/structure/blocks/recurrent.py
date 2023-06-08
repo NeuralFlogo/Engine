@@ -27,12 +27,12 @@ class Block(torch.nn.Module):
         self.unit = unit(input_size, hidden_size, num_layers, batch_first=True)
 
     def forward(self, x):
-        hidden_state = self.initialize_state()
+        hidden_state = self.initialize_state(x.device)
         out, _ = self.unit(x, (hidden_state, self.initialize_state())) if self.isLSTM() else self.unit(x, hidden_state)
         return out.reshape(out.shape[0], -1)
 
     def isLSTM(self):
         return type(self.unit) == torch.nn.LSTM
 
-    def initialize_state(self):
-        return torch.zeros(self.num_layers, self.hidden_size)
+    def initialize_state(self, device):
+        return torch.zeros(self.num_layers, self.hidden_size, device=device)

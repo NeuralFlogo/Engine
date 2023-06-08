@@ -3,7 +3,7 @@ from framework.discovery.regularization.monitors.growth_monitor import GrowthMon
 
 
 class TrainingTask:
-    def __init__(self, trainer, validator=None, early_stopping: EarlyStopping = EarlyStopping(GrowthMonitor(5, 0.001))):
+    def __init__(self, trainer, validator, early_stopping: EarlyStopping = EarlyStopping(GrowthMonitor(5, 0.001))):
         self.trainer = trainer
         self.validator = validator
         self.early_stopping = early_stopping

@@ -8,8 +8,6 @@ from framework.data.dataset.dataset_builder import DatasetBuilder
 from framework.data.dataset.dataset_splitter import DatasetSplitter
 from framework.discovery.hyperparameters.loss import Loss
 from framework.discovery.hyperparameters.optimizer import Optimizer
-from framework.discovery.regularization.early_stopping import EarlyStopping
-from framework.discovery.regularization.monitors.growth_monitor import GrowthMonitor
 from framework.discovery.tasks.test_task import TestTask
 from framework.discovery.tasks.training_task import TrainingTask
 from framework.preprocessing.mappers.composite import CompositeMapper
@@ -33,6 +31,7 @@ from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.sections.processing.residual import ResidualSection
 from framework.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
+from pytorch.data.torch_gpu_entry_allocator import TorchGpuEntryAllocator
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.measurers.accuracy_measurer import AccuracyMeasurer
@@ -42,7 +41,7 @@ from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
 from pytorch.structure.generator import PytorchGenerator
 
-epochs = 10
+epochs = 1000
 
 
 def abs_path(part_path):
@@ -87,11 +86,15 @@ linear = LinearSection([LinearBlock([Linear(25088, 10)])])
 structure = StructureFactory([convolutional1, residual, convolutional2, flatten, linear],
                              PytorchGenerator()).create_structure()
 
+
 architecture = ForwardArchitecture(structure)
+architecture.to_device("cuda")
+
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
-                                    Loss(PytorchLoss("CrossEntropyLoss"))), PytorchValidator(AccuracyMeasurer()),
-                     EarlyStopping(GrowthMonitor(1, 0.001))) \
+                                    Loss(PytorchLoss("MSELoss")),
+                                    TorchGpuEntryAllocator()),
+                     PytorchValidator(AccuracyMeasurer(), TorchGpuEntryAllocator())) \
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
-print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer())).execute(model))
+print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer(), TorchGpuEntryAllocator())).execute(model))

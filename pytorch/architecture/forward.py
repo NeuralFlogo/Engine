@@ -13,3 +13,6 @@ class ForwardArchitecture(Module):
 
     def save(self, path):
         torch.save(self, path)
+
+    def to_device(self, device):
+        self.to(device)

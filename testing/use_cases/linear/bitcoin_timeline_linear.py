@@ -7,8 +7,6 @@ from framework.data.timeline.readers.timeline_reader import TimelineReader
 from framework.data.timeline.utils.metrics import DAY
 from framework.discovery.hyperparameters.loss import Loss
 from framework.discovery.hyperparameters.optimizer import Optimizer
-from framework.discovery.regularization.early_stopping import EarlyStopping
-from framework.discovery.regularization.monitors.precision_monitor import PrecisionMonitor
 from framework.discovery.tasks.test_task import TestTask
 from framework.discovery.tasks.training_task import TrainingTask
 from framework.preprocessing.delete_column import DeleteOperator
@@ -19,6 +17,7 @@ from framework.structure.layers.linear import Linear
 from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
+from pytorch.data.torch_gpu_entry_allocator import TorchGpuEntryAllocator
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
 from pytorch.discovery.measurers.loss_measurer import LossMeasurer
@@ -33,7 +32,7 @@ def abs_path(part_path):
     return os.path.dirname(os.path.dirname(os.path.abspath(os.getcwd()))) + part_path
 
 
-epochs = 100
+epochs = 5
 
 timeline = TimelineReader(Parser()).read(abs_path("/resources/kraken.its"))
 dataframe = timeline.group_by(1, DAY).to_dataframe(20)
@@ -78,10 +77,13 @@ structure = StructureFactory([linearSection],
                              PytorchGenerator()).create_structure()
 
 architecture = ForwardArchitecture(structure)
+architecture.to_device("cuda")
+
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
-                                    Loss(PytorchLoss("MSELoss"))), PytorchValidator(LossMeasurer()),
-                     EarlyStopping(PrecisionMonitor(0))) \
+                                    Loss(PytorchLoss("MSELoss")),
+                                    TorchGpuEntryAllocator()),
+                     PytorchValidator(LossMeasurer(), TorchGpuEntryAllocator())) \
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
-print("Test: ", TestTask(PytorchTester(test_dataset, LossMeasurer())).execute(model))
+print("Test: ", TestTask(PytorchTester(test_dataset, LossMeasurer(), TorchGpuEntryAllocator())).execute(model))
