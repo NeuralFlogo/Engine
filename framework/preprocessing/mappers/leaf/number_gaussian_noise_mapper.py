@@ -4,7 +4,7 @@ from framework.data.dataframe.columns.number import NumericColumn
 from framework.preprocessing.mapper import Mapper
 
 
-class NumberGaussMapper(Mapper):
+class NumberGaussianNoiseMapper(Mapper):
 
     def __init__(self, mean=0, std=1):
         self.mean = mean
