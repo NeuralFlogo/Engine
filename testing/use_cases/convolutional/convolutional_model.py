@@ -29,6 +29,7 @@ from framework.structure.sections.processing.convolutional import ConvolutionalS
 from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
+from pytorch.architecture.torch_freezer import TorchFreezer
 from pytorch.data.torch_gpu_entry_allocator import TorchGpuEntryAllocator
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer

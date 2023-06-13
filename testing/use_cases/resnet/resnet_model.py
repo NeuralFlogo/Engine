@@ -31,6 +31,8 @@ from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.sections.processing.residual import ResidualSection
 from framework.structure.structure_factory import StructureFactory
 from pytorch.architecture.forward import ForwardArchitecture
+from pytorch.architecture.model_loader import ModelLoader
+from pytorch.architecture.model_persister import ModelPersister
 from pytorch.data.torch_gpu_entry_allocator import TorchGpuEntryAllocator
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
