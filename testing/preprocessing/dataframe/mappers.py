@@ -1,4 +1,7 @@
 import unittest
+import random
+
+from numpy import std
 
 from framework.data.dataframe.columns.categorical import CategoricalColumn
 from framework.data.dataframe.columns.loaded_image import LoadedImageColumn
@@ -7,7 +10,10 @@ from framework.data.dataframe.columns.unloaded_image import UnloadedImageColumn
 from framework.data.dataframe.dataframe import Dataframe
 from framework.preprocessing.mappers.composite import CompositeMapper
 from framework.preprocessing.mappers.leaf.grayscale_mapper import GrayScaleMapper
+from framework.preprocessing.mappers.leaf.image_gaussian_blur_mapper import ImageGaussianBlurMapper
+from framework.preprocessing.mappers.leaf.image_gaussian_noise_mapper import ImageGaussianNoiseMapper
 from framework.preprocessing.mappers.leaf.normalization_mapper import NormalizationMapper
+from framework.preprocessing.mappers.leaf.number_gaussian_noise_mapper import NumberGaussianNoiseMapper
 from framework.preprocessing.mappers.leaf.one_hot_mapper import OneHotMapper
 from framework.preprocessing.mappers.leaf.resize_mapper import ResizeMapper
 from framework.preprocessing.mappers.leaf.standarization_mapper import StandardizationMapper
@@ -94,3 +100,21 @@ class MappersTest(unittest.TestCase):
                      'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L']]
         self.assertEqual(expected, [[image.size for image in dataframe7.get("loaded_input'").get_values()],
                                     [image.mode for image in dataframe7.get("loaded_input'").get_values()]])
+
+    def test_number_gaussian_noise_mapper(self):
+        number_gaussian_noise_mapper = NumberGaussianNoiseMapper(0, 5)
+        dataframe8 = number_gaussian_noise_mapper.map(csv_dataframe, ["salary"])
+        self.assertNotEqual(std(csv_dataframe.get("salary").values), std(dataframe8.get("salary'").values))
+
+    def test_image_gaussian_blur_mapper(self):
+        image_gaussian_blur_mapper = ImageGaussianBlurMapper()
+        dataframe9 = (image_gaussian_blur_mapper.map(image_dataframe, ["loaded_input"]))
+        image_dataframe.get("loaded_input").values[0].show()
+        dataframe9.get("loaded_input'").values[0].show()
+
+    def test_image_gaussian_noise_mapper(self):
+        image_gaussian_blur_mapper = ImageGaussianNoiseMapper(0.2)
+        dataframe9 = (image_gaussian_blur_mapper.map(image_dataframe, ["loaded_input"]))
+        image_dataframe.get("loaded_input").values[0].show()
+        dataframe9.get("loaded_input'").values[0].show()
+
