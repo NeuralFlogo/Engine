@@ -1,7 +1,7 @@
 from framework.structure.blocks import convolutional
+from framework.structure.layers import normalization
 from framework.structure.layers.activation import Activation
 from framework.structure.layers.convolutional import Convolutional
-from framework.structure.layers import normalization
 from framework.structure.layers.pool import Pool as PoolComp
 from pytorch.structure.layers.activation import PActivation
 from pytorch.structure.layers.convolution import PConvolutional

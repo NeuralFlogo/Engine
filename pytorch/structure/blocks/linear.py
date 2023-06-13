@@ -1,6 +1,8 @@
 from framework.structure.blocks import linear
 from framework.structure.layers.activation import Activation
+from framework.structure.layers.dropout import Dropout
 from framework.structure.layers.linear import Linear
+from pytorch.structure.layers.dropout import PDropout
 from pytorch.structure.layers.linear import PLinear
 from pytorch.structure.layers.activation import PActivation
 
@@ -11,6 +13,7 @@ class LinearBlock:
         for layer in block.content:
             if type(layer) == Activation: self.content.append(PActivation(layer))
             if type(layer) == Linear: self.content.append(PLinear(layer))
+            if type(layer) == Dropout: self.content.append(PDropout(layer))
 
     def build(self):
         return [layer.build() for layer in self.content]

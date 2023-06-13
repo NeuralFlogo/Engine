@@ -11,6 +11,7 @@ from framework.structure.blocks.residual import ResidualBlock
 from framework.structure.layers.activation import Activation
 from framework.structure.layers.classification import Classification
 from framework.structure.layers.convolutional import Convolutional
+from framework.structure.layers.dropout import Dropout
 from framework.structure.layers.flatten import Flatten
 from framework.structure.layers.linear import Linear
 from framework.structure.layers.pool import Pool
@@ -30,8 +31,8 @@ class BlockTest(unittest.TestCase):
         self.assertEqual(expected, [layer.__class__ for layer in PConvolutionalBlock(block).build()])
 
     def test_linear_block(self):
-        block = LinearBlock([Linear(1600, 120), Activation("ReLU")])
-        expected = [nn.Linear, ReLU]
+        block = LinearBlock([Linear(1600, 120), Activation("ReLU"), Dropout(0.2)])
+        expected = [nn.Linear, ReLU, nn.Dropout]
         self.assertEqual(expected, [layer.__class__ for layer in PLinearBlock(block).build()])
 
     def test_residual_block(self):
