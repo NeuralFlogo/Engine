@@ -1,3 +1,4 @@
+from framework.structure.metadata import Metadata
 from framework.structure.sections.link.flatten import FlattenSection
 from framework.structure.sections.processing.convolutional import ConvolutionalSection
 from framework.structure.sections.processing.linear import LinearSection
@@ -14,10 +15,16 @@ from pytorch.structure.sections.processing import recurrent
 
 class PytorchGenerator:
     def generate(self, structure):
-        result = []
+        torch_structure, metadata, start_index = [], Metadata(), 0
         for section in structure:
-            result.extend(self.__switch(section))
-        return result
+            self.__update(metadata, section, start_index, torch_structure)
+        return torch_structure, metadata
+
+    def __update(self, metadata, section, start_index, torch_structure):
+        section = self.__switch(section)
+        metadata.add(start_index, len(section))
+        start_index += len(section)
+        torch_structure.extend(section)
 
     def __switch(self, section):
         if type(section) == ConvolutionalSection: return convolutional.ConvolutionalSection(section).build()
