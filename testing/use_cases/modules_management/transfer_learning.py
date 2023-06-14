@@ -1,5 +1,6 @@
 import os
 
+from framework.architecture.module_interpreter import ModuleInterpreter
 from framework.data.dataframe.columns.loaded_image import LoadedImageColumn
 from framework.data.dataframe.readers.image_reader import ImageReader
 from framework.data.dataset.dataset_builder import DatasetBuilder
@@ -75,10 +76,10 @@ linearSection = LinearSection([LinearBlock([
 
 classificationSection = ClassificationSection(ClassificationBlock(Classification("Softmax", 1)))
 
-structure = StructureLauncher([convolutionalSection, flattenSection, linearSection, classificationSection],
-                              PytorchInterpreter()).run()
+runnable = StructureLauncher([convolutionalSection, flattenSection, linearSection, classificationSection],
+                             PytorchInterpreter()).launch()
 
-architecture = ForwardArchitecture(structure)
+architecture = ForwardArchitecture(runnable)
 architecture.to_device("cuda")
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
@@ -89,7 +90,15 @@ model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architectu
 
 print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer(), TorchGpuEntryAllocator())).execute(model))
 
-TorchFreezer().freeze(model.get_range(0, 1))
+runnable = StructureLauncher([flattenSection, linearSection, classificationSection],
+                             PytorchInterpreter()).launch()
+
+TorchFreezer().freeze(model.get_module(0).get_section())
+
+runnable = StructureLauncher([architecture.get_module(0)] + runnable.as_modules(), ModuleInterpreter()).launch()
+
+architecture = ForwardArchitecture(runnable)
+architecture.to_device("cuda")
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
                                     Loss(PytorchLoss("CrossEntropyLoss")),

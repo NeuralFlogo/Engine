@@ -47,7 +47,7 @@ def abs_path(part_path):
 
 path = abs_path("/resources/mnist")
 
-epochs = 30
+epochs = 10
 
 dataframe = ImageReader().read(path)
 dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50))])) \
@@ -80,6 +80,16 @@ structure = StructureLauncher([convolutionalSection, flattenSection, linearSecti
 
 architecture = ForwardArchitecture(structure)
 architecture.to_device("cuda")
+
+model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
+                                    Loss(PytorchLoss("CrossEntropyLoss")),
+                                    TorchGpuEntryAllocator()),
+                     PytorchValidator(AccuracyMeasurer(), TorchGpuEntryAllocator())) \
+    .execute(epochs, architecture, train_dataset, validation_dataset)
+
+print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer(), TorchGpuEntryAllocator())).execute(model))
+
+TorchFreezer().freeze(model.get_section_range(0, 1))
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
                                     Loss(PytorchLoss("CrossEntropyLoss")),

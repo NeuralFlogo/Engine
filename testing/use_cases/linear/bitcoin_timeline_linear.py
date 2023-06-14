@@ -74,7 +74,7 @@ linearSection = LinearSection([LinearBlock([
     Linear(50, 1)])])
 
 structure = StructureLauncher([linearSection],
-                              PytorchInterpreter()).run()
+                              PytorchInterpreter()).launch()
 
 architecture = ForwardArchitecture(structure)
 architecture.to_device("cuda")

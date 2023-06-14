@@ -6,6 +6,6 @@ class StructureLauncher:
         self.interpreter = interpreter
         self.definition = definition
 
-    def run(self):
+    def launch(self) -> Runnable:
         structure, metadata = self.interpreter.generate(self.definition)
         return Runnable(structure, metadata)

@@ -74,7 +74,7 @@ linearSection = LinearSection([LinearBlock([
     Linear(120, 10)])])
 
 structure = StructureLauncher([convolutionalSection, flattenSection, linearSection],
-                              PytorchInterpreter()).run()
+                              PytorchInterpreter()).launch()
 
 architecture1 = ForwardArchitecture(structure)
 wrapper1 = TrainingWrapper(architecture1,
@@ -103,7 +103,7 @@ linearSection = LinearSection([LinearBlock([
     Linear(100, 10)])])
 
 structure = StructureLauncher([convolutionalSection, flattenSection, linearSection],
-                              PytorchInterpreter()).run()
+                              PytorchInterpreter()).launch()
 
 architecture2 = ForwardArchitecture(structure)
 wrapper2 = TrainingWrapper(architecture2,
@@ -134,7 +134,7 @@ linearSection = LinearSection([LinearBlock([
     Linear(25, 10)])])
 
 structure = StructureLauncher([convolutionalSection, flattenSection, linearSection],
-                              PytorchInterpreter()).run()
+                              PytorchInterpreter()).launch()
 
 architecture3 = ForwardArchitecture(structure)
 wrapper3 = TrainingWrapper(architecture3,

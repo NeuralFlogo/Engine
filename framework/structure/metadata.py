@@ -10,7 +10,7 @@ class Metadata:
     def get_start_index(self, index):
         return self.start_indexes[index]
 
-    def get_sections_length(self, index):
+    def get_section_length(self, index):
         return self.sections_length[index]
 
     def get_end_index(self, index):

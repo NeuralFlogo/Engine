@@ -1,9 +1,10 @@
-from torch.nn import Module, Sequential
+from torch.nn import Module as Architecture, Sequential
 
+from framework.architecture.module import Module
 from framework.structure.runnable import Runnable
 
 
-class ForwardArchitecture(Module):
+class ForwardArchitecture(Architecture):
     def __init__(self, runnable: Runnable):
         super(ForwardArchitecture, self).__init__()
         self.metadata = runnable.metadata
@@ -22,5 +23,8 @@ class ForwardArchitecture(Module):
     def get_section(self, index):
         return self.architecture[self.metadata.get_start_index(index):self.metadata.get_end_index(index)]
 
-    def get_range(self, start, end):
+    def get_section_range(self, start, end):
         return self.architecture[self.metadata.get_start_index(start):self.metadata.get_end_index(end)]
+
+    def get_module(self, index):
+        return Module(self.get_section(index), self.metadata.get_section_length(index))
