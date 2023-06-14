@@ -28,7 +28,7 @@ from framework.structure.layers.pool import Pool
 from framework.structure.sections.link.flatten import FlattenSection
 from framework.structure.sections.processing.convolutional import ConvolutionalSection
 from framework.structure.sections.processing.linear import LinearSection
-from framework.structure.structure_factory import StructureFactory
+from framework.structure.structure_launcher import StructureLauncher
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
 from pytorch.discovery.hyperparameters.optimizer import PytorchOptimizer
@@ -38,7 +38,7 @@ from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
-from pytorch.structure.generator import PytorchGenerator
+from pytorch.structure.interpreter import PytorchInterpreter
 
 
 def abs_path(part_path):
@@ -73,8 +73,8 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(120, 10)])])
 
-structure = StructureFactory([convolutionalSection, flattenSection, linearSection],
-                             PytorchGenerator()).create_structure()
+structure = StructureLauncher([convolutionalSection, flattenSection, linearSection],
+                              PytorchInterpreter()).run()
 
 architecture1 = ForwardArchitecture(structure)
 wrapper1 = TrainingWrapper(architecture1,
@@ -102,8 +102,8 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(100, 10)])])
 
-structure = StructureFactory([convolutionalSection, flattenSection, linearSection],
-                             PytorchGenerator()).create_structure()
+structure = StructureLauncher([convolutionalSection, flattenSection, linearSection],
+                              PytorchInterpreter()).run()
 
 architecture2 = ForwardArchitecture(structure)
 wrapper2 = TrainingWrapper(architecture2,
@@ -133,8 +133,8 @@ linearSection = LinearSection([LinearBlock([
     Activation("ReLU"),
     Linear(25, 10)])])
 
-structure = StructureFactory([convolutionalSection, flattenSection, linearSection],
-                             PytorchGenerator()).create_structure()
+structure = StructureLauncher([convolutionalSection, flattenSection, linearSection],
+                              PytorchInterpreter()).run()
 
 architecture3 = ForwardArchitecture(structure)
 wrapper3 = TrainingWrapper(architecture3,

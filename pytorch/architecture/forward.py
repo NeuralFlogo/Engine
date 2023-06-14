@@ -1,14 +1,14 @@
 from torch.nn import Module, Sequential
 
-from framework.structure.structure import Structure
+from framework.structure.runnable import Runnable
 
 
 class ForwardArchitecture(Module):
-    def __init__(self, structure: Structure):
+    def __init__(self, runnable: Runnable):
         super(ForwardArchitecture, self).__init__()
-        self.metadata = structure.metadata
+        self.metadata = runnable.metadata
         self.architecture = Sequential()
-        [self.architecture.append(i) for i in structure.content]
+        [self.architecture.append(item) for item in runnable.structure]
 
     def forward(self, x):
         return self.architecture(x)

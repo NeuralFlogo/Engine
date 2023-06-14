@@ -29,7 +29,7 @@ from framework.structure.sections.link.flatten import FlattenSection
 from framework.structure.sections.processing.convolutional import ConvolutionalSection
 from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.sections.processing.residual import ResidualSection
-from framework.structure.structure_factory import StructureFactory
+from framework.structure.structure_launcher import StructureLauncher
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.architecture.model_loader import ModelLoader
 from pytorch.architecture.model_persister import ModelPersister
@@ -41,7 +41,7 @@ from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
-from pytorch.structure.generator import PytorchGenerator
+from pytorch.structure.interpreter import PytorchInterpreter
 
 epochs = 1000
 
@@ -85,8 +85,8 @@ flatten = FlattenSection(FlattenBlock(Flatten(1, 3)))
 
 linear = LinearSection([LinearBlock([Linear(25088, 10)])])
 
-structure = StructureFactory([convolutional1, residual, convolutional2, flatten, linear],
-                             PytorchGenerator()).create_structure()
+structure = StructureLauncher([convolutional1, residual, convolutional2, flatten, linear],
+                              PytorchInterpreter()).run()
 
 
 architecture = ForwardArchitecture(structure)

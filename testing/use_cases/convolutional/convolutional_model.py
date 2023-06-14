@@ -27,7 +27,7 @@ from framework.structure.sections.link.classificationsection import Classificati
 from framework.structure.sections.link.flatten import FlattenSection
 from framework.structure.sections.processing.convolutional import ConvolutionalSection
 from framework.structure.sections.processing.linear import LinearSection
-from framework.structure.structure_factory import StructureFactory
+from framework.structure.structure_launcher import StructureLauncher
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.architecture.torch_freezer import TorchFreezer
 from pytorch.data.torch_gpu_entry_allocator import TorchGpuEntryAllocator
@@ -38,7 +38,7 @@ from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
-from pytorch.structure.generator import PytorchGenerator
+from pytorch.structure.interpreter import PytorchInterpreter
 
 
 def abs_path(part_path):
@@ -75,8 +75,8 @@ linearSection = LinearSection([LinearBlock([
 
 classificationSection = ClassificationSection(ClassificationBlock(Classification("Softmax", 1)))
 
-structure = StructureFactory([convolutionalSection, flattenSection, linearSection, classificationSection],
-                             PytorchGenerator()).create_structure()
+structure = StructureLauncher([convolutionalSection, flattenSection, linearSection, classificationSection],
+                              PytorchInterpreter()).run()
 
 architecture = ForwardArchitecture(structure)
 architecture.to_device("cuda")

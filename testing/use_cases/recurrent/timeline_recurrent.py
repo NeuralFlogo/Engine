@@ -17,7 +17,7 @@ from framework.structure.blocks.recurrent import RecurrentBlock
 from framework.structure.layers.linear import Linear
 from framework.structure.sections.processing.linear import LinearSection
 from framework.structure.sections.processing.recurrent import RecurrentSection
-from framework.structure.structure_factory import StructureFactory
+from framework.structure.structure_launcher import StructureLauncher
 from pytorch.architecture.forward import ForwardArchitecture
 from pytorch.data.torch_gpu_entry_allocator import TorchGpuEntryAllocator
 from pytorch.discovery.hyperparameters.loss import PytorchLoss
@@ -27,7 +27,7 @@ from pytorch.discovery.tester import PytorchTester
 from pytorch.discovery.trainer import PytorchTrainer
 from pytorch.discovery.validator import PytorchValidator
 from pytorch.preprocessing.pytorch_caster import PytorchCaster
-from pytorch.structure.generator import PytorchGenerator
+from pytorch.structure.interpreter import PytorchInterpreter
 
 
 def abs_path(part_path):
@@ -56,8 +56,8 @@ linearSection = LinearSection([LinearBlock([
     Linear(100, 50),
     Linear(50, 1)])])
 
-structure = StructureFactory([recurrentSection, linearSection],
-                             PytorchGenerator()).create_structure()
+structure = StructureLauncher([recurrentSection, linearSection],
+                              PytorchInterpreter()).run()
 
 architecture = ForwardArchitecture(structure)
 architecture.to_device("cuda")

@@ -13,10 +13,10 @@ import pytorch.structure.sections.link.flatten as flatten
 from pytorch.structure.sections.processing import recurrent
 
 
-class PytorchGenerator:
-    def generate(self, structure):
+class PytorchInterpreter:
+    def generate(self, definition):
         torch_structure, metadata, start_index = [], Metadata(), 0
-        for section in structure:
+        for section in definition:
             section = self.__switch(section)
             metadata.add(start_index, len(section))
             start_index += len(section)
