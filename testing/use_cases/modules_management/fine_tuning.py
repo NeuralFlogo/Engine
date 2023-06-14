@@ -47,7 +47,7 @@ def abs_path(part_path):
 
 path = abs_path("/resources/mnist")
 
-epochs = 10
+epochs = 15
 
 dataframe = ImageReader().read(path)
 dataframe = Orchestrator(OneHotMapper(), CompositeMapper([TypeMapper(LoadedImageColumn), ResizeMapper((50, 50))])) \

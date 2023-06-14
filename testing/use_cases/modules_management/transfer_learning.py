@@ -1,5 +1,7 @@
 import os
 
+from framework.architecture.model_loader import ModelLoader
+from framework.architecture.model_persister import ModelPersister
 from framework.architecture.module_interpreter import ModuleInterpreter
 from framework.data.dataframe.columns.loaded_image import LoadedImageColumn
 from framework.data.dataframe.readers.image_reader import ImageReader
@@ -89,16 +91,18 @@ model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architectu
     .execute(epochs, architecture, train_dataset, validation_dataset)
 
 print("Test: ", TestTask(PytorchTester(test_dataset, AccuracyMeasurer(), TorchGpuEntryAllocator())).execute(model))
+ModelPersister().persist(model.get_module(0), "C:/Users/Jose Juan/Desktop/trained_module.module")
 
 runnable = StructureLauncher([flattenSection, linearSection, classificationSection],
                              PytorchInterpreter()).launch()
 
-TorchFreezer().freeze(model.get_module(0).get_section())
+module = ModelLoader().load("C:/Users/Jose Juan/Desktop/trained_module.module")
 
-runnable = StructureLauncher([architecture.get_module(0)] + runnable.as_modules(), ModuleInterpreter()).launch()
-
+TorchFreezer().freeze(module.get_section())
+runnable = StructureLauncher([module] + runnable.as_modules(), ModuleInterpreter()).launch()
 architecture = ForwardArchitecture(runnable)
 architecture.to_device("cuda")
+
 
 model = TrainingTask(PytorchTrainer(Optimizer(PytorchOptimizer("SGD", architecture.parameters(), 0.01)),
                                     Loss(PytorchLoss("CrossEntropyLoss")),
