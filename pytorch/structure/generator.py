@@ -17,14 +17,11 @@ class PytorchGenerator:
     def generate(self, structure):
         torch_structure, metadata, start_index = [], Metadata(), 0
         for section in structure:
-            self.__update(metadata, section, start_index, torch_structure)
+            section = self.__switch(section)
+            metadata.add(start_index, len(section))
+            start_index += len(section)
+            torch_structure.extend(section)
         return torch_structure, metadata
-
-    def __update(self, metadata, section, start_index, torch_structure):
-        section = self.__switch(section)
-        metadata.add(start_index, len(section))
-        start_index += len(section)
-        torch_structure.extend(section)
 
     def __switch(self, section):
         if type(section) == ConvolutionalSection: return convolutional.ConvolutionalSection(section).build()

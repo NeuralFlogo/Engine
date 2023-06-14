@@ -21,3 +21,6 @@ class ForwardArchitecture(Module):
 
     def get_section(self, index):
         return self.architecture[self.metadata.get_start_index(index):self.metadata.get_end_index(index)]
+
+    def get_range(self, start, end):
+        return self.architecture[self.metadata.get_start_index(start):self.metadata.get_end_index(end)]
